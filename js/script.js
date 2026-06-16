@@ -95,6 +95,16 @@ document.ready(function () {
     var blockGray = loadingScreen.querySelector('.block-gray');
     var blockTheme = loadingScreen.querySelector('.block-theme');
     var elements = document.querySelectorAll('.fade-in-element');
+
+    // If already visited this session, skip animation
+    if (window.sessionStorage && sessionStorage.getItem('_visited')) {
+        loadingScreen.style.display = 'none';
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].classList.add('visible');
+        }
+        return;
+    }
+
     var startTime = Date.now();
     var resourcesReady = false;
     var minTimeElapsed = false;
@@ -192,6 +202,9 @@ document.ready(function () {
         // ===== Show page (1.1s) =====
         setTimeout(function () {
             loadingScreen.style.display = 'none';
+            if (window.sessionStorage) {
+                sessionStorage.setItem('_visited', '1');
+            }
             for (var i = 0; i < elements.length; i++) {
                 (function (el, idx) {
                     setTimeout(function () {

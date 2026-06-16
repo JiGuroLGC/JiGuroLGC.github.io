@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="Liu Guancheng">
+    <title>分类 | JiGuro的个人博客</title>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/script.js"></script>
+    <meta name="generator" content="Hexo 7.3.0">
+</head>
+
+<body>
+    <script>
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                document.getElementById("mobile-toggle-theme").innerText = "· 九阴"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                document.getElementById("mobile-toggle-theme").innerText = "· 重阳"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+            <nav class="navbar">
+                <div class="container">
+                    <div class="navbar-header header-logo"><a href="/">JiGuro&#39;s Blog</a></div>
+                    <div class="menu navbar-right">
+                        <a class="menu-item" href="/archives">归档</a>
+                        <a class="menu-item" href="/category">分类</a>
+                        <a class="menu-item" href="/tag">标签</a>
+                        <a class="menu-item" href="/about">关于</a>
+                        <input id="switch_default" type="checkbox" class="switch_default">
+                        <label for="switch_default" class="toggleBtn"></label>
+                    </div>
+                </div>
+            </nav>
+
+            <nav class="navbar-mobile" id="nav-mobile">
+                <div class="container">
+                    <div class="navbar-header">
+                        <div>
+                            <a href="/">JiGuro&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
+                        </div>
+                        <div class="menu-toggle" onclick="mobileBtn()">&#9776; 分类</div>
+                    </div>
+                    <div class="menu" id="mobile-menu">
+                        <a class="menu-item" href="/archives">归档</a>
+                        <a class="menu-item" href="/category">分类</a>
+                        <a class="menu-item" href="/tag">标签</a>
+                        <a class="menu-item" href="/about">关于</a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <script>
+            var mobileBtn = function f() {
+                var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+                var mobileMenu = document.getElementById("mobile-menu");
+                if (toggleMenu.classList.contains("active")) {
+                    toggleMenu.classList.remove("active")
+                    mobileMenu.classList.remove("active")
+                } else {
+                    toggleMenu.classList.add("active")
+                    mobileMenu.classList.add("active")
+                }
+            }
+        </script>
+
+        <div class="main">
+            <div class="container" style="display:flex;align-items:center;justify-content:center;flex:1;text-align:center;">
+                <div style="padding:3rem 1rem;">
+                    <div style="font-size:5rem;font-weight:100;line-height:1;opacity:0.12;margin-bottom:1.5rem;color:inherit;">WIP</div>
+                    <h2 style="font-weight:400;margin:0 0 0.75rem;">正在开发中</h2>
+                    <p style="opacity:0.55;line-height:1.8;max-width:280px;margin:0 auto;">
+                        分类功能正在建设中<br>敬请期待
+                    </p>
+                    <a href="/" style="display:inline-block;margin-top:1.5rem;padding:0.5rem 1.5rem;border:1px solid;border-radius:4px;text-decoration:none;color:inherit;font-size:0.9rem;transition:all 0.25s;"
+                       onmouseover="this.style.background='#161209';this.style.color='#fff';"
+                       onmouseout="this.style.background='transparent';this.style.color='inherit';">
+                        返回首页
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <footer id="footer" class="footer">
+            <div class="copyright">
+                <span>© 2024 Liu Guancheng | Powered by JiGuro</span>
+            </div>
+            <a href="https://icp.gov.moe/?keyword=20261961" target="_blank">萌ICP备20261961号</a>
+        </footer>
+    </div>
+</body>
+
+</html>
