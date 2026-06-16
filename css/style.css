@@ -171,7 +171,7 @@ body {
   overflow: overlay;
   background-color: #fff;
   color: #161209;
-  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+  transition: color 0.35s ease, border-color 0.35s ease, background 0.35s ease, background-color 0.35s ease, opacity 0.35s ease;
 }
 body:before {
   content: "";
@@ -184,11 +184,12 @@ body:before {
   width: 100%;
   height: 100%;
   z-index: -1;
+  transition: opacity 0.35s ease;
 }
 body.dark-theme {
   background-color: #292a2d;
   color: #a9a9b3;
-  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+  transition: color 0.35s ease, border-color 0.35s ease, background 0.35s ease, background-color 0.35s ease, opacity 0.35s ease;
 }
 a {
   color: #161209;
@@ -1144,6 +1145,7 @@ header label {
     margin: 0;
     line-height: 5.5em;
     background: #fff;
+    transition: background-color 0.35s ease;
   }
   .navbar-mobile .container .navbar-header {
     display: flex;
@@ -1207,20 +1209,35 @@ header label {
     border-top: 1px solid #000;
     padding-top: 1em;
     padding-bottom: 1em;
-    display: none;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
     box-shadow: 0px 2px 4px rgba(0,0,0,0.1), 0px 4px 8px rgba(0,0,0,0.1);
+    transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.25s ease, background-color 0.35s ease, border-color 0.35s ease;
   }
   .navbar-mobile .container .menu a {
     display: inline-block;
     margin: 0 1em;
     line-height: 2.5em;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
   .navbar-mobile .container .menu.active {
-    display: block;
-    white-space: nowrap;
-    box-sizing: border-box;
+    max-height: 200px;
+    opacity: 1;
     overflow-x: auto;
   }
+  .navbar-mobile .container .menu.active a {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .navbar-mobile .container .menu.active a:nth-child(1) { transition-delay: 0.04s; }
+  .navbar-mobile .container .menu.active a:nth-child(2) { transition-delay: 0.09s; }
+  .navbar-mobile .container .menu.active a:nth-child(3) { transition-delay: 0.14s; }
+  .navbar-mobile .container .menu.active a:nth-child(4) { transition-delay: 0.19s; }
   .dark-theme .navbar-mobile .container .menu {
     background: #292a2d;
     border-top: 2px solid #87878d;
