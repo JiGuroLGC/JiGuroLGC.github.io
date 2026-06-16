@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="Liu Guancheng">
+    <title>文章 | JiGuro的个人博客</title>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <meta name="generator" content="Hexo 7.3.0">
+</head>
+
+<body>
+    <script>
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                document.getElementById("mobile-toggle-theme").innerText = "· 九阴"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                document.getElementById("mobile-toggle-theme").innerText = "· 重阳"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+            <nav class="navbar">
+                <div class="container">
+                    <div class="navbar-header header-logo"><a href="/">JiGuro&#39;s Blog</a></div>
+                    <div class="menu navbar-right">
+                        <a class="menu-item" href="/archives">归档</a>
+                        <a class="menu-item" href="/category">分类</a>
+                        <a class="menu-item" href="/tag">标签</a>
+                        <a class="menu-item" href="/about">关于</a>
+                        <input id="switch_default" type="checkbox" class="switch_default">
+                        <label for="switch_default" class="toggleBtn"></label>
+                    </div>
+                </div>
+            </nav>
+
+            <nav class="navbar-mobile" id="nav-mobile">
+                <div class="container">
+                    <div class="navbar-header">
+                        <div>
+                            <a href="/">JiGuro&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
+                        </div>
+                        <div class="menu-toggle" onclick="mobileBtn()">&#9776; 文章</div>
+                    </div>
+                    <div class="menu" id="mobile-menu">
+                        <a class="menu-item" href="/archives">归档</a>
+                        <a class="menu-item" href="/category">分类</a>
+                        <a class="menu-item" href="/tag">标签</a>
+                        <a class="menu-item" href="/about">关于</a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <script>
+            var mobileBtn = function f() {
+                var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+                var mobileMenu = document.getElementById("mobile-menu");
+                if (toggleMenu.classList.contains("active")) {
+                    toggleMenu.classList.remove("active")
+                    mobileMenu.classList.remove("active")
+                } else {
+                    toggleMenu.classList.add("active")
+                    mobileMenu.classList.add("active")
+                }
+            }
+        </script>
+
+        <div class="main">
+            <div class="post-page">
+                <!-- Cover image -->
+                <div class="post-cover" id="post-cover" style="display:none;">
+                    <img id="post-cover-img" src="" alt="">
+                </div>
+
+                <!-- Article header -->
+                <header class="post-page-header">
+                    <h1 class="post-page-title" id="post-title">加载中...</h1>
+                    <div class="post-page-meta">
+                        <span class="post-page-author" id="post-author"></span>
+                        <span class="post-page-date" id="post-date"></span>
+                    </div>
+                    <div class="post-page-tags" id="post-page-tags"></div>
+                </header>
+
+                <!-- Article content -->
+                <div class="post-page-content" id="post-content">
+                    <p>加载中...</p>
+                </div>
+
+                <!-- Bottom bar: share + back -->
+                <div class="post-page-bottom">
+                    <button class="post-share-btn" id="share-btn" onclick="copyShareLink()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                        分享文章
+                    </button>
+                    <a class="post-back-link" href="/archives">← 返回归档</a>
+                </div>
+        </div>
+
+        <footer id="footer" class="footer">
+            <div class="copyright">
+                <span>© 2026 Liu Guancheng | Powered by JiGuro</span>
+            </div>
+            <a href="https://icp.gov.moe/?keyword=20261961" target="_blank">萌ICP备20261961号</a>
+        </footer>
+    </div>
+
+    <script>
+        function escHtml(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+        function copyCodeBlock(btn) {
+            var code = btn.closest('.code-block').querySelector('.code-content code');
+            if (!code) return;
+            var text = code.textContent.trim();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '已复制';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.textContent = '复制';
+                        btn.classList.remove('copied');
+                    }, 1500);
+                });
+            }
+        }
+        function copyShareLink() {
+            var url = window.location.href;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(function() {
+                    var btn = document.getElementById('share-btn');
+                    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> 分享文章';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            } else {
+                var ta = document.createElement('textarea');
+                ta.value = url;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                var btn = document.getElementById('share-btn');
+                btn.innerHTML = '已复制!';
+                btn.classList.add('copied');
+                setTimeout(function() {
+                    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> 分享文章';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }
+        }
+
+        (function() {
+            var params = new URLSearchParams(window.location.search);
+            var postId = params.get('id');
+            if (!postId) {
+                document.getElementById('post-title').textContent = '文章未找到';
+                document.getElementById('post-content').innerHTML = '<p>请从归档页面选择一篇文章。</p>';
+                return;
+            }
+
+            fetch('/posts/index.json')
+                .then(function(r) { return r.json(); })
+                .then(function(articles) {
+                    var article = null;
+                    for (var i = 0; i < articles.length; i++) {
+                        if (articles[i].id === postId) {
+                            article = articles[i];
+                            break;
+                        }
+                    }
+                    if (!article) throw new Error('Article not found');
+
+                    document.title = article.title + ' | JiGuro的个人博客';
+                    document.getElementById('post-title').textContent = article.title;
+
+                    // Author
+                    document.getElementById('post-author').textContent = article.author || 'Liu Guancheng';
+
+                    // Date
+                    var date = new Date(article.date);
+                    var months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+                    document.getElementById('post-date').textContent =
+                        months[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
+
+                    // Cover image
+                    if (article.image) {
+                        document.getElementById('post-cover').style.display = '';
+                        document.getElementById('post-cover-img').src = article.image;
+                        document.getElementById('post-cover-img').alt = article.title;
+                    }
+
+                    // Tags
+                    if (article.tags && article.tags.length) {
+                        var tagsHtml = '';
+                        for (var t = 0; t < article.tags.length; t++) {
+                            tagsHtml += '<a href="/tag">' + article.tags[t] + '</a>';
+                        }
+                        document.getElementById('post-page-tags').innerHTML = tagsHtml;
+                    }
+
+                    return fetch(article.path);
+                })
+                .then(function(r) { return r.text(); })
+                .then(function(md) {
+                    // Use marked default renderer
+                    document.getElementById('post-content').innerHTML = marked.parse(md);
+
+                    // Enhance code blocks
+                    var pres = document.querySelectorAll('.post-page-content pre');
+                    for (var p = 0; p < pres.length; p++) {
+                        var pre = pres[p];
+                        var codeEl = pre.querySelector('code');
+                        var codeText = codeEl ? codeEl.textContent : pre.textContent;
+                        var lang = '';
+                        if (codeEl) {
+                            var cls = codeEl.className || '';
+                            var m = cls.match(/language-(\w+)/);
+                            if (m) lang = m[1];
+                        }
+
+                        // Build line numbers
+                        var lines = codeText.split('\n');
+                        if (lines.length && lines[lines.length - 1] === '') lines.pop();
+                        var nums = '';
+                        for (var n = 1; n <= lines.length; n++) nums += '<span>' + n + '</span>';
+
+                        // Build new HTML
+                        var langHtml = lang ? '<span class="code-lang">' + lang + '</span>' : '';
+                        var newHtml =
+                            '<pre class="code-block">' +
+                            '<div class="code-header">' +
+                            langHtml +
+                            '<button class="code-copy-btn" onclick="copyCodeBlock(this)">复制</button>' +
+                            '</div>' +
+                            '<div class="code-body">' +
+                            '<div class="code-lines">' + nums + '</div>' +
+                            '<div class="code-content"><code>' + escHtml(codeText) + '</code></div>' +
+                            '</div>' +
+                            '</pre>';
+
+                        // Replace
+                        var temp = document.createElement('div');
+                        temp.innerHTML = newHtml;
+                        pre.parentNode.replaceChild(temp.firstChild, pre);
+                    }
+                })
+                .catch(function(err) {
+                    document.getElementById('post-title').textContent = '加载失败';
+                    document.getElementById('post-content').innerHTML = '<p>无法加载文章内容。</p>';
+                });
+        })();
+    </script>
+
+    <button id="back-to-top" title="回到顶部">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+
+    <script>
+        (function() {
+            var btn = document.getElementById('back-to-top');
+            if (!btn) return;
+            var lastY = 0;
+            var ticking = false;
+
+            btn.addEventListener('click', function() {
+                btn.classList.remove('visible');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    requestAnimationFrame(function() {
+                        var y = window.scrollY;
+                        var maxY = document.documentElement.scrollHeight - window.innerHeight - 20;
+                        if (y <= 100 || y >= maxY) {
+                            btn.classList.remove('visible');
+                        } else if (y > lastY + 20) {
+                            btn.classList.add('visible');
+                        } else if (y < lastY - 20) {
+                            btn.classList.remove('visible');
+                        }
+                        lastY = y;
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
+        })();
+
+        /* Code content scrollbar show/hide */
+        (function() {
+            var hideTimer = 0;
+
+            // Capture scroll events on .code-content elements
+            document.addEventListener('scroll', function(e) {
+                var content = e.target.closest ? e.target.closest('.code-content') : null;
+                if (!content) return;
+
+                clearTimeout(hideTimer);
+
+                // Show scrollbar on the scrolled code content
+                document.querySelectorAll('.code-content.show-scrollbar').forEach(function(c) {
+                    if (c !== content) c.classList.remove('show-scrollbar');
+                });
+                content.classList.add('show-scrollbar');
+
+                // Auto-hide after 1.5s of no horizontal scroll
+                hideTimer = setTimeout(function() {
+                    content.classList.remove('show-scrollbar');
+                }, 1500);
+            }, { capture: true, passive: true });
+
+            // Page vertical scroll: hide all code scrollbars
+            window.addEventListener('scroll', function() {
+                document.querySelectorAll('.code-content.show-scrollbar').forEach(function(c) {
+                    c.classList.remove('show-scrollbar');
+                });
+                clearTimeout(hideTimer);
+            }, { passive: true });
+        })();
+    </script>
+
+</body>
+
+</html>

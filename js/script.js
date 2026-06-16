@@ -239,3 +239,35 @@ document.ready(function () {
         checkReady();
     });
 });
+
+// Scroll-aware mobile navbar
+document.ready(function () {
+    var navbar = document.getElementById('nav-mobile');
+    if (!navbar) return;
+
+    var lastY = 0;
+    var ticking = false;
+    var THRESHOLD = 10;
+
+    function update() {
+        if (window.scrollY <= 0) {
+            navbar.style.transform = 'translateY(0)';
+        } else if (window.scrollY < lastY - THRESHOLD) {
+            navbar.style.transform = 'translateY(0)';
+        } else if (window.scrollY > lastY + THRESHOLD) {
+            navbar.style.transform = 'translateY(-100%)';
+        }
+        lastY = window.scrollY;
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', function () {
+        if (!ticking) {
+            requestAnimationFrame(update);
+            ticking = true;
+        }
+    }, { passive: true });
+
+    navbar.style.transition = 'transform 0.3s ease';
+});
+

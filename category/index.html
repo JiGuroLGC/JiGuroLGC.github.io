@@ -44,7 +44,6 @@
                     </div>
                 </div>
             </nav>
-
             <nav class="navbar-mobile" id="nav-mobile">
                 <div class="container">
                     <div class="navbar-header">
@@ -77,29 +76,92 @@
         </script>
 
         <div class="main">
-            <div class="container" style="display:flex;align-items:center;justify-content:center;flex:1;text-align:center;">
-                <div style="padding:3rem 1rem;">
-                    <div style="font-size:5rem;font-weight:100;line-height:1;opacity:0.12;margin-bottom:1.5rem;color:inherit;">WIP</div>
-                    <h2 style="font-weight:400;margin:0 0 0.75rem;">正在开发中</h2>
-                    <p style="opacity:0.55;line-height:1.8;max-width:280px;margin:0 auto;">
-                        分类功能正在建设中<br>敬请期待
-                    </p>
-                    <a href="/" style="display:inline-block;margin-top:1.5rem;padding:0.5rem 1.5rem;border:1px solid;border-radius:4px;text-decoration:none;color:inherit;font-size:0.9rem;transition:all 0.25s;"
-                       onmouseover="this.style.background='#161209';this.style.color='#fff';"
-                       onmouseout="this.style.background='transparent';this.style.color='inherit';">
-                        返回首页
-                    </a>
-                </div>
+            <div id="cat-container" class="container" style="max-width:900px;margin:0 auto;">
+                <p style="text-align:center;opacity:0.5;">加载中...</p>
             </div>
         </div>
 
         <footer id="footer" class="footer">
             <div class="copyright">
-                <span>© 2024 Liu Guancheng | Powered by JiGuro</span>
+                <span>© 2026 Liu Guancheng | Powered by JiGuro</span>
             </div>
             <a href="https://icp.gov.moe/?keyword=20261961" target="_blank">萌ICP备20261961号</a>
         </footer>
     </div>
+
+    <script>
+        (function() {
+            var container = document.getElementById('cat-container');
+
+            fetch('/posts/index.json')
+                .then(function(r) { return r.json(); })
+                .then(function(articles) {
+                    if (!articles.length) {
+                        container.innerHTML = '<p style="text-align:center;opacity:0.5;">暂无文章。</p>';
+                        return;
+                    }
+
+                    // Group by category
+                    var cats = {};
+                    for (var i = 0; i < articles.length; i++) {
+                        var cat = articles[i].category || '未分类';
+                        if (!cats[cat]) cats[cat] = [];
+                        cats[cat].push(articles[i]);
+                    }
+
+                    var months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+                    var html = '';
+
+                    var keys = Object.keys(cats).sort();
+                    for (var c = 0; c < keys.length; c++) {
+                        var cat = keys[c];
+                        var items = cats[cat];
+
+                        html += '<div class="sec-group" style="opacity:0;transform:translateY(16px);">';
+                        html += '<div class="sec-header" onclick="this.parentElement.classList.toggle(\'open\')">';
+                        html += '<span class="sec-arrow">▸</span>';
+                        html += '<span class="sec-title">' + cat + '</span>';
+                        html += '<span class="sec-count">' + items.length + '</span>';
+                        html += '</div>';
+                        html += '<div class="sec-body">';
+
+                        for (var j = 0; j < items.length; j++) {
+                            var a = items[j];
+                            var date = new Date(a.date);
+                            var monthStr = months[date.getMonth()];
+
+                            html += '<a class="sec-card" href="/post.html?id=' + a.id + '">';
+                            html += '<div class="sec-card-info">';
+                            html += '<span class="sec-card-title">' + a.title + '</span>';
+                            html += '<span class="sec-card-meta">' + (a.author || 'Liu Guancheng') + ' · ' + monthStr + ' ' + date.getDate() + ', ' + date.getFullYear() + '</span>';
+                            html += '</div>';
+                            if (a.description) {
+                                html += '<span class="sec-card-desc">' + a.description + '</span>';
+                            }
+                            html += '</a>';
+                        }
+
+                        html += '</div></div>';
+                    }
+
+                    container.innerHTML = html;
+
+                    // Staggered fade-in
+                    var groups = container.querySelectorAll('.sec-group');
+                    for (var g = 0; g < groups.length; g++) {
+                        (function(el, idx) {
+                            setTimeout(function() {
+                                el.style.opacity = '1';
+                                el.style.transform = 'translateY(0)';
+                            }, idx * 150);
+                        })(groups[g], g);
+                    }
+                })
+                .catch(function() {
+                    container.innerHTML = '<p style="text-align:center;opacity:0.5;">加载失败。</p>';
+                });
+        })();
+    </script>
 </body>
 
 </html>

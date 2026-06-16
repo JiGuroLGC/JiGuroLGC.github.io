@@ -124,31 +124,115 @@
     }
 </script>
             <div class="main">
-                <div class="post-wrap archive">
-    
-    
-        
-
-        
-            <h3>2024</h3>
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2024/07/27/hello-world/index.html"></a>
-            <span class="archive-item-date">七月 27, 2024</span>
-        </article>
-    
-    
-</div>
+                <div id="archive-list" class="container" style="max-width:1000px;margin:0 auto;padding-top:1rem;">
+                    <div class="search-wrap">
+                        <input type="text" class="search-input" id="search-input" placeholder="搜索文章...">
+                    </div>
+                    <div id="archive-cards-container">
+                        <p style="text-align:center;opacity:0.5;">加载中...</p>
+                    </div>
+                </div>
             </div>
             <footer id="footer" class="footer">
     <div class="copyright">
-        <span>© 2024 Liu Guancheng | Powered by JiGuro</span>
+        <span>© 2026 Liu Guancheng | Powered by JiGuro</span>
     </div>
     <a href="https://icp.gov.moe/?keyword=20261961" target="_blank">萌ICP备20261961号</a>
 </footer>
 
     </div>
+
+    <script>
+        (function() {
+            var container = document.getElementById('archive-cards-container');
+            var searchInput = document.getElementById('search-input');
+            var allArticles = [];
+
+            function renderCards(articles) {
+                if (!articles.length) {
+                    container.innerHTML = '<p style="text-align:center;opacity:0.5;">没有匹配的文章。</p>';
+                    return;
+                }
+
+                var months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+                var imgFallback = '/images/cover1.jpg';
+
+                var html = '<div class="archive-cards">';
+                for (var i = 0; i < articles.length; i++) {
+                    var a = articles[i];
+                    var date = new Date(a.date);
+                    var monthStr = months[date.getMonth()];
+                    var dayStr = date.getDate();
+                    var year = date.getFullYear();
+                    var imgSrc = a.image || imgFallback;
+
+                    html += '<article class="archive-card fade-in-card">';
+                    html += '<a class="archive-card-link" href="/post.html?id=' + a.id + '">';
+                    html += '<img class="archive-card-img" src="' + imgSrc + '" alt="' + a.title + '" loading="lazy">';
+                    html += '<div class="archive-card-body">';
+                    html += '<h3 class="archive-card-title">' + a.title + '</h3>';
+                    html += '<p class="archive-card-meta">';
+                    html += '<span>' + (a.author || 'Liu Guancheng') + '</span>';
+                    html += '<span>' + monthStr + ' ' + dayStr + ', ' + year + '</span>';
+                    html += '</p>';
+                    if (a.tags && a.tags.length) {
+                        html += '<p class="archive-card-tags">';
+                        for (var t = 0; t < a.tags.length; t++) {
+                            html += '<a href="/tag">' + a.tags[t] + '</a>';
+                        }
+                        html += '</p>';
+                    }
+                    if (a.description) {
+                        html += '<p class="archive-card-desc">' + a.description + '</p>';
+                    }
+                    html += '</div></a></article>';
+                }
+                html += '</div>';
+                container.innerHTML = html;
+
+                var cards = container.querySelectorAll('.archive-card');
+                for (var c = 0; c < cards.length; c++) {
+                    (function(el, idx) {
+                        setTimeout(function() {
+                            el.classList.add('visible');
+                        }, idx * 100);
+                    })(cards[c], c);
+                }
+            }
+
+            function filterArticles() {
+                var query = searchInput.value.trim().toLowerCase();
+                if (!query) {
+                    renderCards(allArticles);
+                    return;
+                }
+                var filtered = [];
+                for (var i = 0; i < allArticles.length; i++) {
+                    var a = allArticles[i];
+                    var text = (a.title + ' ' + a.description + ' ' + (a.tags || []).join(' ')).toLowerCase();
+                    if (text.indexOf(query) !== -1) {
+                        filtered.push(a);
+                    }
+                }
+                renderCards(filtered);
+            }
+
+            fetch('/posts/index.json')
+                .then(function(r) { return r.json(); })
+                .then(function(articles) {
+                    allArticles = articles;
+                    allArticles.sort(function(a, b) {
+                        return new Date(b.date) - new Date(a.date);
+                    });
+
+                    renderCards(allArticles);
+                    searchInput.addEventListener('input', filterArticles);
+                })
+                .catch(function() {
+                    container.innerHTML = '<p style="text-align:center;opacity:0.5;">加载文章列表失败。</p>';
+                });
+        })();
+    </script>
 </body>
 
 </html>
