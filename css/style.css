@@ -248,10 +248,10 @@ a:hover {
   flex: 1;
 }
 .footer {
-  height: 4rem;
   width: 100%;
   text-align: center;
-  line-height: 4rem;
+  line-height: 1.8;
+  padding: 1rem 0 2rem 0;
 }
 @charset "utf-8";
 
@@ -1370,4 +1370,111 @@ header label {
 .post-content pre .keyword,
 .post-content pre .javascript .function {
   color: #8959a8;
+}
+
+/* Loading screen - full page */
+#loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #fff;
+}
+.dark-theme #loading-screen {
+  background: #292a2d;
+}
+
+/* Loading wrapper - for fading out */
+.loading-wrapper {
+  position: relative;
+  z-index: 2;
+  transition: opacity 0.4s ease;
+}
+.loading-wrapper.fade-out {
+  opacity: 0;
+}
+
+/* Loading animation */
+.loading {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  position: relative;
+  border: 4px solid #161209;
+  animation: loader 4s infinite ease;
+}
+.dark-theme .loading {
+  border-color: #a9a9b3;
+}
+.loading-inner {
+  vertical-align: top;
+  display: inline-block;
+  width: 100%;
+  background-color: #161209;
+  animation: loader-inner 4s infinite ease-in;
+}
+.dark-theme .loading-inner {
+  background-color: #a9a9b3;
+}
+@keyframes loader {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(180deg); }
+  50% { transform: rotate(180deg); }
+  75% { transform: rotate(360deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes loader-inner {
+  0% { height: 0%; }
+  25% { height: 0%; }
+  50% { height: 100%; }
+  75% { height: 100%; }
+  100% { height: 0%; }
+}
+
+/* Transition blocks */
+.transition-block {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  pointer-events: none;
+}
+.transition-block.block-gray {
+  width: 100vw;
+  z-index: 2;
+  background: #888;
+  left: -100vw;
+}
+.transition-block.block-theme {
+  width: 100vw;
+  z-index: 1;
+  left: -100vw;
+}
+body:not(.dark-theme) .transition-block.block-theme {
+  background: #bbb;
+}
+.dark-theme .transition-block.block-theme {
+  background: #555;
+}
+
+/* Loading screen becomes transparent to reveal main page */
+#loading-screen.transparent-bg {
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Fade-in animation */
+.fade-in-element {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-in-element.visible {
+  opacity: 1;
+  transform: translateY(0);
 }

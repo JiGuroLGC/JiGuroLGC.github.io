@@ -47,6 +47,15 @@
 </head>
 
 <body>
+    <div id="loading-screen">
+        <div class="loading-wrapper">
+            <div class="loading">
+                <div class="loading-inner"></div>
+            </div>
+        </div>
+        <div class="transition-block block-gray"></div>
+        <div class="transition-block block-theme"></div>
+    </div>
     <script>
         // this function is used to check current theme before page loaded.
         (() => {
@@ -66,7 +75,7 @@
     </script>
 
     <div class="wrapper">
-        <header>
+        <header class="fade-in-element">
             <nav class="navbar">
                 <div class="container">
                     <div class="navbar-header header-logo"><a href="/">JiGuro&#39;s Blog</a></div>
@@ -127,15 +136,15 @@
 
             <div class="container profile-container">
                 <div class="intro">
-                    <div class="avatar">
+                    <div class="avatar fade-in-element">
                         <a href="/archives"><img src="/image/jiguro.png"></a>
                     </div>
-                    <div class="nickname">刘叽咕</div>
-                    <div class="nickname">JiGuro</div>
-                    <div class="description">
+                    <div class="nickname fade-in-element">刘叽咕</div>
+                    <div class="nickname fade-in-element">JiGuro</div>
+                    <div class="description fade-in-element">
                         <p>即使翅膀断了，心也要飞翔</p>
                     </div>
-                    <div class="links">
+                    <div class="links fade-in-element">
 
 
                         <a class="link-item" title="Blog" href="/archives">
@@ -187,10 +196,11 @@
 
 
         </div>
-        <footer id="footer" class="footer">
+        <footer id="footer" class="footer fade-in-element">
             <div class="copyright">
                 <span>© 2024 Liu Guancheng | Powered by JiGuro</span>
             </div>
+            <a href="https://icp.gov.moe/?keyword=20261961" target="_blank">萌ICP备20261961号</a>
         </footer>
 
     </div>
