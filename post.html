@@ -289,9 +289,7 @@
                                 var hasExplicitSize = img.hasAttribute('width') || img.hasAttribute('height');
                                 var wrap = document.createElement('div');
                                 wrap.className = 'img-placeholder' + (isBadge || hasExplicitSize ? ' badge-img' : '');
-                                // 占位背景色过渡，使其能平滑透明
                                 wrap.style.transition = 'background-color 0.5s ease';
-                                // ✅ 徽章图片取消圆角，保持原始形状
                                 if (isBadge) {
                                     wrap.style.borderRadius = '0';
                                 }
@@ -302,8 +300,7 @@
                                 function onImgReady() {
                                     if (img.classList.contains('loaded')) return;
                                     img.classList.add('loaded');
-                                    // 让占位容器背景色变为透明，与模糊效果同步消失
-                                    wrap.style.backgroundColor = 'transparent';
+                                        wrap.style.backgroundColor = 'transparent';
                                     if (!isBadge) {
                                         var w = img.naturalWidth || img.clientWidth || 0;
                                         if (w > vw - 40) {
