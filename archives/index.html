@@ -36,7 +36,7 @@
 		<header>
 			<nav class="navbar">
 				<div class="container">
-					<div class="navbar-header header-logo"><a href="/">JiGuro&#39;s Blog</a></div>
+					<div class="navbar-header header-logo"><a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog</a></div>
 					<div class="menu navbar-right">
 						<a class="menu-item" href="/archives">归档</a>
 						<a class="menu-item" href="/category">分类</a>
@@ -51,7 +51,7 @@
 				<div class="container">
 					<div class="navbar-header">
 						<div>
-							<a href="/">JiGuro&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
+							<a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
 						</div>
 						<div class="menu-toggle" onclick="mobileBtn()">&#9776; 归档</div>
 					</div>
@@ -78,7 +78,7 @@
 			}
 		</script>
 		<div class="main">
-			<div id="archive-list" class="container" style="max-width:1000px;margin:0 auto;padding-top:1rem;">
+			<div id="archive-list" class="container" style="max-width:1000px;margin:0 auto;padding-top:1rem;width:100%;box-sizing:border-box;">
 				<div class="search-wrap">
 					<input type="text" class="search-input" id="search-input" placeholder="搜索文章...">
 				</div>
@@ -99,6 +99,16 @@
 		    var container = document.getElementById('archive-cards-container');
 		    var searchInput = document.getElementById('search-input');
 		    var allArticles = [];
+		    var skipAnimation = !!(window.sessionStorage && sessionStorage.getItem('_archive_visited'));
+		    var restoreScroll = window.sessionStorage && sessionStorage.getItem('_archive_scrollY');
+
+		    // Save scroll position before navigating to an article
+		    container.addEventListener('click', function(e) {
+		        var link = e.target.closest('.archive-card-link');
+		        if (link && window.sessionStorage) {
+		            sessionStorage.setItem('_archive_scrollY', window.scrollY);
+		        }
+		    });
 		
 		    function renderCards(articles) {
 		        if (!articles.length) {
@@ -118,22 +128,31 @@
 		            var year = date.getFullYear();
 		            var imgSrc = a.image || imgFallback;
 		
-		            html += '<article class="archive-card fade-in-card">';
+		            html += '<article class="archive-card">';
 		            html += '<a class="archive-card-link" href="/post.html?id=' + a.id + '">';
+		            html += '<div class="archive-card-img-wrap">';
 		            html += '<img class="archive-card-img" src="' + imgSrc + '" alt="' + a.title + '" loading="lazy">';
+		            html += '</div>';
 		            html += '<div class="archive-card-body">';
 		            html += '<h3 class="archive-card-title">' + a.title + '</h3>';
 		            html += '<p class="archive-card-meta">';
 		            html += '<span>' + (a.author || 'Liu Guancheng') + '</span>';
 		            html += '<span>' + monthStr + ' ' + dayStr + ', ' + year + '</span>';
 		            html += '</p>';
-		            if (a.tags && a.tags.length) {
-		                html += '<p class="archive-card-tags">';
-		                for (var t = 0; t < a.tags.length; t++) {
-		                    html += '<a href="/tag">' + a.tags[t] + '</a>';
-		                }
-		                html += '</p>';
-		            }
+            if (a.tags && a.tags.length) {
+                var tagList = [];
+                for (var t = 0; t < a.tags.length; t++) {
+                    var tag = (a.tags[t] || '').trim();
+                    if (tag) tagList.push(tag);
+                }
+                if (tagList.length) {
+                    html += '<p class="archive-card-tags">';
+                    for (var u = 0; u < tagList.length; u++) {
+                        html += '<span>' + tagList[u] + '</span>';
+                    }
+                    html += '</p>';
+                }
+            }
 		            if (a.description) {
 		                html += '<p class="archive-card-desc">' + a.description + '</p>';
 		            }
@@ -141,18 +160,54 @@
 		        }
 		        html += '</div>';
 		        container.innerHTML = html;
-		
+
+		        // Image load detection: add .loaded when image finishes loading
+		        var imgs = container.querySelectorAll('.archive-card-img');
+		        for (var m = 0; m < imgs.length; m++) {
+		            (function(img) {
+		                if (img.complete) {
+		                    img.classList.add('loaded');
+		                } else {
+		                    img.addEventListener('load', function() {
+		                        img.classList.add('loaded');
+		                    });
+		                    img.addEventListener('error', function() {
+		                        img.classList.add('loaded');
+		                    });
+		                }
+		            })(imgs[m]);
+		        }
+
 		        var cards = container.querySelectorAll('.archive-card');
+
+		        // Returning via back button — show cards immediately
+		        if (skipAnimation || !('IntersectionObserver' in window)) {
+		            for (var c = 0; c < cards.length; c++) {
+		                cards[c].classList.add('visible');
+		            }
+		            return;
+		        }
+
+		        // Scroll-triggered reveal
+		        var cardObserver = new IntersectionObserver(function(entries) {
+		            for (var e = 0; e < entries.length; e++) {
+		                if (entries[e].isIntersecting) {
+		                    entries[e].target.classList.add('visible');
+		                    cardObserver.unobserve(entries[e].target);
+		                }
+		            }
+		        }, { threshold: 0.1 });
+
 		        for (var c = 0; c < cards.length; c++) {
-		            (function(el, idx) {
-		                setTimeout(function() {
-		                    el.classList.add('visible');
-		                }, idx * 100);
-		            })(cards[c], c);
+		            cardObserver.observe(cards[c]);
 		        }
 		    }
 		
 		    function filterArticles() {
+		        // Clear saved scroll position when user starts searching
+		        if (window.sessionStorage) {
+		            sessionStorage.removeItem('_archive_scrollY');
+		        }
 		        var query = searchInput.value.trim().toLowerCase();
 		        if (!query) {
 		            renderCards(allArticles);
@@ -176,8 +231,23 @@
 		            allArticles.sort(function(a, b) {
 		                return new Date(b.date) - new Date(a.date);
 		            });
-		
+
 		            renderCards(allArticles);
+
+		            // Mark as visited so back-button returns skip animation
+		            if (window.sessionStorage) {
+		                sessionStorage.setItem('_archive_visited', '1');
+		            }
+
+            // Restore scroll position when returning via back button
+            if (restoreScroll) {
+                var targetY = parseInt(restoreScroll, 10);
+                // Scroll in the same frame as render — before browser paints
+                requestAnimationFrame(function() {
+                    window.scrollTo({ top: targetY, behavior: 'instant' });
+                });
+            }
+
 		            searchInput.addEventListener('input', filterArticles);
 		        })
 		        .catch(function() {

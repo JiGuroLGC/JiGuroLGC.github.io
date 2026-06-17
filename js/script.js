@@ -96,13 +96,23 @@ document.ready(function () {
     var blockTheme = loadingScreen.querySelector('.block-theme');
     var elements = document.querySelectorAll('.fade-in-element');
 
-    // If already visited this session, skip animation
-    if (window.sessionStorage && sessionStorage.getItem('_visited')) {
-        loadingScreen.style.display = 'none';
-        for (var i = 0; i < elements.length; i++) {
-            elements[i].classList.add('visible');
+    // Skip loading screen if user came via navbar link or previously visited
+    if (window.sessionStorage) {
+        if (sessionStorage.getItem('_home_skip')) {
+            sessionStorage.removeItem('_home_skip');
+            loadingScreen.style.display = 'none';
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].classList.add('visible');
+            }
+            return;
         }
-        return;
+        if (sessionStorage.getItem('_visited')) {
+            loadingScreen.style.display = 'none';
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].classList.add('visible');
+            }
+            return;
+        }
     }
 
     var startTime = Date.now();

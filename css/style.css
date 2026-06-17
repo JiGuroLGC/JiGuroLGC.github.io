@@ -1490,11 +1490,16 @@ body:not(.dark-theme) .transition-block.block-theme {
 .fade-in-element {
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  filter: blur(6px);
+  will-change: transform, opacity, filter;
+  transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+              filter 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .fade-in-element.visible {
   opacity: 1;
   transform: translateY(0);
+  filter: blur(0);
 }
 
 /* Archive cards */
@@ -1538,14 +1543,22 @@ body:not(.dark-theme) .transition-block.block-theme {
   overflow: hidden;
   background: #fff;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.35s ease;
   opacity: 0;
   transform: translateY(24px);
+  filter: blur(10px);
+  transition: opacity 0.65s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1),
+              filter 0.65s cubic-bezier(0.22, 0.61, 0.36, 1),
+              box-shadow 0.3s ease, background-color 0.35s ease;
 }
 .archive-card.visible {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  filter: blur(0);
+  transition: opacity 0.65s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1),
+              filter 0.65s cubic-bezier(0.22, 0.61, 0.36, 1),
+              box-shadow 0.3s ease;
 }
 .archive-card:hover {
   transform: translateY(-4px);
@@ -1556,11 +1569,28 @@ body:not(.dark-theme) .transition-block.block-theme {
   color: inherit;
   display: block;
 }
+.archive-card-img-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #e8e8e8;
+}
+.dark-theme .archive-card-img-wrap {
+  background: #1e1f22;
+}
 .archive-card-img {
   width: 100%;
-  height: 180px;
-  object-fit: cover;
+  height: auto;
   display: block;
+  opacity: 0;
+  filter: blur(20px);
+  transform: scale(1.05);
+  transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
+}
+.archive-card-img.loaded {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
 }
 .archive-card-body {
   padding: 1.2rem 1.4rem 1.4rem;
@@ -1587,19 +1617,18 @@ body:not(.dark-theme) .transition-block.block-theme {
 .archive-card-tags {
   margin: 0 0 0.8rem;
 }
-.archive-card-tags a {
+.archive-card-tags span {
   display: inline-block;
   font-size: 0.72rem;
   padding: 0.15em 0.6em;
   margin-right: 0.4em;
   border: 1px solid;
   border-radius: 3px;
-  text-decoration: none;
   color: inherit;
   opacity: 0.6;
   transition: opacity 0.2s;
 }
-.archive-card-tags a:hover {
+.archive-card-tags span:hover {
   opacity: 1;
 }
 .archive-card-desc {
@@ -1692,16 +1721,137 @@ body:not(.dark-theme) .transition-block.block-theme {
 .post-page-tags a:hover {
   opacity: 1;
 }
+
+/* Header reveal animation */
+.post-cover,
+.post-page-title,
+.post-page-meta,
+.post-page-tags {
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(6px);
+  will-change: transform, opacity, filter;
+  transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+              filter 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.post-cover.is-revealed,
+.post-page-title.is-revealed,
+.post-page-meta.is-revealed,
+.post-page-tags.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
 .post-page-content {
   font-size: 1rem;
   line-height: 1.9;
   text-align: justify;
   margin-bottom: 2.5rem;
   word-wrap: break-word;
-  overflow-wrap: anywhere;
-  word-break: break-all;
+  overflow-wrap: break-word;
+  word-break: normal;
   min-width: 0;
 }
+
+/* ===== Scroll-reveal animation ===== */
+.post-page-content > * {
+  opacity: 0;
+  transform: translateY(30px);
+  filter: blur(10px);
+  will-change: transform, opacity, filter;
+  transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+              filter 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.post-page-content > .is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+/* Variant timing per element type */
+.post-page-content > h1,
+.post-page-content > h2 {
+  transition-delay: 0.12s;
+  transition-duration: 0.75s;
+}
+.post-page-content > h3,
+.post-page-content > h4,
+.post-page-content > h5,
+.post-page-content > h6 {
+  transition-delay: 0.08s;
+}
+.post-page-content > p {
+  transition-delay: 0.04s;
+  transition-duration: 0.65s;
+}
+.post-page-content > blockquote {
+  transition-delay: 0.16s;
+}
+.post-page-content > ul,
+.post-page-content > ol {
+  transition-delay: 0.08s;
+  transition-duration: 0.65s;
+}
+.post-page-content > pre,
+.post-page-content > .code-block {
+  transition-delay: 0.1s;
+  transition-duration: 0.6s;
+}
+.post-page-content > img {
+  transition-delay: 0s;
+  transition-duration: 0.5s;
+}
+.post-page-content > table {
+  transition-delay: 0.16s;
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .post-page-content > *,
+  .fade-in-element,
+  .archive-card,
+  .sec-group,
+  .post-cover,
+  .post-page-title,
+  .post-page-meta,
+  .post-page-tags {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}
+/* ===== Progressive image loading ===== */
+.img-placeholder {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  background: #e8e8e8;
+  border-radius: 6px;
+  margin: 1.5rem 0;
+}
+.dark-theme .img-placeholder {
+  background: #1e1f22;
+}
+.img-placeholder img {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0;
+  filter: blur(20px);
+  transform: scale(1.05);
+  transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
+}
+.img-placeholder img.loaded {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
+}
+
 /* 强制代码块使用 flex column 布局 */
 .post-page-content pre.code-block {
     display: flex !important;
@@ -2075,9 +2225,6 @@ pre.code-block {
     grid-template-columns: 1fr;
     gap: 1.2rem;
   }
-  .archive-card-img {
-    height: 160px;
-  }
   .post-page {
     padding: 1rem 0.8rem 0;
   }
@@ -2097,7 +2244,17 @@ pre.code-block {
 /* Category / Tag pages */
 .sec-group {
   margin-bottom: 0.5rem;
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(10px);
+  transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+              filter 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.sec-group.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
 }
 .sec-header {
   display: flex;

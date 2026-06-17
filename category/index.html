@@ -33,7 +33,7 @@
         <header>
             <nav class="navbar">
                 <div class="container">
-                    <div class="navbar-header header-logo"><a href="/">JiGuro&#39;s Blog</a></div>
+                    <div class="navbar-header header-logo"><a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog</a></div>
                     <div class="menu navbar-right">
                         <a class="menu-item" href="/archives">归档</a>
                         <a class="menu-item" href="/category">分类</a>
@@ -48,7 +48,7 @@
                 <div class="container">
                     <div class="navbar-header">
                         <div>
-                            <a href="/">JiGuro&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
+                            <a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
                         </div>
                         <div class="menu-toggle" onclick="mobileBtn()">&#9776; 分类</div>
                     </div>
@@ -92,6 +92,25 @@
     <script>
         (function() {
             var container = document.getElementById('cat-container');
+            var skipAnimation = !!(window.sessionStorage && sessionStorage.getItem('_cat_visited'));
+            var restoreScroll = window.sessionStorage && sessionStorage.getItem('_cat_scrollY');
+            var restoreOpen = window.sessionStorage && sessionStorage.getItem('_cat_open');
+
+            // Save state before navigating to an article
+            container.addEventListener('click', function(e) {
+                var link = e.target.closest('.sec-card');
+                if (link && window.sessionStorage) {
+                    sessionStorage.setItem('_cat_scrollY', window.scrollY);
+                    // Collect open group names
+                    var openNames = [];
+                    var openGroups = container.querySelectorAll('.sec-group.open');
+                    for (var i = 0; i < openGroups.length; i++) {
+                        var titleEl = openGroups[i].querySelector('.sec-title');
+                        if (titleEl) openNames.push(titleEl.textContent);
+                    }
+                    sessionStorage.setItem('_cat_open', openNames.join('\n'));
+                }
+            });
 
             fetch('/posts/index.json')
                 .then(function(r) { return r.json(); })
@@ -117,7 +136,7 @@
                         var cat = keys[c];
                         var items = cats[cat];
 
-                        html += '<div class="sec-group" style="opacity:0;transform:translateY(16px);">';
+                        html += '<div class="sec-group">';
                         html += '<div class="sec-header" onclick="this.parentElement.classList.toggle(\'open\')">';
                         html += '<span class="sec-arrow">▸</span>';
                         html += '<span class="sec-title">' + cat + '</span>';
@@ -146,15 +165,45 @@
 
                     container.innerHTML = html;
 
-                    // Staggered fade-in
+                    // Reveal groups
                     var groups = container.querySelectorAll('.sec-group');
-                    for (var g = 0; g < groups.length; g++) {
-                        (function(el, idx) {
-                            setTimeout(function() {
-                                el.style.opacity = '1';
-                                el.style.transform = 'translateY(0)';
-                            }, idx * 150);
-                        })(groups[g], g);
+                    if (skipAnimation) {
+                        for (var g = 0; g < groups.length; g++) {
+                            groups[g].classList.add('is-revealed');
+                        }
+                    } else {
+                        for (var g = 0; g < groups.length; g++) {
+                            (function(el, idx) {
+                                setTimeout(function() {
+                                    el.classList.add('is-revealed');
+                                }, idx * 150);
+                            })(groups[g], g);
+                        }
+                    }
+
+                    // Restore open groups
+                    if (restoreOpen) {
+                        var openNames = restoreOpen.split('\n');
+                        for (var o = 0; o < openNames.length; o++) {
+                            var titleEls = container.querySelectorAll('.sec-title');
+                            for (var t = 0; t < titleEls.length; t++) {
+                                if (titleEls[t].textContent === openNames[o]) {
+                                    titleEls[t].closest('.sec-group').classList.add('open');
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    // Mark visited + restore scroll
+                    if (window.sessionStorage) {
+                        sessionStorage.setItem('_cat_visited', '1');
+                    }
+                    if (restoreScroll) {
+                        var targetY = parseInt(restoreScroll, 10);
+                        requestAnimationFrame(function() {
+                            window.scrollTo({ top: targetY, behavior: 'instant' });
+                        });
                     }
                 })
                 .catch(function() {

@@ -34,7 +34,7 @@
         <header>
             <nav class="navbar">
                 <div class="container">
-                    <div class="navbar-header header-logo"><a href="/">JiGuro&#39;s Blog</a></div>
+                    <div class="navbar-header header-logo"><a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog</a></div>
                     <div class="menu navbar-right">
                         <a class="menu-item" href="/archives">归档</a>
                         <a class="menu-item" href="/category">分类</a>
@@ -50,7 +50,7 @@
                 <div class="container">
                     <div class="navbar-header">
                         <div>
-                            <a href="/">JiGuro&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
+                            <a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
                         </div>
                         <div class="menu-toggle" onclick="mobileBtn()">&#9776; 文章</div>
                     </div>
@@ -209,7 +209,8 @@
                     if (article.tags && article.tags.length) {
                         var tagsHtml = '';
                         for (var t = 0; t < article.tags.length; t++) {
-                            tagsHtml += '<a href="/tag">' + article.tags[t] + '</a>';
+                            var tag = (article.tags[t] || '').trim();
+                            if (tag) tagsHtml += '<a href="/tag">' + tag + '</a>';
                         }
                         document.getElementById('post-page-tags').innerHTML = tagsHtml;
                     }
@@ -259,6 +260,81 @@
                         temp.innerHTML = newHtml;
                         pre.parentNode.replaceChild(temp.firstChild, pre);
                     }
+
+                    // Wrap images in placeholder containers for progressive loading
+                    (function() {
+                        var contentImgs = document.querySelectorAll('.post-page-content img');
+                        for (var m = 0; m < contentImgs.length; m++) {
+                            var img = contentImgs[m];
+                            // Skip images already inside a code block or img-placeholder
+                            if (img.closest('.code-block') || img.closest('.img-placeholder')) continue;
+
+                            var wrap = document.createElement('div');
+                            wrap.className = 'img-placeholder';
+                            img.parentNode.insertBefore(wrap, img);
+                            wrap.appendChild(img);
+
+                            if (img.complete) {
+                                img.classList.add('loaded');
+                            } else {
+                                img.addEventListener('load', function() {
+                                    this.classList.add('loaded');
+                                });
+                                img.addEventListener('error', function() {
+                                    this.classList.add('loaded');
+                                });
+                            }
+                        }
+                    })();
+
+                    // Scroll-reveal animation for header elements
+                    var headerEls = [
+                        document.getElementById('post-cover'),
+                        document.getElementById('post-title'),
+                        document.querySelector('.post-page-meta'),
+                        document.getElementById('post-page-tags')
+                    ];
+                    for (var h = 0; h < headerEls.length; h++) {
+                        if (headerEls[h]) {
+                            (function(el, idx) {
+                                setTimeout(function() {
+                                    el.classList.add('is-revealed');
+                                }, idx * 80);
+                            })(headerEls[h], h);
+                        }
+                    }
+
+                    // Scroll-reveal animation for content children (delayed after header)
+                    (function() {
+                        var container = document.getElementById('post-content');
+                        if (!container) return;
+
+                        setTimeout(function() {
+                            var children = container.children;
+                            if (!children.length) return;
+
+                            // Fallback: IntersectionObserver not supported
+                            if (!('IntersectionObserver' in window)) {
+                                for (var i = 0; i < children.length; i++) {
+                                    children[i].classList.add('is-revealed');
+                                }
+                                return;
+                            }
+
+                            var observer = new IntersectionObserver(function(entries) {
+                                for (var e = 0; e < entries.length; e++) {
+                                    if (entries[e].isIntersecting) {
+                                        entries[e].target.classList.add('is-revealed');
+                                        observer.unobserve(entries[e].target);
+                                    }
+                                }
+                            }, { threshold: 0.15 });
+
+                            for (var c = 0; c < children.length; c++) {
+                                observer.observe(children[c]);
+                            }
+                        }, 400);
+                    })();
                 })
                 .catch(function(err) {
                     document.getElementById('post-title').textContent = '加载失败';
