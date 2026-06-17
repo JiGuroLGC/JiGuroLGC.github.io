@@ -1,238 +1,189 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-    <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    <meta name="author" content="Liu Guancheng">
-
-
-
-
-
-<title>归档 | JiGuro的个人博客</title>
-
-
-
-    <link rel="icon" href="/favicon.ico">
-
-
-
-
-    <!-- stylesheets list from _config.yml -->
-    
-    <link rel="stylesheet" href="/css/style.css">
-    
-
-
-
-    <!-- scripts list from _config.yml -->
-    
-    <script src="/js/script.js"></script>
-    
-    <script src="/js/tocbot.min.js"></script>
-    
-
-
-
-    
-    
-        
-    
-
-
-<meta name="generator" content="Hexo 7.3.0"></head>
-
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="author" content="Liu Guancheng">
+	<title>归档 | JiGuro的个人博客</title>
+	<link rel="icon" href="/favicon.ico">
+	<!-- stylesheets list from _config.yml -->
+	<link rel="stylesheet" href="/css/style.css">
+	<!-- scripts list from _config.yml -->
+	<script src="/js/script.js"></script>
+	<script src="/js/tocbot.min.js"></script>
+	<meta name="generator" content="Hexo 7.3.0">
+</head>
 <body>
-    <script>
-        // this function is used to check current theme before page loaded.
-        (() => {
-            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
-            const isDark = currentTheme === 'dark';
-            const pagebody = document.getElementsByTagName('body')[0]
-            if (isDark) {
-                pagebody.classList.add('dark-theme');
-                // mobile
-                document.getElementById("mobile-toggle-theme").innerText = "· 九阴"
-            } else {
-                pagebody.classList.remove('dark-theme');
-                // mobile
-                document.getElementById("mobile-toggle-theme").innerText = "· 重阳"
-            }
-        })();
-    </script>
-
-    <div class="wrapper">
-        <header>
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-header header-logo"><a href="/">JiGuro&#39;s Blog</a></div>
-            <div class="menu navbar-right">
-
-                <a class="menu-item" href="/archives">归档</a>
-
-                <a class="menu-item" href="/category">分类</a>
-
-                <a class="menu-item" href="/tag">标签</a>
-
-                <a class="menu-item" href="/about">关于</a>
-
-                <input id="switch_default" type="checkbox" class="switch_default">
-                <label for="switch_default" class="toggleBtn"></label>
-            </div>
-        </div>
-    </nav>
-
-    
-    <nav class="navbar-mobile" id="nav-mobile">
-        <div class="container">
-            <div class="navbar-header">
-                <div>
-                    <a href="/">JiGuro&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
-                </div>
-                <div class="menu-toggle" onclick="mobileBtn()">&#9776; 主页</div>
-            </div>
-            <div class="menu" id="mobile-menu">
-
-                <a class="menu-item" href="/archives">归档</a>
-
-                <a class="menu-item" href="/category">分类</a>
-
-                <a class="menu-item" href="/tag">标签</a>
-
-                <a class="menu-item" href="/about">关于</a>
-
-            </div>
-        </div>
-    </nav>
-
-</header>
-<script>
-    var mobileBtn = function f() {
-        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
-        var mobileMenu = document.getElementById("mobile-menu");
-        if(toggleMenu.classList.contains("active")){
-           toggleMenu.classList.remove("active")
-            mobileMenu.classList.remove("active")
-        }else{
-            toggleMenu.classList.add("active")
-            mobileMenu.classList.add("active")
-        }
-    }
-</script>
-            <div class="main">
-                <div id="archive-list" class="container" style="max-width:1000px;margin:0 auto;padding-top:1rem;">
-                    <div class="search-wrap">
-                        <input type="text" class="search-input" id="search-input" placeholder="搜索文章...">
-                    </div>
-                    <div id="archive-cards-container">
-                        <p style="text-align:center;opacity:0.5;">加载中...</p>
-                    </div>
-                </div>
-            </div>
-            <footer id="footer" class="footer">
-    <div class="copyright">
-        <span>© 2026 Liu Guancheng | Powered by JiGuro</span>
-    </div>
-    <a href="https://icp.gov.moe/?keyword=20261961" target="_blank">萌ICP备20261961号</a>
-</footer>
-
-    </div>
-
-    <script>
-        (function() {
-            var container = document.getElementById('archive-cards-container');
-            var searchInput = document.getElementById('search-input');
-            var allArticles = [];
-
-            function renderCards(articles) {
-                if (!articles.length) {
-                    container.innerHTML = '<p style="text-align:center;opacity:0.5;">没有匹配的文章。</p>';
-                    return;
-                }
-
-                var months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
-                var imgFallback = '/images/cover1.jpg';
-
-                var html = '<div class="archive-cards">';
-                for (var i = 0; i < articles.length; i++) {
-                    var a = articles[i];
-                    var date = new Date(a.date);
-                    var monthStr = months[date.getMonth()];
-                    var dayStr = date.getDate();
-                    var year = date.getFullYear();
-                    var imgSrc = a.image || imgFallback;
-
-                    html += '<article class="archive-card fade-in-card">';
-                    html += '<a class="archive-card-link" href="/post.html?id=' + a.id + '">';
-                    html += '<img class="archive-card-img" src="' + imgSrc + '" alt="' + a.title + '" loading="lazy">';
-                    html += '<div class="archive-card-body">';
-                    html += '<h3 class="archive-card-title">' + a.title + '</h3>';
-                    html += '<p class="archive-card-meta">';
-                    html += '<span>' + (a.author || 'Liu Guancheng') + '</span>';
-                    html += '<span>' + monthStr + ' ' + dayStr + ', ' + year + '</span>';
-                    html += '</p>';
-                    if (a.tags && a.tags.length) {
-                        html += '<p class="archive-card-tags">';
-                        for (var t = 0; t < a.tags.length; t++) {
-                            html += '<a href="/tag">' + a.tags[t] + '</a>';
-                        }
-                        html += '</p>';
-                    }
-                    if (a.description) {
-                        html += '<p class="archive-card-desc">' + a.description + '</p>';
-                    }
-                    html += '</div></a></article>';
-                }
-                html += '</div>';
-                container.innerHTML = html;
-
-                var cards = container.querySelectorAll('.archive-card');
-                for (var c = 0; c < cards.length; c++) {
-                    (function(el, idx) {
-                        setTimeout(function() {
-                            el.classList.add('visible');
-                        }, idx * 100);
-                    })(cards[c], c);
-                }
-            }
-
-            function filterArticles() {
-                var query = searchInput.value.trim().toLowerCase();
-                if (!query) {
-                    renderCards(allArticles);
-                    return;
-                }
-                var filtered = [];
-                for (var i = 0; i < allArticles.length; i++) {
-                    var a = allArticles[i];
-                    var text = (a.title + ' ' + a.description + ' ' + (a.tags || []).join(' ')).toLowerCase();
-                    if (text.indexOf(query) !== -1) {
-                        filtered.push(a);
-                    }
-                }
-                renderCards(filtered);
-            }
-
-            fetch('/posts/index.json')
-                .then(function(r) { return r.json(); })
-                .then(function(articles) {
-                    allArticles = articles;
-                    allArticles.sort(function(a, b) {
-                        return new Date(b.date) - new Date(a.date);
-                    });
-
-                    renderCards(allArticles);
-                    searchInput.addEventListener('input', filterArticles);
-                })
-                .catch(function() {
-                    container.innerHTML = '<p style="text-align:center;opacity:0.5;">加载文章列表失败。</p>';
-                });
-        })();
-    </script>
+	<script>
+		// this function is used to check current theme before page loaded.
+		(() => {
+		    const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+		    const isDark = currentTheme === 'dark';
+		    const pagebody = document.getElementsByTagName('body')[0]
+		    if (isDark) {
+		        pagebody.classList.add('dark-theme');
+		        // mobile
+		        document.getElementById("mobile-toggle-theme").innerText = "· 九阴"
+		    } else {
+		        pagebody.classList.remove('dark-theme');
+		        // mobile
+		        document.getElementById("mobile-toggle-theme").innerText = "· 重阳"
+		    }
+		})();
+	</script>
+	<div class="wrapper">
+		<header>
+			<nav class="navbar">
+				<div class="container">
+					<div class="navbar-header header-logo"><a href="/">JiGuro&#39;s Blog</a></div>
+					<div class="menu navbar-right">
+						<a class="menu-item" href="/archives">归档</a>
+						<a class="menu-item" href="/category">分类</a>
+						<a class="menu-item" href="/tag">标签</a>
+						<a class="menu-item" href="/about">关于</a>
+						<input id="switch_default" type="checkbox" class="switch_default">
+						<label for="switch_default" class="toggleBtn"></label>
+					</div>
+				</div>
+			</nav>
+			<nav class="navbar-mobile" id="nav-mobile">
+				<div class="container">
+					<div class="navbar-header">
+						<div>
+							<a href="/">JiGuro&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
+						</div>
+						<div class="menu-toggle" onclick="mobileBtn()">&#9776; 归档</div>
+					</div>
+					<div class="menu" id="mobile-menu">
+						<a class="menu-item" href="/archives">归档</a>
+						<a class="menu-item" href="/category">分类</a>
+						<a class="menu-item" href="/tag">标签</a>
+						<a class="menu-item" href="/about">关于</a>
+					</div>
+				</div>
+			</nav>
+		</header>
+		<script>
+			var mobileBtn = function f() {
+			    var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+			    var mobileMenu = document.getElementById("mobile-menu");
+			    if(toggleMenu.classList.contains("active")){
+			       toggleMenu.classList.remove("active")
+			        mobileMenu.classList.remove("active")
+			    }else{
+			        toggleMenu.classList.add("active")
+			        mobileMenu.classList.add("active")
+			    }
+			}
+		</script>
+		<div class="main">
+			<div id="archive-list" class="container" style="max-width:1000px;margin:0 auto;padding-top:1rem;">
+				<div class="search-wrap">
+					<input type="text" class="search-input" id="search-input" placeholder="搜索文章...">
+				</div>
+				<div id="archive-cards-container">
+					<p style="text-align:center;opacity:0.5;">加载中...</p>
+				</div>
+			</div>
+		</div>
+		<footer id="footer" class="footer">
+			<div class="copyright">
+				<span>© 2026 Liu Guancheng | Powered by JiGuro</span>
+			</div>
+			<a href="https://icp.gov.moe/?keyword=20261961" target="_blank">萌ICP备20261961号</a>
+		</footer>
+	</div>
+	<script>
+		(function() {
+		    var container = document.getElementById('archive-cards-container');
+		    var searchInput = document.getElementById('search-input');
+		    var allArticles = [];
+		
+		    function renderCards(articles) {
+		        if (!articles.length) {
+		            container.innerHTML = '<p style="text-align:center;opacity:0.5;">没有匹配的文章。</p>';
+		            return;
+		        }
+		
+		        var months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+		        var imgFallback = '/images/cover1.jpg';
+		
+		        var html = '<div class="archive-cards">';
+		        for (var i = 0; i < articles.length; i++) {
+		            var a = articles[i];
+		            var date = new Date(a.date);
+		            var monthStr = months[date.getMonth()];
+		            var dayStr = date.getDate();
+		            var year = date.getFullYear();
+		            var imgSrc = a.image || imgFallback;
+		
+		            html += '<article class="archive-card fade-in-card">';
+		            html += '<a class="archive-card-link" href="/post.html?id=' + a.id + '">';
+		            html += '<img class="archive-card-img" src="' + imgSrc + '" alt="' + a.title + '" loading="lazy">';
+		            html += '<div class="archive-card-body">';
+		            html += '<h3 class="archive-card-title">' + a.title + '</h3>';
+		            html += '<p class="archive-card-meta">';
+		            html += '<span>' + (a.author || 'Liu Guancheng') + '</span>';
+		            html += '<span>' + monthStr + ' ' + dayStr + ', ' + year + '</span>';
+		            html += '</p>';
+		            if (a.tags && a.tags.length) {
+		                html += '<p class="archive-card-tags">';
+		                for (var t = 0; t < a.tags.length; t++) {
+		                    html += '<a href="/tag">' + a.tags[t] + '</a>';
+		                }
+		                html += '</p>';
+		            }
+		            if (a.description) {
+		                html += '<p class="archive-card-desc">' + a.description + '</p>';
+		            }
+		            html += '</div></a></article>';
+		        }
+		        html += '</div>';
+		        container.innerHTML = html;
+		
+		        var cards = container.querySelectorAll('.archive-card');
+		        for (var c = 0; c < cards.length; c++) {
+		            (function(el, idx) {
+		                setTimeout(function() {
+		                    el.classList.add('visible');
+		                }, idx * 100);
+		            })(cards[c], c);
+		        }
+		    }
+		
+		    function filterArticles() {
+		        var query = searchInput.value.trim().toLowerCase();
+		        if (!query) {
+		            renderCards(allArticles);
+		            return;
+		        }
+		        var filtered = [];
+		        for (var i = 0; i < allArticles.length; i++) {
+		            var a = allArticles[i];
+		            var text = (a.title + ' ' + a.description + ' ' + (a.tags || []).join(' ')).toLowerCase();
+		            if (text.indexOf(query) !== -1) {
+		                filtered.push(a);
+		            }
+		        }
+		        renderCards(filtered);
+		    }
+		
+		    fetch('/posts/index.json')
+		        .then(function(r) { return r.json(); })
+		        .then(function(articles) {
+		            allArticles = articles;
+		            allArticles.sort(function(a, b) {
+		                return new Date(b.date) - new Date(a.date);
+		            });
+		
+		            renderCards(allArticles);
+		            searchInput.addEventListener('input', filterArticles);
+		        })
+		        .catch(function() {
+		            container.innerHTML = '<p style="text-align:center;opacity:0.5;">加载文章列表失败。</p>';
+		        });
+		})();
+	</script>
 </body>
-
 </html>
