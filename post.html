@@ -104,315 +104,389 @@
                 <!-- Bottom bar: share + back -->
                 <div class="post-page-bottom">
                     <button class="post-share-btn" id="share-btn" onclick="copyShareLink()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+                            <polyline points="16 6 12 2 8 6" />
+                            <line x1="12" y1="2" x2="12" y2="15" />
+                        </svg>
                         分享文章
                     </button>
                     <a class="post-back-link" href="/archives">← 返回归档</a>
                 </div>
+            </div>
+
+            <footer id="footer" class="footer">
+                <div class="copyright">
+                    <span>© 2026 Liu Guancheng | Powered by JiGuro</span>
+                </div>
+                <a href="https://icp.gov.moe/?keyword=20261961" target="_blank">萌ICP备20261961号</a>
+            </footer>
         </div>
 
-        <footer id="footer" class="footer">
-            <div class="copyright">
-                <span>© 2026 Liu Guancheng | Powered by JiGuro</span>
-            </div>
-            <a href="https://icp.gov.moe/?keyword=20261961" target="_blank">萌ICP备20261961号</a>
-        </footer>
-    </div>
-
-    <script>
-        function escHtml(s) {
-            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        }
-        function copyCodeBlock(btn) {
-            var code = btn.closest('.code-block').querySelector('.code-content code');
-            if (!code) return;
-            var text = code.textContent.trim();
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(text).then(function() {
-                    btn.textContent = '已复制';
-                    btn.classList.add('copied');
-                    setTimeout(function() {
-                        btn.textContent = '复制';
-                        btn.classList.remove('copied');
-                    }, 1500);
-                });
+        <script>
+            function escHtml(s) {
+                return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             }
-        }
-        function copyShareLink() {
-            var url = window.location.href;
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(url).then(function() {
+
+            function copyCodeBlock(btn) {
+                var code = btn.closest('.code-block').querySelector('.code-content code');
+                if (!code) return;
+                var text = code.textContent.trim();
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(text).then(function() {
+                        btn.textContent = '已复制';
+                        btn.classList.add('copied');
+                        setTimeout(function() {
+                            btn.textContent = '复制';
+                            btn.classList.remove('copied');
+                        }, 1500);
+                    });
+                }
+            }
+
+            function copyShareLink() {
+                var url = window.location.href;
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(url).then(function() {
+                        var btn = document.getElementById('share-btn');
+                        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+                        btn.classList.add('copied');
+                        setTimeout(function() {
+                            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> 分享文章';
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    });
+                } else {
+                    var ta = document.createElement('textarea');
+                    ta.value = url;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
                     var btn = document.getElementById('share-btn');
-                    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+                    btn.innerHTML = '已复制!';
                     btn.classList.add('copied');
                     setTimeout(function() {
                         btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> 分享文章';
                         btn.classList.remove('copied');
                     }, 2000);
-                });
-            } else {
-                var ta = document.createElement('textarea');
-                ta.value = url;
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                var btn = document.getElementById('share-btn');
-                btn.innerHTML = '已复制!';
-                btn.classList.add('copied');
-                setTimeout(function() {
-                    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> 分享文章';
-                    btn.classList.remove('copied');
-                }, 2000);
-            }
-        }
-
-        (function() {
-            var params = new URLSearchParams(window.location.search);
-            var postId = params.get('id');
-            if (!postId) {
-                document.getElementById('post-title').textContent = '文章未找到';
-                document.getElementById('post-content').innerHTML = '<p>请从归档页面选择一篇文章。</p>';
-                return;
+                }
             }
 
-            fetch('/posts/index.json')
-                .then(function(r) { return r.json(); })
-                .then(function(articles) {
-                    var article = null;
-                    for (var i = 0; i < articles.length; i++) {
-                        if (articles[i].id === postId) {
-                            article = articles[i];
-                            break;
-                        }
-                    }
-                    if (!article) throw new Error('Article not found');
+            (function() {
+                var params = new URLSearchParams(window.location.search);
+                var postId = params.get('id');
+                if (!postId) {
+                    document.getElementById('post-title').textContent = '文章未找到';
+                    document.getElementById('post-content').innerHTML = '<p>请从归档页面选择一篇文章。</p>';
+                    return;
+                }
 
-                    document.title = article.title + ' | JiGuro的个人博客';
-                    document.getElementById('post-title').textContent = article.title;
-
-                    // Author
-                    document.getElementById('post-author').textContent = article.author || 'Liu Guancheng';
-
-                    // Date
-                    var date = new Date(article.date);
-                    var months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
-                    document.getElementById('post-date').textContent =
-                        months[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
-
-                    // Cover image
-                    if (article.image) {
-                        document.getElementById('post-cover').style.display = '';
-                        document.getElementById('post-cover-img').src = article.image;
-                        document.getElementById('post-cover-img').alt = article.title;
-                    }
-
-                    // Tags
-                    if (article.tags && article.tags.length) {
-                        var tagsHtml = '';
-                        for (var t = 0; t < article.tags.length; t++) {
-                            var tag = (article.tags[t] || '').trim();
-                            if (tag) tagsHtml += '<a href="/tag">' + tag + '</a>';
-                        }
-                        document.getElementById('post-page-tags').innerHTML = tagsHtml;
-                    }
-
-                    return fetch(article.path);
-                })
-                .then(function(r) { return r.text(); })
-                .then(function(md) {
-                    // Use marked default renderer
-                    document.getElementById('post-content').innerHTML = marked.parse(md);
-
-                    // Enhance code blocks
-                    var pres = document.querySelectorAll('.post-page-content pre');
-                    for (var p = 0; p < pres.length; p++) {
-                        var pre = pres[p];
-                        var codeEl = pre.querySelector('code');
-                        var codeText = codeEl ? codeEl.textContent : pre.textContent;
-                        var lang = '';
-                        if (codeEl) {
-                            var cls = codeEl.className || '';
-                            var m = cls.match(/language-(\w+)/);
-                            if (m) lang = m[1];
-                        }
-
-                        // Build line numbers
-                        var lines = codeText.split('\n');
-                        if (lines.length && lines[lines.length - 1] === '') lines.pop();
-                        var nums = '';
-                        for (var n = 1; n <= lines.length; n++) nums += '<span>' + n + '</span>';
-
-                        // Build new HTML
-                        var langHtml = lang ? '<span class="code-lang">' + lang + '</span>' : '';
-                        var newHtml =
-                            '<pre class="code-block">' +
-                            '<div class="code-header">' +
-                            langHtml +
-                            '<button class="code-copy-btn" onclick="copyCodeBlock(this)">复制</button>' +
-                            '</div>' +
-                            '<div class="code-body">' +
-                            '<div class="code-lines">' + nums + '</div>' +
-                            '<div class="code-content"><code>' + escHtml(codeText) + '</code></div>' +
-                            '</div>' +
-                            '</pre>';
-
-                        // Replace
-                        var temp = document.createElement('div');
-                        temp.innerHTML = newHtml;
-                        pre.parentNode.replaceChild(temp.firstChild, pre);
-                    }
-
-                    // Wrap images in placeholder containers for progressive loading
-                    (function() {
-                        var contentImgs = document.querySelectorAll('.post-page-content img');
-                        for (var m = 0; m < contentImgs.length; m++) {
-                            var img = contentImgs[m];
-                            // Skip images already inside a code block or img-placeholder
-                            if (img.closest('.code-block') || img.closest('.img-placeholder')) continue;
-
-                            var wrap = document.createElement('div');
-                            wrap.className = 'img-placeholder';
-                            img.parentNode.insertBefore(wrap, img);
-                            wrap.appendChild(img);
-
-                            if (img.complete) {
-                                img.classList.add('loaded');
-                            } else {
-                                img.addEventListener('load', function() {
-                                    this.classList.add('loaded');
-                                });
-                                img.addEventListener('error', function() {
-                                    this.classList.add('loaded');
-                                });
+                fetch('/posts/index.json')
+                    .then(function(r) {
+                        return r.json();
+                    })
+                    .then(function(articles) {
+                        var article = null;
+                        for (var i = 0; i < articles.length; i++) {
+                            if (articles[i].id === postId) {
+                                article = articles[i];
+                                break;
                             }
                         }
-                    })();
+                        if (!article) throw new Error('Article not found');
 
-                    // Scroll-reveal animation for header elements
-                    var headerEls = [
-                        document.getElementById('post-cover'),
-                        document.getElementById('post-title'),
-                        document.querySelector('.post-page-meta'),
-                        document.getElementById('post-page-tags')
-                    ];
-                    for (var h = 0; h < headerEls.length; h++) {
-                        if (headerEls[h]) {
-                            (function(el, idx) {
-                                setTimeout(function() {
-                                    el.classList.add('is-revealed');
-                                }, idx * 80);
-                            })(headerEls[h], h);
+                        document.title = article.title + ' | JiGuro的个人博客';
+                        document.getElementById('post-title').textContent = article.title;
+
+                        // Author
+                        document.getElementById('post-author').textContent = article.author || 'Liu Guancheng';
+
+                        // Date
+                        var date = new Date(article.date);
+                        var months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+                        document.getElementById('post-date').textContent =
+                            months[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
+
+                        // Cover image
+                        if (article.image) {
+                            document.getElementById('post-cover').style.display = '';
+                            document.getElementById('post-cover-img').src = article.image;
+                            document.getElementById('post-cover-img').alt = article.title;
                         }
-                    }
 
-                    // Scroll-reveal animation for content children (delayed after header)
-                    (function() {
-                        var container = document.getElementById('post-content');
-                        if (!container) return;
+                        // Tags
+                        if (article.tags && article.tags.length) {
+                            var tagsHtml = '';
+                            for (var t = 0; t < article.tags.length; t++) {
+                                var tag = (article.tags[t] || '').trim();
+                                if (tag) tagsHtml += '<a href="/tag">' + tag + '</a>';
+                            }
+                            document.getElementById('post-page-tags').innerHTML = tagsHtml;
+                        }
 
-                        setTimeout(function() {
-                            var children = container.children;
-                            if (!children.length) return;
+                        return fetch(article.path);
+                    })
+                    .then(function(r) {
+                        return r.text();
+                    })
+                    .then(function(md) {
+                        // Use marked default renderer
+                        document.getElementById('post-content').innerHTML = marked.parse(md);
 
-                            // Fallback: IntersectionObserver not supported
-                            if (!('IntersectionObserver' in window)) {
-                                for (var i = 0; i < children.length; i++) {
-                                    children[i].classList.add('is-revealed');
+                        // Enhance code blocks
+                        var pres = document.querySelectorAll('.post-page-content pre');
+                        for (var p = 0; p < pres.length; p++) {
+                            var pre = pres[p];
+                            var codeEl = pre.querySelector('code');
+                            var codeText = codeEl ? codeEl.textContent : pre.textContent;
+                            var lang = '';
+                            if (codeEl) {
+                                var cls = codeEl.className || '';
+                                var m = cls.match(/language-(\w+)/);
+                                if (m) lang = m[1];
+                            }
+
+                            // Build line numbers
+                            var lines = codeText.split('\n');
+                            if (lines.length && lines[lines.length - 1] === '') lines.pop();
+                            var nums = '';
+                            for (var n = 1; n <= lines.length; n++) nums += '<span>' + n + '</span>';
+
+                            // Build new HTML
+                            var langHtml = lang ? '<span class="code-lang">' + lang + '</span>' : '';
+                            var newHtml =
+                                '<pre class="code-block">' +
+                                '<div class="code-header">' +
+                                langHtml +
+                                '<button class="code-copy-btn" onclick="copyCodeBlock(this)">复制</button>' +
+                                '</div>' +
+                                '<div class="code-body">' +
+                                '<div class="code-lines">' + nums + '</div>' +
+                                '<div class="code-content"><code>' + escHtml(codeText) + '</code></div>' +
+                                '</div>' +
+                                '</pre>';
+
+                            // Replace
+                            var temp = document.createElement('div');
+                            temp.innerHTML = newHtml;
+                            pre.parentNode.replaceChild(temp.firstChild, pre);
+                        }
+
+                        // Wrap images in placeholder containers for progressive loading
+                        // Same mechanism as archive cards: complete → immediate; else → listeners
+                        (function() {
+                            var vw = window.innerWidth;
+                            var contentImgs = document.querySelectorAll('.post-page-content img');
+                            contentImgs.forEach(function(img) {
+                                if (img.closest('.code-block') || img.closest('.img-placeholder')) return;
+
+                                if (img.hasAttribute('width')) img.style.width = img.getAttribute('width') + 'px';
+                                if (img.hasAttribute('height')) img.style.height = img.getAttribute('height') + 'px';
+
+                                var parentA = img.parentElement;
+                                var isBadge = parentA && parentA.tagName === 'A';
+                                var hasExplicitSize = img.hasAttribute('width') || img.hasAttribute('height');
+                                var wrap = document.createElement('div');
+                                wrap.className = 'img-placeholder' + (isBadge || hasExplicitSize ? ' badge-img' : '');
+                                // 占位背景色过渡，使其能平滑透明
+                                wrap.style.transition = 'background-color 0.5s ease';
+                                // ✅ 徽章图片取消圆角，保持原始形状
+                                if (isBadge) {
+                                    wrap.style.borderRadius = '0';
                                 }
-                                return;
-                            }
+                                parentA ? parentA.insertBefore(wrap, img) : img.parentNode.insertBefore(wrap, img);
+                                wrap.appendChild(img);
 
-                            var observer = new IntersectionObserver(function(entries) {
-                                for (var e = 0; e < entries.length; e++) {
-                                    if (entries[e].isIntersecting) {
-                                        entries[e].target.classList.add('is-revealed');
-                                        observer.unobserve(entries[e].target);
+                                // Overflow detection after load
+                                function onImgReady() {
+                                    if (img.classList.contains('loaded')) return;
+                                    img.classList.add('loaded');
+                                    // 让占位容器背景色变为透明，与模糊效果同步消失
+                                    wrap.style.backgroundColor = 'transparent';
+                                    if (!isBadge) {
+                                        var w = img.naturalWidth || img.clientWidth || 0;
+                                        if (w > vw - 40) {
+                                            img.style.maxWidth = '100%';
+                                            img.style.height = 'auto';
+                                        }
                                     }
                                 }
-                            }, { threshold: 0.15 });
+                                if (img.complete) {
+                                    onImgReady();
+                                } else {
+                                    img.addEventListener('load', onImgReady);
+                                    img.addEventListener('error', onImgReady);
+                                }
+                            });
+                        })();
 
-                            for (var c = 0; c < children.length; c++) {
-                                observer.observe(children[c]);
+                        // Convert Obsidian-style callouts
+                        (function() {
+                            var bqs = document.querySelectorAll('.post-page-content blockquote');
+                            for (var b = 0; b < bqs.length; b++) {
+                                var bq = bqs[b];
+                                var firstP = bq.querySelector('p');
+                                if (!firstP) continue;
+                                var text = firstP.textContent || '';
+                                var m2 = text.match(/^\[!(\w+)\]\s*(.*)/);
+                                if (!m2) continue;
+                                var type = m2[1].toLowerCase();
+                                var title = m2[2] || type.charAt(0).toUpperCase() + type.slice(1);
+
+                                // Build Obsidian callout HTML structure
+                                bq.setAttribute('data-callout', type);
+                                bq.classList.add('callout');
+                                bq.innerHTML =
+                                    '<div class="callout-title">' +
+                                    '<div class="callout-icon"></div>' +
+                                    '<div class="callout-title-inner">' + title + '</div>' +
+                                    '</div>' +
+                                    '<div class="callout-content">' + (firstP.innerHTML.replace(/^\[!\w+\]\s*/, '') || '') +
+                                    Array.prototype.slice.call(bq.querySelectorAll('p'), 1).map(function(p) {
+                                        return p.outerHTML;
+                                    }).join('') + '</div>';
                             }
-                        }, 400);
-                    })();
-                })
-                .catch(function(err) {
-                    document.getElementById('post-title').textContent = '加载失败';
-                    document.getElementById('post-content').innerHTML = '<p>无法加载文章内容。</p>';
-                });
-        })();
-    </script>
+                        })();
 
-    <button id="back-to-top" title="回到顶部">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
-    </button>
-
-    <script>
-        (function() {
-            var btn = document.getElementById('back-to-top');
-            if (!btn) return;
-            var lastY = 0;
-            var ticking = false;
-
-            btn.addEventListener('click', function() {
-                btn.classList.remove('visible');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-
-            window.addEventListener('scroll', function() {
-                if (!ticking) {
-                    requestAnimationFrame(function() {
-                        var y = window.scrollY;
-                        var maxY = document.documentElement.scrollHeight - window.innerHeight - 20;
-                        if (y <= 100 || y >= maxY) {
-                            btn.classList.remove('visible');
-                        } else if (y > lastY + 20) {
-                            btn.classList.add('visible');
-                        } else if (y < lastY - 20) {
-                            btn.classList.remove('visible');
+                        // Scroll-reveal animation for header elements
+                        var headerEls = [
+                            document.getElementById('post-cover'),
+                            document.getElementById('post-title'),
+                            document.querySelector('.post-page-meta'),
+                            document.getElementById('post-page-tags')
+                        ];
+                        for (var h = 0; h < headerEls.length; h++) {
+                            if (headerEls[h]) {
+                                (function(el, idx) {
+                                    setTimeout(function() {
+                                        el.classList.add('is-revealed');
+                                    }, idx * 80);
+                                })(headerEls[h], h);
+                            }
                         }
-                        lastY = y;
-                        ticking = false;
+
+                        // Scroll-reveal animation for content children (delayed after header)
+                        (function() {
+                            var container = document.getElementById('post-content');
+                            if (!container) return;
+
+                            setTimeout(function() {
+                                var children = container.children;
+                                if (!children.length) return;
+
+                                // Fallback: IntersectionObserver not supported
+                                if (!('IntersectionObserver' in window)) {
+                                    for (var i = 0; i < children.length; i++) {
+                                        children[i].classList.add('is-revealed');
+                                    }
+                                    return;
+                                }
+
+                                var observer = new IntersectionObserver(function(entries) {
+                                    for (var e = 0; e < entries.length; e++) {
+                                        if (entries[e].isIntersecting) {
+                                            entries[e].target.classList.add('is-revealed');
+                                            observer.unobserve(entries[e].target);
+                                        }
+                                    }
+                                }, {
+                                    threshold: 0.15
+                                });
+
+                                for (var c = 0; c < children.length; c++) {
+                                    observer.observe(children[c]);
+                                }
+                            }, 400);
+                        })();
+                    })
+                    .catch(function(err) {
+                        document.getElementById('post-title').textContent = '加载失败';
+                        document.getElementById('post-content').innerHTML = '<p>无法加载文章内容。</p>';
                     });
-                    ticking = true;
-                }
-            }, { passive: true });
-        })();
+            })();
+        </script>
 
-        /* Code content scrollbar show/hide */
-        (function() {
-            var hideTimer = 0;
+        <button id="back-to-top" title="回到顶部">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="18 15 12 9 6 15" />
+            </svg>
+        </button>
 
-            // Capture scroll events on .code-content elements
-            document.addEventListener('scroll', function(e) {
-                var content = e.target.closest ? e.target.closest('.code-content') : null;
-                if (!content) return;
+        <script>
+            (function() {
+                var btn = document.getElementById('back-to-top');
+                if (!btn) return;
+                var lastY = 0;
+                var ticking = false;
 
-                clearTimeout(hideTimer);
-
-                // Show scrollbar on the scrolled code content
-                document.querySelectorAll('.code-content.show-scrollbar').forEach(function(c) {
-                    if (c !== content) c.classList.remove('show-scrollbar');
+                btn.addEventListener('click', function() {
+                    btn.classList.remove('visible');
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
                 });
-                content.classList.add('show-scrollbar');
 
-                // Auto-hide after 1.5s of no horizontal scroll
-                hideTimer = setTimeout(function() {
-                    content.classList.remove('show-scrollbar');
-                }, 1500);
-            }, { capture: true, passive: true });
-
-            // Page vertical scroll: hide all code scrollbars
-            window.addEventListener('scroll', function() {
-                document.querySelectorAll('.code-content.show-scrollbar').forEach(function(c) {
-                    c.classList.remove('show-scrollbar');
+                window.addEventListener('scroll', function() {
+                    if (!ticking) {
+                        requestAnimationFrame(function() {
+                            var y = window.scrollY;
+                            var maxY = document.documentElement.scrollHeight - window.innerHeight - 20;
+                            if (y <= 100 || y >= maxY) {
+                                btn.classList.remove('visible');
+                            } else if (y > lastY + 20) {
+                                btn.classList.add('visible');
+                            } else if (y < lastY - 20) {
+                                btn.classList.remove('visible');
+                            }
+                            lastY = y;
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                }, {
+                    passive: true
                 });
-                clearTimeout(hideTimer);
-            }, { passive: true });
-        })();
-    </script>
+            })();
+
+            /* Code content scrollbar show/hide */
+            (function() {
+                var hideTimer = 0;
+
+                // Capture scroll events on .code-content elements
+                document.addEventListener('scroll', function(e) {
+                    var content = e.target.closest ? e.target.closest('.code-content') : null;
+                    if (!content) return;
+
+                    clearTimeout(hideTimer);
+
+                    // Show scrollbar on the scrolled code content
+                    document.querySelectorAll('.code-content.show-scrollbar').forEach(function(c) {
+                        if (c !== content) c.classList.remove('show-scrollbar');
+                    });
+                    content.classList.add('show-scrollbar');
+
+                    // Auto-hide after 1.5s of no horizontal scroll
+                    hideTimer = setTimeout(function() {
+                        content.classList.remove('show-scrollbar');
+                    }, 1500);
+                }, {
+                    capture: true,
+                    passive: true
+                });
+
+                // Page vertical scroll: hide all code scrollbars
+                window.addEventListener('scroll', function() {
+                    document.querySelectorAll('.code-content.show-scrollbar').forEach(function(c) {
+                        c.classList.remove('show-scrollbar');
+                    });
+                    clearTimeout(hideTimer);
+                }, {
+                    passive: true
+                });
+            })();
+        </script>
 
 </body>
 

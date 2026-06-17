@@ -1,6 +1,6 @@
 [
   {
-    "id": "1",
+    "id": "2024-07-27",
     "title": "你好，世界",
     "description": "这是我的第一篇文章，欢迎来到我的博客",
     "author": "JiGuro",
@@ -9,18 +9,6 @@
     "image": "https://files.seeusercontent.com/2026/06/17/4kEb/1000094650.jpg",
     "tags": ["Hello", "Blog"],
     "category": "博客",
-    "path": "/posts/1.md"
-  },
-    {
-    "id": "security_analysis_tutorial",
-    "title": "逆向分析",
-    "description": "对黑产软件的逆向分析",
-    "author": "JiGuro",
-    "date": "2024-07-27",
-    "time": "19:16:08",
-    "image": "/images/cover7.jpg",
-    "tags": ["逆向", "代码"],
-    "category": "博客",
-    "path": "/posts/security_analysis_tutorial.md"
+    "path": "/posts/2024-07-27.md"
   }
 ]
