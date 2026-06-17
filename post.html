@@ -22,9 +22,11 @@
             const pagebody = document.getElementsByTagName('body')[0]
             if (isDark) {
                 pagebody.classList.add('dark-theme');
+                document.documentElement.setAttribute('data-theme', 'dark');
                 document.getElementById("mobile-toggle-theme").innerText = "· 九阴"
             } else {
                 pagebody.classList.remove('dark-theme');
+                document.documentElement.setAttribute('data-theme', 'light');
                 document.getElementById("mobile-toggle-theme").innerText = "· 重阳"
             }
         })();

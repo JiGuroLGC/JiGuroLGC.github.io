@@ -10,5 +10,17 @@
     "tags": ["Hello", "Blog"],
     "category": "博客",
     "path": "/posts/1.md"
+  },
+    {
+    "id": "security_analysis_tutorial",
+    "title": "逆向分析",
+    "description": "对黑产软件的逆向分析",
+    "author": "JiGuro",
+    "date": "2024-07-27",
+    "time": "19:16:08",
+    "image": "/images/cover7.jpg",
+    "tags": ["逆向", "代码"],
+    "category": "博客",
+    "path": "/posts/security_analysis_tutorial.md"
   }
 ]

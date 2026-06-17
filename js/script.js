@@ -30,59 +30,72 @@
 
 
 document.ready(
-    // toggleTheme function.
-    // this script shouldn't be changed.
     () => {
         var _Blog = window._Blog || {};
-        const currentTheme = window.localStorage && window.localStorage.getItem('theme');
-        const isDark = currentTheme === 'dark';
-        const pagebody = document.getElementsByTagName('body')[0]
+        var currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+        var isDark = currentTheme === 'dark';
+        var pagebody = document.getElementsByTagName('body')[0];
+
         if (isDark) {
+            pagebody.classList.add('dark-theme');
+            document.documentElement.setAttribute('data-theme', 'dark');
             document.getElementById("switch_default").checked = true;
-            // mobile
-            document.getElementById("mobile-toggle-theme").innerText = "· 九阴"
+            document.getElementById("mobile-toggle-theme").innerText = "· 九阴";
         } else {
             document.getElementById("switch_default").checked = false;
-            // mobile
-            document.getElementById("mobile-toggle-theme").innerText = "· 重阳"
+            document.getElementById("mobile-toggle-theme").innerText = "· 重阳";
         }
-        _Blog.toggleTheme = function () {
-            if (isDark) {
-                pagebody.classList.add('dark-theme');
-                // mobile
-                document.getElementById("mobile-toggle-theme").innerText = "· 九阴"
-            } else {
-                pagebody.classList.remove('dark-theme');
-                // mobile
-                document.getElementById("mobile-toggle-theme").innerText = "· 重阳"
-            }
-            document.getElementsByClassName('toggleBtn')[0].addEventListener('click', () => {
-                if (pagebody.classList.contains('dark-theme')) {
-                    pagebody.classList.remove('dark-theme');
-                } else {
-                    pagebody.classList.add('dark-theme');
-                }
-                window.localStorage &&
-                window.localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light',)
-            })
-            // moblie
-            document.getElementById('mobile-toggle-theme').addEventListener('click', () => {
-                if (pagebody.classList.contains('dark-theme')) {
-                    pagebody.classList.remove('dark-theme');
-                    // mobile
-                    document.getElementById("mobile-toggle-theme").innerText = "· 重阳"
 
-                } else {
+        function applyTheme(dark, clickY) {
+            var fromTop = clickY < window.innerHeight / 2;
+            // Reverse direction when switching to light
+            var direction = dark ? (fromTop ? 'down' : 'up') : (fromTop ? 'up' : 'down');
+            var supportsVT = !!document.startViewTransition;
+
+            function doSwitch() {
+                if (dark) {
                     pagebody.classList.add('dark-theme');
-                    // mobile
-                    document.getElementById("mobile-toggle-theme").innerText = "· 九阴"
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    document.getElementById("switch_default").checked = true;
+                    document.getElementById("mobile-toggle-theme").innerText = "· 九阴";
+                } else {
+                    pagebody.classList.remove('dark-theme');
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    document.getElementById("switch_default").checked = false;
+                    document.getElementById("mobile-toggle-theme").innerText = "· 重阳";
                 }
-                window.localStorage &&
-                window.localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light',)
-            })
-        };
+                window.localStorage && window.localStorage.setItem('theme', dark ? 'dark' : 'light');
+            }
+
+            if (!supportsVT) {
+                doSwitch();
+                return;
+            }
+
+            var vt = document.startViewTransition(function() { doSwitch(); });
+            vt.ready.then(function() {
+                document.documentElement.style.setProperty(
+                    '--theme-reveal-name',
+                    direction === 'down' ? 'theme-reveal-down' : 'theme-reveal-up'
+                );
+                vt.finished.then(function() {
+                    document.documentElement.style.removeProperty('--theme-reveal-name');
+                });
+            });
+        }
+
+        document.getElementsByClassName('toggleBtn')[0].addEventListener('click', function(e) {
+            var dark = !pagebody.classList.contains('dark-theme');
+            applyTheme(dark, e.clientY);
+        });
+
+        document.getElementById('mobile-toggle-theme').addEventListener('click', function(e) {
+            var dark = !pagebody.classList.contains('dark-theme');
+            applyTheme(dark, e.clientY || e.touches ? (e.touches && e.touches[0] ? e.touches[0].clientY : e.clientY) : e.clientY);
+        });
+
+        _Blog.toggleTheme = function() {};
         _Blog.toggleTheme();
-        // ready function.
     }
 );
 
@@ -96,23 +109,20 @@ document.ready(function () {
     var blockTheme = loadingScreen.querySelector('.block-theme');
     var elements = document.querySelectorAll('.fade-in-element');
 
-    // Skip loading screen if user came via navbar link or previously visited
-    if (window.sessionStorage) {
-        if (sessionStorage.getItem('_home_skip')) {
-            sessionStorage.removeItem('_home_skip');
-            loadingScreen.style.display = 'none';
-            for (var i = 0; i < elements.length; i++) {
-                elements[i].classList.add('visible');
-            }
-            return;
+    if (window.sessionStorage && sessionStorage.getItem('_home_skip')) {
+        sessionStorage.removeItem('_home_skip');
+        loadingScreen.style.display = 'none';
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].classList.add('visible');
         }
-        if (sessionStorage.getItem('_visited')) {
-            loadingScreen.style.display = 'none';
-            for (var i = 0; i < elements.length; i++) {
-                elements[i].classList.add('visible');
-            }
-            return;
+        return;
+    }
+    if (window.sessionStorage && sessionStorage.getItem('_visited')) {
+        loadingScreen.style.display = 'none';
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].classList.add('visible');
         }
+        return;
     }
 
     var startTime = Date.now();
@@ -135,10 +145,8 @@ document.ready(function () {
     }
 
     function startTransition() {
-        // Fade out spinner
         loadingWrapper.classList.add('fade-out');
 
-        // Unified RAF animation: all phases in one smooth loop
         setTimeout(function () {
             blockGray.style.transition = 'none';
             blockTheme.style.transition = 'none';
@@ -169,7 +177,6 @@ document.ready(function () {
                     loadingScreen.classList.add('transparent-bg');
                 }
 
-                // Track A: Gray enters (linear)
                 if (elapsed < GRAY_END) {
                     var gt = elapsed / GRAY_END;
                     blockGray.style.left = (-100 + 100 * gt) + 'vw';
@@ -179,20 +186,18 @@ document.ready(function () {
                     blockGray.style.width = '100vw';
                 }
 
-                // Track B: Opposite enters (linear, overlaps gray tail)
                 if (elapsed >= OPP_START && elapsed < OPP_END) {
                     var ot = (elapsed - OPP_START) / (OPP_END - OPP_START);
                     blockTheme.style.left = (-100 + 80 * ot) + 'vw';
                     blockTheme.style.width = '100vw';
                 }
 
-                // Track C: Complex — single easeInOut curve, no boundaries
                 if (elapsed >= CPLX_START && elapsed < totalDur) {
                     var t = easeInOut((elapsed - CPLX_START) / CPLX_DUR);
-                    blockTheme.style.left  = (-20 + 135 * t) + 'vw';  // -20 → 115
-                    blockTheme.style.width = (100 - 100 * t) + 'vw';  // 100 → 0
-                    blockGray.style.left   = (0 + 115 * t) + 'vw';    // 0 → 115
-                    blockGray.style.width  = (100 - 100 * t) + 'vw';  // 100 → 0
+                    blockTheme.style.left  = (-20 + 135 * t) + 'vw';
+                    blockTheme.style.width = (100 - 100 * t) + 'vw';
+                    blockGray.style.left   = (0 + 115 * t) + 'vw';
+                    blockGray.style.width  = (100 - 100 * t) + 'vw';
                 }
 
                 if (elapsed >= totalDur) {
@@ -209,7 +214,6 @@ document.ready(function () {
             requestAnimationFrame(stepAll);
         }, 200);
 
-        // ===== Show page (1.1s) =====
         setTimeout(function () {
             loadingScreen.style.display = 'none';
             if (window.sessionStorage) {
@@ -232,7 +236,6 @@ document.ready(function () {
         }
     }
 
-    // Ensure loading animation completes at least one full cycle (4s)
     var elapsed = Date.now() - startTime;
     var remaining = 4000 - elapsed;
     if (remaining <= 0) {
@@ -280,4 +283,3 @@ document.ready(function () {
 
     navbar.style.transition = 'transform 0.3s ease';
 });
-

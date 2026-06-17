@@ -91,6 +91,7 @@
             var theme = window.localStorage && window.localStorage.getItem('theme');
             if (theme === 'dark') {
                 document.body.classList.add('dark-theme');
+                document.documentElement.setAttribute('data-theme', 'dark');
             }
         })();
     </script>
