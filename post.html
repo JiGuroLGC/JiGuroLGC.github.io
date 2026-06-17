@@ -9,6 +9,7 @@
     <title>文章 | JiGuro的个人博客</title>
     <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/music-player.css">
     <script src="/js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <meta name="generator" content="Hexo 7.3.0">
@@ -211,8 +212,19 @@
                         // Cover image
                         if (article.image) {
                             document.getElementById('post-cover').style.display = '';
-                            document.getElementById('post-cover-img').src = article.image;
-                            document.getElementById('post-cover-img').alt = article.title;
+                            var coverImg = document.getElementById('post-cover-img');
+                            coverImg.src = article.image;
+                            coverImg.alt = article.title;
+                            function onCoverReady() {
+                                if (coverImg.classList.contains('loaded')) return;
+                                coverImg.classList.add('loaded');
+                            }
+                            if (coverImg.complete) {
+                                onCoverReady();
+                            } else {
+                                coverImg.addEventListener('load', onCoverReady);
+                                coverImg.addEventListener('error', onCoverReady);
+                            }
                         }
 
                         // Tags
@@ -484,6 +496,8 @@
                 });
             })();
         </script>
+
+        <script src="/js/music-player.js"></script>
 
 </body>
 
