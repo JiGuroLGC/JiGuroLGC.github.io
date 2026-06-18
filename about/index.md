@@ -49,17 +49,9 @@
 | **字体** | [Google Fonts](https://fonts.google.com/) —— 首选[思源宋体](https://fonts.google.com/noto/specimen/Noto+Serif+SC)，回退至系统衬线字体 |
 | **图床** | [S.EE](https://s.ee/) —— 文章中图片统一托管于图床，减轻仓库体积 |
 | **CDN 加速** | [jsDelivr](https://www.jsdelivr.com/) —— 静态资源（marked.js 等）通过 CDN 加载 |
-| **评论** | 暂未集成（计划使用 Twikoo） |
+| **评论** | [Twikoo](https://twikoo.js.org/) —— 简洁的评论系统，后端部署于 [Netlify](https://www.netlify.com/) |
 | **音乐** | [Meting API](https://github.com/mikus-loli/Meting-API) + 自定义播放器 —— 支持网易云等多平台音乐解析 |
 | **备案** | [萌ICP备20261961号](https://icp.gov.moe/?keyword=20261961) —— 仅供娱乐 |
-
-**部署架构**：源代码托管于 GitHub ，推送后自动触发 Vercel 与 GitHub Pages 双线部署，Cloudflare 接管 DNS 解析并提供 CDN 加速，通过 enhanced-FaaS-in-China 筛选优质 IP 节点，优化大陆地区访问延迟。静态资源方面，图片托管于 S.EE 图床，第三方库通过 jsDelivr CDN 加载，字体由 Google Fonts 提供。
-
-- 所有页面均为纯静态 HTML，无后端依赖
-- CSS 变量驱动暗色/亮色主题，跟随系统或手动切换
-- 响应式布局，适配移动端与桌面端
-- Flexbox / Grid 布局，零 UI 框架
-- 歌词解析支持 LRC 标准格式，滚动时长与唱词时间同步
 
 ## 版权信息
 
@@ -87,7 +79,7 @@
 本博客高度重视访客隐私，特此声明：
 
 - **数据收集**：本博客不主动收集任何个人身份信息。我们不使用 Cookie 追踪、不运行分析脚本、不嵌入第三方跟踪器。
-- **评论系统**：当前未启用评论功能。未来若集成第三方评论系统（如 Twikoo），将另行更新隐私政策并明确告知数据收集范围。
+- **评论系统**：本博客已集成 [Twikoo](https://twikoo.js.org/) 评论系统，后端部署于 Netlify。发表评论时，Twikoo 可能会收集您的昵称、邮箱、网址及 IP 地址等信息，用于评论展示与反垃圾处理。
 - **CDN 资源**：部分静态资源（如 marked.js）通过 jsDelivr CDN 加载。CDN 提供商可能会记录基本的访问日志（如 IP 地址、请求时间），这属于 CDN 服务的正常运作范畴。
 - **外部链接**：博客中可能包含指向外部网站的链接。这些网站拥有独立的隐私政策，本博客对其内容和隐私实践不承担任何责任。
 - **主题偏好**：暗色/亮色主题偏好仅存储于您的浏览器本地（localStorage），不会上传至任何服务器。
@@ -102,7 +94,7 @@
 
 ## 网站地图
 
-- [首页](/) — 最新文章列表
+- [首页](/) — 导航页面
 - [归档](/archives) — 按时间浏览所有文章
 - [分类](/category) — 按类别浏览文章
 - [标签](/tag) — 按标签浏览文章
@@ -110,7 +102,7 @@
 
 ## 联系方式
 
-本站评论留言功能上线后，可以直接在本站留言。
+可以直接在本站文章下方留言评论。
 
 如需私下联系，可通过`JiGuroLiu@qq.com`或`jigurolui@gmail.com`联系我，我会尽快回复。(尽量用前者，因为懒得翻)
 
