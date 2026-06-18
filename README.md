@@ -1,3 +1,5 @@
+# MY BLOG
+
 # 关于
 
 ![avatar](/image/jiguro.png)
