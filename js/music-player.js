@@ -26,6 +26,7 @@
   var $wrap, $card, $inner;
   var $cover, $coverFallback, $title, $artist;
   var $lyricCur, $lyricNext, $lyricPlaceholder;
+  var $lyricCurText, $lyricNextText, $collapsedLyricText;
   var $timeCur, $timeDur, $progress, $progressBar;
   var $btnPlay, $btnClose, $btnCollapseIn, $btnCollapseOut;
   var $volumeBtn, $volumeSlider;
@@ -155,7 +156,9 @@
     /* vertical lyric in collapsed bar (below buttons, fills remaining space) */
     $collapsedLyric = document.createElement('div');
     $collapsedLyric.className = 'music-player-collapsed-lyric';
-    $collapsedLyric.textContent = '';
+    $collapsedLyricText = document.createElement('span');
+    $collapsedLyricText.className = 'music-player-collapsed-lyric-text';
+    $collapsedLyric.appendChild($collapsedLyricText);
     $bar.appendChild($collapsedLyric);
 
     /* inner (shown when expanded) */
@@ -225,8 +228,14 @@
     $lyrics.className = 'music-player-lyrics';
     $lyricCur = document.createElement('div');
     $lyricCur.className = 'music-player-lyric-line music-player-lyric-current';
+    $lyricCurText = document.createElement('span');
+    $lyricCurText.className = 'music-player-lyric-text';
+    $lyricCur.appendChild($lyricCurText);
     $lyricNext = document.createElement('div');
     $lyricNext.className = 'music-player-lyric-line music-player-lyric-next';
+    $lyricNextText = document.createElement('span');
+    $lyricNextText.className = 'music-player-lyric-text';
+    $lyricNext.appendChild($lyricNextText);
     $lyricPlaceholder = document.createElement('div');
     $lyricPlaceholder.className = 'music-player-lyric-line music-player-lyric-placeholder';
     $lyricPlaceholder.textContent = '...';
@@ -314,7 +323,7 @@
     if ($inner) $inner.style.display = 'none';
     if ($collapsedIcon) $collapsedIcon.classList.add('loading');
     if ($collapsedLyric) {
-      $collapsedLyric.textContent = '加载中...';
+      $collapsedLyricText.textContent = '加载中...';
       $collapsedLyric.classList.add('loading-text');
       $collapsedLyric.classList.remove('error-text');
     }
@@ -324,7 +333,7 @@
     if ($inner) $inner.style.display = 'none';
     if ($collapsedIcon) $collapsedIcon.classList.remove('loading');
     if ($collapsedLyric) {
-      $collapsedLyric.textContent = msg;
+      $collapsedLyricText.textContent = msg;
       $collapsedLyric.classList.remove('loading-text');
       $collapsedLyric.classList.add('error-text');
     }
@@ -353,11 +362,11 @@
     /* parse lyrics */
     lrcParsed = parseLRC(data.lyric || '');
     lrcCurrent = -1;
-    $lyricCur.textContent = '';
-    $lyricNext.textContent = '';
+    $lyricCurText.textContent = '';
+    $lyricNextText.textContent = '';
     $lyricPlaceholder.style.display = lrcParsed.length ? 'none' : '';
-    if ($collapsedLyric) {
-      $collapsedLyric.textContent = lrcParsed.length ? '' : '';
+    if ($collapsedLyricText) {
+      $collapsedLyricText.textContent = '';
     }
 
     /* audio */
@@ -473,30 +482,120 @@
       lrcCurrent = idx;
       $lyricPlaceholder.style.display = 'none';
 
+      /* Calculate how long this lyric line will be shown */
+      var curDuration = 4; /* default for last line */
+      if (idx >= 0 && idx + 1 < lrcParsed.length) {
+        curDuration = lrcParsed[idx + 1].time - lrcParsed[idx].time;
+      }
+
       /* current line */
       if (idx >= 0) {
         var lineText = lrcParsed[idx].text;
-        $lyricCur.textContent = lineText;
+        applyHorizontalScroll($lyricCur, $lyricCurText, lineText, curDuration);
         $lyricCur.style.opacity = '1';
         $lyricCur.style.transform = 'translateY(0)';
         /* vertical lyric in collapsed bar */
-        if ($collapsedLyric) $collapsedLyric.textContent = lineText;
+        if ($collapsedLyricText) {
+          applyVerticalScroll($collapsedLyric, $collapsedLyricText, lineText, curDuration);
+        }
       } else {
-        $lyricCur.textContent = '';
+        $lyricCurText.textContent = '';
       }
 
-      /* next line */
+      /* next line preview — centered when short, keep head out of blur when long */
       if (idx + 1 < lrcParsed.length) {
-        $lyricNext.textContent = lrcParsed[idx + 1].text;
+        var nextText = lrcParsed[idx + 1].text;
+        $lyricNextText.textContent = nextText;
+        $lyricNext.classList.remove('scroll-mode', 'keep-head');
+        $lyricNextText.classList.remove('scrolling');
+        $lyricNextText.style.removeProperty('animation');
+        $lyricNextText.style.removeProperty('transform');
+
+        /* Detect overflow: left-align with head padding if text is too long */
+        void $lyricNextText.offsetWidth;
+        var nw = $lyricNext.clientWidth;
+        if (nw > 0 && $lyricNextText.scrollWidth > nw + 4) {
+          $lyricNext.classList.add('keep-head');
+        }
+
         $lyricNext.style.opacity = '0.6';
         $lyricNext.style.transform = 'translateY(0)';
       } else {
-        $lyricNext.textContent = '';
+        $lyricNextText.textContent = '';
+        $lyricNext.classList.remove('keep-head');
       }
     }
   }
 
-  /* ====== controls ====== */
+  /* ====== lyric scroll helpers ====== */
+  function applyHorizontalScroll($line, $textSpan, text, duration) {
+    /* Reset previous state */
+    $textSpan.classList.remove('scrolling');
+    $line.classList.remove('scroll-mode');
+    $textSpan.style.removeProperty('animation');
+    $textSpan.style.removeProperty('transform');
+    $textSpan.style.removeProperty('--lyric-scroll-x');
+    $textSpan.style.removeProperty('--lyric-scroll-duration');
+    $textSpan.style.removeProperty('--lyric-start-x');
+
+    $textSpan.textContent = text;
+    if (!text) return;
+
+    var containerWidth = $line.clientWidth;
+    if (containerWidth <= 0) return;
+
+    /* Force reflow so scrollWidth is measured with new text content */
+    void $textSpan.offsetWidth;
+
+    var textWidth = $textSpan.scrollWidth;
+    if (textWidth > containerWidth + 4) {
+      var scrollDist = containerWidth - textWidth;
+      /* Scroll completes at 60% of lyric duration (min 1s), leaving 40% reading time */
+      var dur = Math.max((duration || 3) * 0.6, 1.0);
+
+      /* Write custom properties before adding the class so animation sees them */
+      $textSpan.style.setProperty('--lyric-start-x', '20px');
+      $textSpan.style.setProperty('--lyric-scroll-x', scrollDist + 'px');
+      $textSpan.style.setProperty('--lyric-scroll-duration', dur + 's');
+      $line.classList.add('scroll-mode');
+
+      /* Force a second reflow so the browser picks up the new animation */
+      void $textSpan.offsetWidth;
+      $textSpan.classList.add('scrolling');
+    }
+  }
+
+  function applyVerticalScroll($container, $textSpan, text, duration) {
+    /* Reset */
+    $textSpan.classList.remove('scrolling');
+    $textSpan.style.removeProperty('animation');
+    $textSpan.style.removeProperty('transform');
+    $textSpan.style.removeProperty('--lyric-scroll-y');
+    $textSpan.style.removeProperty('--lyric-scroll-duration');
+    $textSpan.style.removeProperty('--lyric-start-y');
+
+    $textSpan.textContent = text;
+    if (!text) return;
+
+    var containerHeight = $container.clientHeight;
+    if (containerHeight <= 0) return;
+
+    void $textSpan.offsetWidth;
+
+    var textHeight = $textSpan.scrollHeight;
+    if (textHeight > containerHeight + 4) {
+      /* Subtract bottom blur (14px) so last character clears the blur zone */
+      var scrollDist = containerHeight - textHeight - 14;
+      /* Scroll completes at 60% of lyric duration (min 1s), leaving 40% reading time */
+      var dur = Math.max((duration || 3) * 0.6, 1.0);
+      $textSpan.style.setProperty('--lyric-start-y', '14px');
+      $textSpan.style.setProperty('--lyric-scroll-y', scrollDist + 'px');
+      $textSpan.style.setProperty('--lyric-scroll-duration', dur + 's');
+
+      void $textSpan.offsetWidth;
+      $textSpan.classList.add('scrolling');
+    }
+  }
   function setPlayBtnState(playing) {
     if (playing) {
       $btnPlay.classList.remove('paused-state');
@@ -520,10 +619,54 @@
 
   function toggleCollapse() {
     isCollapsed = !isCollapsed;
-    if (isCollapsed) {
-      $wrap.classList.add('collapsed');
-    } else {
+    if (!isCollapsed) {
+      /* Expanding: prepare horizontal lyrics BEFORE showing them (avoid flash) */
+      syncCurrentLyric();
       $wrap.classList.remove('collapsed');
+    } else {
+      /* Collapsing: hide first, then prepare vertical lyrics */
+      $wrap.classList.add('collapsed');
+      syncCurrentLyric();
+    }
+  }
+
+  /* Sync lyric scroll state after collapse/expand toggle */
+  function syncCurrentLyric() {
+    if (lrcCurrent < 0 || !lrcParsed.length) return;
+    var fullDuration = (lrcCurrent + 1 < lrcParsed.length)
+      ? lrcParsed[lrcCurrent + 1].time - lrcParsed[lrcCurrent].time
+      : 4;
+    var lineText = lrcParsed[lrcCurrent].text;
+
+    /* Calculate elapsed time since this lyric began */
+    var elapsed = audio ? (audio.currentTime - lrcParsed[lrcCurrent].time) : 0;
+    var remaining = Math.max(fullDuration - elapsed, 0.2);
+    /* Scroll must finish before lyric ends, with at least 0.3s reading time */
+    var adjustedDuration = Math.max(remaining - 0.3, 0.6);
+    /* Don't exceed normal scroll duration */
+    adjustedDuration = Math.min(adjustedDuration, fullDuration * 0.6);
+
+    if (!isCollapsed) {
+      /* Expanded — horizontal */
+      applyHorizontalScroll($lyricCur, $lyricCurText, lineText, adjustedDuration);
+      /* Refresh next line (centered when short, keep-head when long) */
+      if (lrcCurrent + 1 < lrcParsed.length) {
+        $lyricNextText.textContent = lrcParsed[lrcCurrent + 1].text;
+        $lyricNext.classList.remove('scroll-mode', 'keep-head');
+        $lyricNextText.classList.remove('scrolling');
+        $lyricNextText.style.removeProperty('animation');
+        $lyricNextText.style.removeProperty('transform');
+        void $lyricNextText.offsetWidth;
+        var ns = $lyricNext.clientWidth;
+        if (ns > 0 && $lyricNextText.scrollWidth > ns + 4) {
+          $lyricNext.classList.add('keep-head');
+        }
+      }
+    } else {
+      /* Collapsed — vertical */
+      if ($collapsedLyricText) {
+        applyVerticalScroll($collapsedLyric, $collapsedLyricText, lineText, adjustedDuration);
+      }
     }
   }
 

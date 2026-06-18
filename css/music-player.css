@@ -16,7 +16,7 @@
 /* Main card */
 .music-player-card {
   width: 274px;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.85);
   border-radius: 14px;
   box-shadow:
     0 2px 16px rgba(0, 0, 0, 0.08),
@@ -154,6 +154,9 @@
   position: relative;
   overflow: hidden;
   margin: 4px 0 8px;
+  /* Fade edges via mask: transparent at edges, solid in center */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
 }
 
 .music-player-lyric-line {
@@ -162,15 +165,48 @@
   right: 0;
   font-size: 13px;
   color: #555;
-  text-align: center;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
   line-height: 1.5;
+  display: flex;
+  justify-content: center;
   transition:
     transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
     opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
     color 0.35s ease;
+}
+
+.music-player-lyric-line.scroll-mode {
+  justify-content: flex-start;
+}
+
+.music-player-lyric-text {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.music-player-lyric-text.scrolling {
+  animation: lyric-marquee-h var(--lyric-scroll-duration, 3s) linear forwards;
+  will-change: transform;
+}
+
+@keyframes lyric-marquee-h {
+  0%   { transform: translateX(var(--lyric-start-x, 0px)); }
+  25%  { transform: translateX(var(--lyric-start-x, 0px)); }
+  100% { transform: translateX(var(--lyric-scroll-x, 0px)); }
+}
+
+/* Next-line preview */
+.music-player-lyric-next.scroll-mode .music-player-lyric-text {
+  /* Prevent next line from inheriting scroll-mode animation */
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Next line overflow: left-align with head outside left blur zone */
+.music-player-lyric-next.keep-head {
+  justify-content: flex-start;
+  padding-left: 20px;
 }
 
 .music-player-lyric-current {
@@ -435,21 +471,36 @@
 /* ---- Collapsed vertical lyric ---- */
 .music-player-collapsed-lyric {
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
   writing-mode: vertical-rl;
   text-orientation: mixed;
   font-size: 12px;
   color: #666;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
   letter-spacing: 0.15em;
   line-height: 1.6;
   padding: 10px 0;
   transition: color 0.35s ease;
   min-height: 0;
+  /* Fade edges via mask */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 14px, black calc(100% - 14px), transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0%, black 14px, black calc(100% - 14px), transparent 100%);
+}
+
+.music-player-collapsed-lyric-text {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.music-player-collapsed-lyric-text.scrolling {
+  animation: lyric-marquee-v var(--lyric-scroll-duration, 3s) linear forwards;
+  will-change: transform;
+}
+
+@keyframes lyric-marquee-v {
+  0%   { transform: translateY(var(--lyric-start-y, 0px)); }
+  25%  { transform: translateY(var(--lyric-start-y, 0px)); }
+  100% { transform: translateY(var(--lyric-scroll-y, 0px)); }
 }
 
 .music-player-collapsed-lyric.loading-text {
