@@ -2,8 +2,6 @@
 
 # 关于
 
-![avatar](/image/jiguro.png)
-
 ## 个人简介
 
 - **昵称**：JiGuro / 刘叽咕

@@ -166,22 +166,46 @@
                                 if (img.closest('.code-block') || img.closest('.img-placeholder')) return;
                                 if (img.hasAttribute('width')) img.style.width = img.getAttribute('width') + 'px';
                                 if (img.hasAttribute('height')) img.style.height = img.getAttribute('height') + 'px';
+
                                 var parentA = img.parentElement;
                                 var isBadge = parentA && parentA.tagName === 'A';
                                 var hasExplicitSize = img.hasAttribute('width') || img.hasAttribute('height');
+
                                 var wrap = document.createElement('div');
                                 wrap.className = 'img-placeholder' + (isBadge || hasExplicitSize ? ' badge-img' : '');
                                 wrap.style.transition = 'background-color 0.5s ease';
                                 if (isBadge) wrap.style.borderRadius = '0';
+
+                                // 优化占位色块
+                                if (!isBadge) {
+                                    // 如果有明确的宽高属性，用它们精确控制占位比例
+                                    if (img.hasAttribute('width') && img.hasAttribute('height')) {
+                                        var w = parseInt(img.getAttribute('width'), 10);
+                                        var h = parseInt(img.getAttribute('height'), 10);
+                                        if (w && h) {
+                                            wrap.style.aspectRatio = w + '/' + h;
+                                            wrap.style.minHeight = 'unset'; // 取消CSS默认的min-height
+                                            wrap.style.width = '100%';
+                                        }
+                                    } else {
+                                        // 没有宽高属性时，采用默认宽屏比例（16:9）作为占位，并设一个最小高度
+                                        wrap.style.aspectRatio = '16 / 9';
+                                        wrap.style.minHeight = '120px'; // 保证至少有一定高度
+                                        wrap.style.width = '100%';
+                                    }
+                                }
+                                // =================================
+
                                 parentA ? parentA.insertBefore(wrap, img) : img.parentNode.insertBefore(wrap, img);
                                 wrap.appendChild(img);
+
                                 function onImgReady() {
                                     if (img.classList.contains('loaded')) return;
                                     img.classList.add('loaded');
                                     wrap.style.backgroundColor = 'transparent';
                                     if (!isBadge) {
-                                        var w = img.naturalWidth || img.clientWidth || 0;
-                                        if (w > vw - 40) {
+                                        var naturalW = img.naturalWidth || img.clientWidth || 0;
+                                        if (naturalW > vw - 40) {
                                             img.style.maxWidth = '100%';
                                             img.style.height = 'auto';
                                         }
@@ -239,7 +263,9 @@
                                         observer.unobserve(entries[e].target);
                                     }
                                 }
-                            }, { threshold: 0.15 });
+                            }, {
+                                threshold: 0.15
+                            });
                             for (var c = 0; c < children.length; c++) {
                                 observer.observe(children[c]);
                             }
@@ -265,7 +291,10 @@
                 var ticking = false;
                 btn.addEventListener('click', function() {
                     btn.classList.remove('visible');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
                 });
                 window.addEventListener('scroll', function() {
                     if (!ticking) {
@@ -284,7 +313,9 @@
                         });
                         ticking = true;
                     }
-                }, { passive: true });
+                }, {
+                    passive: true
+                });
             })();
 
             /* Code content scrollbar show/hide */
@@ -301,13 +332,18 @@
                     hideTimer = setTimeout(function() {
                         content.classList.remove('show-scrollbar');
                     }, 1500);
-                }, { capture: true, passive: true });
+                }, {
+                    capture: true,
+                    passive: true
+                });
                 window.addEventListener('scroll', function() {
                     document.querySelectorAll('.code-content.show-scrollbar').forEach(function(c) {
                         c.classList.remove('show-scrollbar');
                     });
                     clearTimeout(hideTimer);
-                }, { passive: true });
+                }, {
+                    passive: true
+                });
             })();
         </script>
 </body>

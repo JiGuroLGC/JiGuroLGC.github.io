@@ -1,6 +1,6 @@
 # 关于
 
-![avatar](/image/jiguro.png)
+![Personal image](https://files.seeusercontent.com/2026/06/18/P3eb/1000094874.jpg)
 
 ## 个人简介
 
