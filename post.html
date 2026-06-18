@@ -570,7 +570,7 @@
             twikoo.init({
                 envId: 'https://twikoolgc.netlify.app/.netlify/functions/twikoo',
                 el: '#tcomment',
-                path: location.pathname, // 或你的文章唯一标识
+                path: location.pathname + location.search,
             })
         </script>
 
