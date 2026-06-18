@@ -813,17 +813,34 @@
   }
 
   /* ====== stop on navigation ====== */
-  window.addEventListener('pagehide', function () {
+  function destroyAudio() {
     if (audio) {
       audio.pause();
-      audio.currentTime = 0;
+      audio.removeAttribute('src');
+      audio.load();
+      audio = null;
+    }
+    isPlaying = false;
+  }
+
+  window.addEventListener('pagehide', destroyAudio);
+  window.addEventListener('beforeunload', destroyAudio);
+
+  /* bfcache restoration would re-fire canplay — prevent it */
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted && audio) {
+      audio.pause();
+      audio.removeAttribute('src');
+      audio.load();
+      audio = null;
+      isPlaying = false;
     }
   });
 
-  window.addEventListener('beforeunload', function () {
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
+  /* also stop when tab / window becomes hidden (e.g. back-key on mobile) */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden && audio) {
+      destroyAudio();
     }
   });
 
