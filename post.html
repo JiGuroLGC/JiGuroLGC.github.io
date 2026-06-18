@@ -102,6 +102,26 @@
                     <p>加载中...</p>
                 </div>
 
+                <!-- Prev/Next navigation -->
+                <nav class="post-nav" id="post-nav" style="display:none;">
+                    <div class="post-nav-divider"></div>
+                    <a class="post-nav-item post-nav-prev" id="post-nav-prev" href="#">
+                        <span class="post-nav-row">
+                            <span class="post-nav-arrow">←</span>
+                            <span class="post-nav-label">上一篇</span>
+                        </span>
+                        <span class="post-nav-title" id="post-nav-prev-title"></span>
+                    </a>
+                    <a class="post-nav-item post-nav-next" id="post-nav-next" href="#">
+                        <span class="post-nav-row">
+                            <span class="post-nav-label">下一篇</span>
+                            <span class="post-nav-arrow">→</span>
+                        </span>
+                        <span class="post-nav-title" id="post-nav-next-title"></span>
+                    </a>
+                    <div class="post-nav-divider"></div>
+                </nav>
+                
                 <!-- Bottom bar: share + back -->
                 <div class="post-page-bottom">
                     <button class="post-share-btn" id="share-btn" onclick="copyShareLink()">
@@ -180,6 +200,9 @@
                 if (!postId) {
                     document.getElementById('post-title').textContent = '文章未找到';
                     document.getElementById('post-content').innerHTML = '<p>请从归档页面选择一篇文章。</p>';
+                    document.querySelector('.post-page').classList.add('is-loaded');
+                    var footer = document.getElementById('footer');
+                    if (footer) footer.classList.add('is-loaded');
                     return;
                 }
 
@@ -234,8 +257,39 @@
                                 var tag = (article.tags[t] || '').trim();
                                 if (tag) tagsHtml += '<a href="/tag">' + tag + '</a>';
                             }
-                            document.getElementById('post-page-tags').innerHTML = tagsHtml;
+                        document.getElementById('post-page-tags').innerHTML = tagsHtml;
+                    }
+
+                    // Populate prev/next navigation
+                    (function() {
+                        var aIdx = -1;
+                        for (var k = 0; k < articles.length; k++) {
+                            if (articles[k].id === postId) { aIdx = k; break; }
                         }
+                        if (aIdx === -1) return;
+                        var prevArticle = aIdx > 0 ? articles[aIdx - 1] : null;
+                        var nextArticle = aIdx < articles.length - 1 ? articles[aIdx + 1] : null;
+                        if (!prevArticle && !nextArticle) return;
+
+                        var nav = document.getElementById('post-nav');
+                        nav.style.display = '';
+
+                        if (prevArticle) {
+                            var prevLink = document.getElementById('post-nav-prev');
+                            prevLink.href = '?id=' + encodeURIComponent(prevArticle.id);
+                            document.getElementById('post-nav-prev-title').textContent = prevArticle.title;
+                        } else {
+                            document.getElementById('post-nav-prev').style.visibility = 'hidden';
+                        }
+
+                        if (nextArticle) {
+                            var nextLink = document.getElementById('post-nav-next');
+                            nextLink.href = '?id=' + encodeURIComponent(nextArticle.id);
+                            document.getElementById('post-nav-next-title').textContent = nextArticle.title;
+                        } else {
+                            document.getElementById('post-nav-next').style.visibility = 'hidden';
+                        }
+                    })();
 
                         return fetch(article.path);
                     })
@@ -409,9 +463,17 @@
                             }, 400);
                         })();
                     })
+                    .then(function() {
+                        document.querySelector('.post-page').classList.add('is-loaded');
+                        var footer = document.getElementById('footer');
+                        if (footer) footer.classList.add('is-loaded');
+                    })
                     .catch(function(err) {
                         document.getElementById('post-title').textContent = '加载失败';
                         document.getElementById('post-content').innerHTML = '<p>无法加载文章内容。</p>';
+                        document.querySelector('.post-page').classList.add('is-loaded');
+                        var footer = document.getElementById('footer');
+                        if (footer) footer.classList.add('is-loaded');
                     });
             })();
         </script>

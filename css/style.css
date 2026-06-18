@@ -1789,6 +1789,18 @@ body:not(.dark-theme) .transition-block.block-theme {
   filter: blur(0);
 }
 
+/* Prevent flash of incomplete content: fade in after markdown renders */
+.post-page,
+.main > .footer {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.post-page.is-loaded,
+.main > .footer.is-loaded {
+  opacity: 1;
+}
+
 .post-page-content {
   font-size: 1rem;
   line-height: 1.9;
@@ -2425,10 +2437,6 @@ pre.code-block {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 0;
-  border-top: 1px solid rgba(0,0,0,0.08);
-}
-.dark-theme .post-page-bottom {
-  border-color: rgba(255,255,255,0.08);
 }
 .post-share-btn {
   display: inline-flex;
@@ -2471,6 +2479,86 @@ pre.code-block {
   opacity: 0.8;
 }
 
+/* Post prev/next navigation */
+.post-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: 1.1rem 0;
+}
+
+.post-nav-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(0,0,0,0.12);
+  border: none;
+  margin: 0;
+}
+
+.dark-theme .post-nav-divider {
+  background: rgba(255,255,255,0.12);
+}
+
+.post-nav-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s;
+  padding: 0;
+  min-width: 0;
+  line-height: 1.5;
+}
+
+.post-nav-item:hover {
+  opacity: 0.65;
+}
+
+.post-nav-prev {
+  align-self: flex-start;
+  align-items: flex-start;
+  max-width: 75%;
+}
+
+.post-nav-next {
+  align-self: flex-end;
+  align-items: flex-end;
+  max-width: 75%;
+}
+
+.post-nav-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.post-nav-arrow {
+  font-size: 1.2rem;
+  font-weight: bold;
+  flex-shrink: 0;
+  opacity: 0.4;
+}
+
+.post-nav-label {
+  font-weight: 500;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.post-nav-title {
+  color: #888;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1rem;
+  max-width: 100%;
+}
+
+.dark-theme .post-nav-title {
+  color: #888;
+}
+
 @media screen and (max-width: 768px) {
   .archive-cards {
     grid-template-columns: 1fr;
@@ -2489,6 +2577,20 @@ pre.code-block {
   .post-page-content {
     font-size: 0.95rem;
     line-height: 1.8;
+  }
+  .post-nav {
+    gap: 0.9rem;
+    padding: 0.9rem 0;
+  }
+  .post-nav-prev,
+  .post-nav-next {
+    max-width: 85%;
+  }
+  .post-nav-title {
+    font-size: 0.9rem;
+  }
+  .post-nav-label {
+    font-size: 0.9rem;
   }
 }
 

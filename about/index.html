@@ -271,8 +271,16 @@
                             }
                         })();
                     })
+                    .then(function() {
+                        document.querySelector('.post-page').classList.add('is-loaded');
+                        var footer = document.getElementById('footer');
+                        if (footer) footer.classList.add('is-loaded');
+                    })
                     .catch(function() {
                         document.getElementById('about-content').innerHTML = '<p>无法加载关于页面内容。</p>';
+                        document.querySelector('.post-page').classList.add('is-loaded');
+                        var footer = document.getElementById('footer');
+                        if (footer) footer.classList.add('is-loaded');
                     });
             })();
         </script>
