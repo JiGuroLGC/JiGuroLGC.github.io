@@ -134,6 +134,9 @@
                     </button>
                     <a class="post-back-link" href="/archives">← 返回归档</a>
                 </div>
+
+                <!-- 评论区 -->
+                <div id="tcomment"></div>
             </div>
 
             <footer id="footer" class="footer">
@@ -560,6 +563,16 @@
         </script>
 
         <script src="/js/music-player.js"></script>
+
+        <!-- Twikoo JS -->
+        <script src="https://cdn.jsdelivr.net/npm/twikoo@1.7.12/dist/twikoo.all.min.js"></script>
+        <script>
+            twikoo.init({
+                envId: 'https://twikoolgc.netlify.app/.netlify/functions/twikoo',
+                el: '#tcomment',
+                path: location.pathname, // 或你的文章唯一标识
+            })
+        </script>
 
 </body>
 
