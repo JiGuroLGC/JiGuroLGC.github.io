@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="Liu Guancheng">
+    <title>关于 | JiGuro的个人博客</title>
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.2/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <meta name="generator" content="Hexo 7.3.0">
+</head>
+
+<body>
+    <script>
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.getElementById("mobile-toggle-theme").innerText = "· 九阴"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.getElementById("mobile-toggle-theme").innerText = "· 重阳"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+            <nav class="navbar">
+                <div class="container">
+                    <div class="navbar-header header-logo"><a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog&nbsp;</a></div>
+                    <div class="menu navbar-right">
+                        <a class="menu-item" href="/archives">归档</a>
+                        <a class="menu-item" href="/category">分类</a>
+                        <a class="menu-item" href="/tag">标签</a>
+                        <a class="menu-item" href="/message">留言</a>
+                        <a class="menu-item" href="/links">友链</a>
+                        <a class="menu-item" href="/about">关于</a>
+                        <input id="switch_default" type="checkbox" class="switch_default">
+                        <label for="switch_default" class="toggleBtn"></label>
+                    </div>
+                </div>
+            </nav>
+
+            <nav class="navbar-mobile" id="nav-mobile">
+                <div class="container">
+                    <div class="navbar-header">
+                        <div>
+                            <a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog&nbsp;</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
+                        </div>
+                        <div class="menu-toggle" onclick="mobileBtn()">&#9776; 关于</div>
+                    </div>
+                    <div class="menu" id="mobile-menu">
+                        <a class="menu-item" href="/archives">归档</a>
+                        <a class="menu-item" href="/category">分类</a>
+                        <a class="menu-item" href="/tag">标签</a>
+                        <a class="menu-item" href="/message">留言</a>
+                        <a class="menu-item" href="/links">友链</a>
+                        <a class="menu-item" href="/about">关于</a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <script>
+            var mobileBtn = function f() {
+                var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+                var mobileMenu = document.getElementById("mobile-menu");
+                if (toggleMenu.classList.contains("active")) {
+                    toggleMenu.classList.remove("active")
+                    mobileMenu.classList.remove("active")
+                } else {
+                    toggleMenu.classList.add("active")
+                    mobileMenu.classList.add("active")
+                }
+            }
+        </script>
+
+        <div class="main">
+            <div class="post-page">
+                <div class="post-page-content" id="about-content">
+                    <p>加载中...</p>
+                </div>
+            </div>
+
+            <footer id="footer" class="footer">
+                <div class="copyright">
+                    <span>© 2026 Liu Guancheng | Powered by JiGuro</span>
+                </div>
+                <a href="https://icp.gov.moe/?keyword=20261961" target="_blank">萌ICP备20261961号</a>
+            </footer>
+        </div>
+
+        <script>
+            function escHtml(s) {
+                return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+
+            function copyCodeBlock(btn) {
+                var code = btn.closest('.code-block').querySelector('.code-content code');
+                if (!code) return;
+                var text = code.textContent.trim();
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(text).then(function() {
+                        btn.textContent = '已复制';
+                        btn.classList.add('copied');
+                        setTimeout(function() {
+                            btn.textContent = '复制';
+                            btn.classList.remove('copied');
+                        }, 1500);
+                    });
+                }
+            }
+
+            (function() {
+                fetch('/about/index.md')
+                    .then(function(r) {
+                        if (!r.ok) throw new Error('About page not found');
+                        return r.text();
+                    })
+                    .then(function(md) {
+                        var container = document.getElementById('about-content');
+                        container.innerHTML = marked.parse(md);
+
+                        /* Enhance code blocks */
+                        var pres = container.querySelectorAll('pre');
+                        for (var p = 0; p < pres.length; p++) {
+                            var pre = pres[p];
+                            var codeEl = pre.querySelector('code');
+                            var codeText = codeEl ? codeEl.textContent : pre.textContent;
+                            var lang = '';
+                            if (codeEl) {
+                                var cls = codeEl.className || '';
+                                var m = cls.match(/language-(\w+)/);
+                                if (m) lang = m[1];
+                            }
+                            var lines = codeText.split('\n');
+                            if (lines.length && lines[lines.length - 1] === '') lines.pop();
+                            var nums = '';
+                            for (var n = 1; n <= lines.length; n++) nums += '<span>' + n + '</span>';
+                            var langHtml = lang ? '<span class="code-lang">' + lang + '</span>' : '';
+                            var newHtml =
+                                '<pre class="code-block">' +
+                                '<div class="code-header">' +
+                                langHtml +
+                                '<button class="code-copy-btn" onclick="copyCodeBlock(this)">复制</button>' +
+                                '</div>' +
+                                '<div class="code-body">' +
+                                '<div class="code-lines">' + nums + '</div>' +
+                                '<div class="code-content"><code>' + escHtml(codeText) + '</code></div>' +
+                                '</div>' +
+                                '</pre>';
+                            var temp = document.createElement('div');
+                            temp.innerHTML = newHtml;
+                            pre.parentNode.replaceChild(temp.firstChild, pre);
+                        }
+
+                        /* Wrap images in placeholder containers */
+                        (function() {
+                            var vw = window.innerWidth;
+                            var contentImgs = container.querySelectorAll('img');
+                            contentImgs.forEach(function(img) {
+                                if (img.closest('.code-block') || img.closest('.img-placeholder')) return;
+                                if (img.hasAttribute('width')) img.style.width = img.getAttribute('width') + 'px';
+                                if (img.hasAttribute('height')) img.style.height = img.getAttribute('height') + 'px';
+
+                                var parentA = img.parentElement;
+                                var isBadge = parentA && parentA.tagName === 'A';
+                                var hasExplicitSize = img.hasAttribute('width') || img.hasAttribute('height');
+
+                                var wrap = document.createElement('div');
+                                wrap.className = 'img-placeholder' + (isBadge || hasExplicitSize ? ' badge-img' : '');
+                                wrap.style.transition = 'background-color 0.5s ease';
+                                if (isBadge) wrap.style.borderRadius = '0';
+
+                                // 优化占位色块
+                                if (!isBadge) {
+                                    // 如果有明确的宽高属性，用它们精确控制占位比例
+                                    if (img.hasAttribute('width') && img.hasAttribute('height')) {
+                                        var w = parseInt(img.getAttribute('width'), 10);
+                                        var h = parseInt(img.getAttribute('height'), 10);
+                                        if (w && h) {
+                                            wrap.style.aspectRatio = w + '/' + h;
+                                            wrap.style.minHeight = 'unset'; // 取消CSS默认的min-height
+                                            wrap.style.width = '100%';
+                                        }
+                                    } else {
+                                        // 没有宽高属性时，采用默认宽屏比例（16:9）作为占位，并设一个最小高度
+                                        wrap.style.aspectRatio = '16 / 9';
+                                        wrap.style.minHeight = '120px'; // 保证至少有一定高度
+                                        wrap.style.width = '100%';
+                                    }
+                                }
+                                // =================================
+
+                                parentA ? parentA.insertBefore(wrap, img) : img.parentNode.insertBefore(wrap, img);
+                                wrap.appendChild(img);
+
+                                function onImgReady() {
+                                    if (img.classList.contains('loaded')) return;
+                                    img.classList.add('loaded');
+                                    wrap.style.backgroundColor = 'transparent';
+                                    if (!isBadge) {
+                                        var naturalW = img.naturalWidth || img.clientWidth || 0;
+                                        if (naturalW > vw - 40) {
+                                            img.style.maxWidth = '100%';
+                                            img.style.height = 'auto';
+                                        }
+                                    }
+                                }
+                                if (img.complete) {
+                                    onImgReady();
+                                } else {
+                                    img.addEventListener('load', onImgReady);
+                                    img.addEventListener('error', onImgReady);
+                                }
+                            });
+                        })();
+
+                        /* Convert Obsidian-style callouts */
+                        (function() {
+                            var bqs = container.querySelectorAll('blockquote');
+                            for (var b = 0; b < bqs.length; b++) {
+                                var bq = bqs[b];
+                                var firstP = bq.querySelector('p');
+                                if (!firstP) continue;
+                                var text = firstP.textContent || '';
+                                var m2 = text.match(/^\[!(\w+)\]\s*(.*)/);
+                                if (!m2) continue;
+                                var type = m2[1].toLowerCase();
+                                var title = m2[2] || type.charAt(0).toUpperCase() + type.slice(1);
+                                bq.setAttribute('data-callout', type);
+                                bq.classList.add('callout');
+                                bq.innerHTML =
+                                    '<div class="callout-title">' +
+                                    '<div class="callout-icon"></div>' +
+                                    '<div class="callout-title-inner">' + title + '</div>' +
+                                    '</div>' +
+                                    '<div class="callout-content">' + (firstP.innerHTML.replace(/^\[!\w+\]\s*/, '') || '') +
+                                    Array.prototype.slice.call(bq.querySelectorAll('p'), 1).map(function(p_) {
+                                        return p_.outerHTML;
+                                    }).join('') + '</div>';
+                            }
+                        })();
+
+                        /* Scroll-reveal animation for content children */
+                        (function() {
+                            var children = container.children;
+                            if (!children.length) return;
+                            if (!('IntersectionObserver' in window)) {
+                                for (var i = 0; i < children.length; i++) {
+                                    children[i].classList.add('is-revealed');
+                                }
+                                return;
+                            }
+                            var observer = new IntersectionObserver(function(entries) {
+                                for (var e = 0; e < entries.length; e++) {
+                                    if (entries[e].isIntersecting) {
+                                        entries[e].target.classList.add('is-revealed');
+                                        observer.unobserve(entries[e].target);
+                                    }
+                                }
+                            }, {
+                                threshold: 0.15
+                            });
+                            for (var c = 0; c < children.length; c++) {
+                                observer.observe(children[c]);
+                            }
+                        })();
+                    })
+                    .then(function() {
+                        document.querySelector('.post-page').classList.add('is-loaded');
+                        var footer = document.getElementById('footer');
+                        if (footer) footer.classList.add('is-loaded');
+                    })
+                    .catch(function() {
+                        document.getElementById('about-content').innerHTML = '<p>无法加载关于页面内容。</p>';
+                        document.querySelector('.post-page').classList.add('is-loaded');
+                        var footer = document.getElementById('footer');
+                        if (footer) footer.classList.add('is-loaded');
+                    });
+            })();
+        </script>
+
+        <button id="back-to-top" title="回到顶部">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="18 15 12 9 6 15" />
+            </svg>
+        </button>
+
+        <script>
+            (function() {
+                var btn = document.getElementById('back-to-top');
+                if (!btn) return;
+                var lastY = 0;
+                var ticking = false;
+                btn.addEventListener('click', function() {
+                    btn.classList.remove('visible');
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+                window.addEventListener('scroll', function() {
+                    if (!ticking) {
+                        requestAnimationFrame(function() {
+                            var y = window.scrollY;
+                            var maxY = document.documentElement.scrollHeight - window.innerHeight - 20;
+                            if (y <= 100 || y >= maxY) {
+                                btn.classList.remove('visible');
+                            } else if (y > lastY + 20) {
+                                btn.classList.add('visible');
+                            } else if (y < lastY - 20) {
+                                btn.classList.remove('visible');
+                            }
+                            lastY = y;
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                }, {
+                    passive: true
+                });
+            })();
+
+            /* Code content scrollbar show/hide */
+            (function() {
+                var hideTimer = 0;
+                document.addEventListener('scroll', function(e) {
+                    var content = e.target.closest ? e.target.closest('.code-content') : null;
+                    if (!content) return;
+                    clearTimeout(hideTimer);
+                    document.querySelectorAll('.code-content.show-scrollbar').forEach(function(c) {
+                        if (c !== content) c.classList.remove('show-scrollbar');
+                    });
+                    content.classList.add('show-scrollbar');
+                    hideTimer = setTimeout(function() {
+                        content.classList.remove('show-scrollbar');
+                    }, 1500);
+                }, {
+                    capture: true,
+                    passive: true
+                });
+                window.addEventListener('scroll', function() {
+                    document.querySelectorAll('.code-content.show-scrollbar').forEach(function(c) {
+                        c.classList.remove('show-scrollbar');
+                    });
+                    clearTimeout(hideTimer);
+                }, {
+                    passive: true
+                });
+            })();
+        </script>
+</body>
+
+</html>

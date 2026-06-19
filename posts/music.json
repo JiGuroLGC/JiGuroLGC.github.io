@@ -1,10 +1,1 @@
-{
-  "2026-06-16": {
-    "enabled": true,
-    "meting": {
-      "server": "netease",
-      "type": "song",
-      "id": "2750110034"
-    }
-  }
-}
+{"2026-06-16":{"enabled":true,"meting":{"server":"netease","type":"song","id":"2750110034"}}}

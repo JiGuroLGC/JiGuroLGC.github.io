@@ -1,16 +1,1 @@
-[
-    {
-        "name": "国光",
-        "information": "国光 - 分享与收获",
-        "avatar": "https://html.sqlsec.com/hexo/avatar.png",
-        "description": "网安大佬，他的文章让我受益颇多",
-        "url": "https://www.sqlsec.com"
-    },
-    {
-        "name": "游钓四方",
-        "information": "暂无",
-        "avatar": "https://blog.gankudadiz.com/storage/links/avatars/01KT8S2M8CDD4Z3MH4Z1D2J5MT.svg",
-        "description": "借鉴了老哥的博客设计和主题",
-        "url": "https://blog.lhasa.icu"
-    }
-]
+[{"name":"国光","information":"国光 - 分享与收获","avatar":"https://html.sqlsec.com/hexo/avatar.png","description":"网安大佬，他的文章让我受益颇多","url":"https://www.sqlsec.com"},{"name":"游钓四方","information":"暂无","avatar":"https://blog.gankudadiz.com/storage/links/avatars/01KT8S2M8CDD4Z3MH4Z1D2J5MT.svg","description":"借鉴了老哥的博客设计和主题","url":"https://blog.lhasa.icu"}]
