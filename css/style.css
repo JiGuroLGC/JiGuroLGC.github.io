@@ -1237,6 +1237,8 @@ header label {
   .navbar-mobile .container .menu.active a:nth-child(2) { transition-delay: 0.09s; }
   .navbar-mobile .container .menu.active a:nth-child(3) { transition-delay: 0.14s; }
   .navbar-mobile .container .menu.active a:nth-child(4) { transition-delay: 0.19s; }
+  .navbar-mobile .container .menu.active a:nth-child(5) { transition-delay: 0.24s; }
+  .navbar-mobile .container .menu.active a:nth-child(6) { transition-delay: 0.29s; }
   .dark-theme .navbar-mobile .container .menu {
     background: #292a2d;
     border-top: 2px solid #97979c;
@@ -1705,7 +1707,7 @@ body:not(.dark-theme) .transition-block.block-theme {
   max-width: 780px;
   width: 100%;
   margin: 0 auto;
-  padding: 2rem 1rem 0;
+  padding: 1rem 1rem 0;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -1805,11 +1807,14 @@ body:not(.dark-theme) .transition-block.block-theme {
   font-size: 1rem;
   line-height: 1.9;
   text-align: justify;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
   word-wrap: break-word;
   overflow-wrap: break-word;
   word-break: normal;
   min-width: 0;
+}
+.post-page-content > *:first-child {
+  margin-top: 0;
 }
 
 /* ===== Scroll-reveal animation ===== */
@@ -2438,6 +2443,10 @@ pre.code-block {
   align-items: center;
   padding: 1.5rem 0;
 }
+.post-back-wrap {
+  text-align: right;
+  padding: 0.3rem 0;
+}
 .post-share-btn {
   display: inline-flex;
   align-items: center;
@@ -2484,7 +2493,7 @@ pre.code-block {
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
-  padding: 1.1rem 0;
+  padding: 1.5rem 0;
 }
 
 .post-nav-divider {
@@ -2580,7 +2589,7 @@ pre.code-block {
   }
   .post-nav {
     gap: 0.9rem;
-    padding: 0.9rem 0;
+    padding: 1.2rem 0;
   }
   .post-nav-prev,
   .post-nav-next {
@@ -2693,6 +2702,104 @@ pre.code-block {
   font-size: 0.82rem;
   opacity: 0.5;
   width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ========== Friend Links page ========== */
+/* Friend link cards grid */
+.link-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+@media (max-width: 768px) {
+  .link-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 479px) {
+  .link-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Individual card */
+.link-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.06);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  opacity: 0;
+  transform: translateY(16px);
+}
+.link-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1),
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
+}
+.link-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  border-color: rgba(45,150,189,0.3);
+}
+.dark-theme .link-card {
+  border-color: rgba(255,255,255,0.08);
+}
+.dark-theme .link-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  border-color: rgba(45,150,189,0.4);
+}
+
+/* Avatar */
+.link-card-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.04);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.link-card-avatar.loaded {
+  opacity: 1;
+}
+.dark-theme .link-card-avatar {
+  background: rgba(255,255,255,0.06);
+}
+
+/* Card text info */
+.link-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.link-card-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.link-card-author {
+  font-size: 0.78rem;
+  opacity: 0.45;
+}
+.link-card-desc {
+  font-size: 0.82rem;
+  opacity: 0.55;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

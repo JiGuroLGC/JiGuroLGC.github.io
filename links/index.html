@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="Liu Guancheng">
+    <title>友链 | JiGuro的个人博客</title>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/script.js"></script>
+    <meta name="generator" content="Hexo 7.3.0">
+</head>
+
+<body>
+    <script>
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.getElementById("mobile-toggle-theme").innerText = "· 九阴"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.getElementById("mobile-toggle-theme").innerText = "· 重阳"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+            <nav class="navbar">
+                <div class="container">
+                    <div class="navbar-header header-logo"><a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog&nbsp;</a></div>
+                    <div class="menu navbar-right">
+                        <a class="menu-item" href="/archives">归档</a>
+                        <a class="menu-item" href="/category">分类</a>
+                        <a class="menu-item" href="/tag">标签</a>
+                        <a class="menu-item" href="/message">留言</a>
+                        <a class="menu-item" href="/links">友链</a>
+                        <a class="menu-item" href="/about">关于</a>
+                        <input id="switch_default" type="checkbox" class="switch_default">
+                        <label for="switch_default" class="toggleBtn"></label>
+                    </div>
+                </div>
+            </nav>
+            <nav class="navbar-mobile" id="nav-mobile">
+                <div class="container">
+                    <div class="navbar-header">
+                        <div>
+                            <a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog&nbsp;</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
+                        </div>
+                        <div class="menu-toggle" onclick="mobileBtn()">&#9776; 友链</div>
+                    </div>
+                    <div class="menu" id="mobile-menu">
+                        <a class="menu-item" href="/archives">归档</a>
+                        <a class="menu-item" href="/category">分类</a>
+                        <a class="menu-item" href="/tag">标签</a>
+                        <a class="menu-item" href="/message">留言</a>
+                        <a class="menu-item" href="/links">友链</a>
+                        <a class="menu-item" href="/about">关于</a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <script>
+            var mobileBtn = function f() {
+                var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+                var mobileMenu = document.getElementById("mobile-menu");
+                if (toggleMenu.classList.contains("active")) {
+                    toggleMenu.classList.remove("active")
+                    mobileMenu.classList.remove("active")
+                } else {
+                    toggleMenu.classList.add("active")
+                    mobileMenu.classList.add("active")
+                }
+            }
+        </script>
+
+        <div class="main">
+            <div class="post-page">
+                <div class="post-page-content" id="links-content">
+                    <h1>友情链接</h1>
+                    <p>海内存知己，天涯若比邻。</p>
+                </div>
+                <div class="link-cards" id="link-cards">
+                    <p style="text-align:center;opacity:0.5;">加载中...</p>
+                </div>
+            </div>
+
+            <footer id="footer" class="footer">
+                <div class="copyright">
+                    <span>© 2026 Liu Guancheng | Powered by JiGuro</span>
+                </div>
+                <a href="https://icp.gov.moe/?keyword=20261961" target="_blank">萌ICP备20261961号</a>
+            </footer>
+        </div>
+
+        <script>
+            (function() {
+                var page = document.querySelector('.post-page');
+                var content = document.getElementById('links-content');
+                var container = document.getElementById('link-cards');
+
+                // Reveal title elements with staggered animation
+                function revealHeader() {
+                    if (content) {
+                        var children = content.children;
+                        for (var i = 0; i < children.length; i++) {
+                            (function(el, idx) {
+                                setTimeout(function() {
+                                    el.classList.add('is-revealed');
+                                }, idx * 100);
+                            })(children[i], i);
+                        }
+                    }
+                }
+
+                fetch('/links/data.json')
+                    .then(function(r) { return r.json(); })
+                    .then(function(links) {
+                        if (!links.length) {
+                            container.innerHTML = '<p style="text-align:center;opacity:0.5;">暂无友链。</p>';
+                            return;
+                        }
+
+                        var html = '';
+                        for (var i = 0; i < links.length; i++) {
+                            var link = links[i];
+                            html += '<a class="link-card" href="' + link.url + '" target="_blank" rel="noopener">';
+                            html += '<img class="link-card-avatar" src="' + link.avatar + '" alt="' + link.name + '" loading="lazy" onerror="this.src=\'/image/jiguro.png\'">';
+                            html += '<div class="link-card-info">';
+                            html += '<span class="link-card-name">' + link.name + '</span>';
+                            html += '<span class="link-card-author">' + link.author + '</span>';
+                            html += '<span class="link-card-desc">' + (link.description || '') + '</span>';
+                            html += '</div>';
+                            html += '</a>';
+                        }
+
+                        container.innerHTML = html;
+
+                        // Avatar load detection
+                        var avatars = container.querySelectorAll('.link-card-avatar');
+                        for (var m = 0; m < avatars.length; m++) {
+                            (function(img) {
+                                if (img.complete) {
+                                    img.classList.add('loaded');
+                                } else {
+                                    img.addEventListener('load', function() { img.classList.add('loaded'); });
+                                    img.addEventListener('error', function() { img.classList.add('loaded'); });
+                                }
+                            })(avatars[m]);
+                        }
+
+                        // Scroll-reveal animation for cards
+                        var cards = container.querySelectorAll('.link-card');
+                        if (!('IntersectionObserver' in window)) {
+                            for (var c = 0; c < cards.length; c++) {
+                                cards[c].classList.add('visible');
+                            }
+                            return;
+                        }
+
+                        var observer = new IntersectionObserver(function(entries) {
+                            for (var e = 0; e < entries.length; e++) {
+                                if (entries[e].isIntersecting) {
+                                    entries[e].target.classList.add('visible');
+                                    observer.unobserve(entries[e].target);
+                                }
+                            }
+                        }, { threshold: 0.1 });
+
+                        for (var c = 0; c < cards.length; c++) {
+                            observer.observe(cards[c]);
+                        }
+                    })
+                    .then(function() {
+                        if (page) page.classList.add('is-loaded');
+                        var footer = document.getElementById('footer');
+                        if (footer) footer.classList.add('is-loaded');
+                        revealHeader();
+                    })
+                    .catch(function() {
+                        container.innerHTML = '<p style="text-align:center;opacity:0.5;">加载友链失败。</p>';
+                        if (page) page.classList.add('is-loaded');
+                        var footer = document.getElementById('footer');
+                        if (footer) footer.classList.add('is-loaded');
+                        revealHeader();
+                    });
+            })();
+        </script>
+</body>
+
+</html>

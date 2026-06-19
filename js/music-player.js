@@ -73,7 +73,7 @@
     var metaServer = meting.server || 'netease';
     var metaType = meting.type || 'song';
     var metaId = meting.id;
-    var url = 'https://meting.mikus.ink/api?server=' + metaServer +
+    var url = 'https://meting.jinghuashang.cn/?server=' + metaServer +
       '&type=' + metaType + '&id=' + metaId;
 
     fetch(url)
@@ -82,8 +82,8 @@
         if (!data || !data.length) throw new Error('Empty Meting response');
         var song = data[0];
         var songData = {
-          title: song.title || '未知歌曲',
-          artist: song.author || '未知歌手',
+          title: song.name || '未知歌曲',
+          artist: song.artist || '未知歌手',
           cover: song.pic || '',
           audio: song.url || '',
           lyric: ''
@@ -837,10 +837,10 @@
     }
   });
 
-  /* also stop when tab / window becomes hidden (e.g. back-key on mobile) */
+  /* pause when tab / window becomes hidden (e.g. back-key on mobile) */
   document.addEventListener('visibilitychange', function () {
     if (document.hidden && audio) {
-      destroyAudio();
+      audio.pause();
     }
   });
 
