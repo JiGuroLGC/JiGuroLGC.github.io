@@ -252,6 +252,7 @@ a:hover {
   text-align: center;
   line-height: 1.8;
   padding: 1rem 0 2rem 0;
+  margin-top: auto;
 }
 @charset "utf-8";
 
@@ -2793,7 +2794,7 @@ pre.code-block {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.link-card-author {
+.link-card-information {
   font-size: 0.78rem;
   opacity: 0.45;
 }
