@@ -8,7 +8,7 @@
         "image": "https://files.seeusercontent.com/2026/06/17/4kEb/1000094650.jpg",
         "tags": ["Hello", "Blog"],
         "category": "博客",
-        "path": "https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.2/posts/2024-07-27.md"
+        "path": "https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.3/posts/2024-07-27.md"
     },
     {
         "id": "2026-06-16",
@@ -20,7 +20,7 @@
         "image": "https://files.seeusercontent.com/2026/06/17/ujP5/1000094673.jpg",
         "tags": ["诗词", "苏轼", "哲理", "人生", "文摘"],
         "category": "文摘",
-        "path": "https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.2/posts/2026-06-16.md"
+        "path": "https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.3/posts/2026-06-16.md"
     },
     {
         "id": "2026-06-17",
@@ -32,6 +32,6 @@
         "image": "https://files.seeusercontent.com/2026/06/17/m3uV/1000094670.jpg",
         "tags": ["逆向", "Web", "流媒体", "网络安全", "JWT"],
         "category": "逆向",
-        "path": "https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.2/posts/2026-06-17.md"
+        "path": "https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.3/posts/2026-06-17.md"
     }
 ]
