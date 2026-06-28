@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.4/css/twikoo.css">
     <script src="/js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" id="hljs-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <meta name="generator" content="Hexo 7.3.0">
 </head>
 
@@ -25,11 +27,12 @@
             if (isDark) {
                 pagebody.classList.add('dark-theme');
                 document.documentElement.setAttribute('data-theme', 'dark');
-                document.getElementById("mobile-toggle-theme").innerText = "· 九阴"
+                document.getElementById("mobile-toggle-theme").innerText = "· 九阴";
+                document.getElementById('hljs-theme').href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
             } else {
                 pagebody.classList.remove('dark-theme');
                 document.documentElement.setAttribute('data-theme', 'light');
-                document.getElementById("mobile-toggle-theme").innerText = "· 重阳"
+                document.getElementById("mobile-toggle-theme").innerText = "· 重阳";
             }
         })();
     </script>
@@ -60,29 +63,75 @@
                         </div>
                         <div class="menu-toggle" onclick="mobileBtn()">&#9776; 文章</div>
                     </div>
-                    <div class="menu" id="mobile-menu">
-                        <a class="menu-item" href="/archives">归档</a>
-                        <a class="menu-item" href="/category">分类</a>
-                        <a class="menu-item" href="/tag">标签</a>
-                        <a class="menu-item" href="/message">留言</a>
-                        <a class="menu-item" href="/links">友链</a>
-                        <a class="menu-item" href="/about">关于</a>
-                    </div>
                 </div>
             </nav>
+
         </header>
+            <!-- 移动端全屏亚克力菜单 -->
+            <div class="mobile-overlay" id="mobile-overlay">
+                <div class="mobile-menu-panel">
+                    <div class="mobile-menu-grid">
+                        <a class="mobile-menu-item" href="/archives">
+                            <span class="mobile-menu-label">归档</span>
+                        </a>
+                        <a class="mobile-menu-item" href="/category">
+                            <span class="mobile-menu-label">分类</span>
+                        </a>
+                        <a class="mobile-menu-item" href="/tag">
+                            <span class="mobile-menu-label">标签</span>
+                        </a>
+                        <a class="mobile-menu-item" href="/message">
+                            <span class="mobile-menu-label">留言</span>
+                        </a>
+                        <a class="mobile-menu-item" href="/links">
+                            <span class="mobile-menu-label">友链</span>
+                        </a>
+                        <a class="mobile-menu-item" href="/about">
+                            <span class="mobile-menu-label">关于</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         <script>
             var mobileBtn = function f() {
-                var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
-                var mobileMenu = document.getElementById("mobile-menu");
-                if (toggleMenu.classList.contains("active")) {
-                    toggleMenu.classList.remove("active")
-                    mobileMenu.classList.remove("active")
+                var toggleMenu = document.querySelector('.menu-toggle');
+                var overlay = document.getElementById('mobile-overlay');
+                var body = document.body;
+                if (toggleMenu.classList.contains('active')) {
+                    toggleMenu.classList.remove('active');
+                    overlay.classList.remove('active');
+                    body.classList.remove('menu-open');
                 } else {
-                    toggleMenu.classList.add("active")
-                    mobileMenu.classList.add("active")
+                    toggleMenu.classList.add('active');
+                    overlay.classList.add('active');
+                    body.classList.add('menu-open');
                 }
-            }
+            };
+
+            // 点击蒙版背景关闭菜单
+            document.getElementById('mobile-overlay').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    document.querySelector('.menu-toggle').classList.remove('active');
+                    this.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                }
+            });
+
+            // 点击菜单项后关闭菜单
+            document.querySelectorAll('.mobile-menu-item').forEach(function(item) {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var href = this.getAttribute('href');
+                    var toggle = document.querySelector('.menu-toggle');
+                    var overlay = document.getElementById('mobile-overlay');
+                    toggle.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                    setTimeout(function() {
+                        window.location.href = href;
+                    }, 280);
+                });
+            });
         </script>
 
         <div class="main">
@@ -331,6 +380,13 @@
 
                             // Build new HTML
                             var langHtml = lang ? '<span class="code-lang">' + lang + '</span>' : '';
+                            var isTxt = lang.toUpperCase() === 'TXT';
+                            var codeClass = '';
+                            if (lang && !isTxt) {
+                                codeClass = ' class="language-' + lang + '"';
+                            } else if (isTxt) {
+                                codeClass = ' class="nohighlight"';
+                            }
                             var newHtml =
                                 '<pre class="code-block">' +
                                 '<div class="code-header">' +
@@ -339,7 +395,7 @@
                                 '</div>' +
                                 '<div class="code-body">' +
                                 '<div class="code-lines">' + nums + '</div>' +
-                                '<div class="code-content"><code>' + escHtml(codeText) + '</code></div>' +
+                                '<div class="code-content"><code' + codeClass + '>' + escHtml(codeText) + '</code></div>' +
                                 '</div>' +
                                 '</pre>';
 
@@ -348,6 +404,11 @@
                             temp.innerHTML = newHtml;
                             pre.parentNode.replaceChild(temp.firstChild, pre);
                         }
+
+                        // Apply syntax highlighting
+                        document.querySelectorAll('.post-page-content .code-content code').forEach(function(code) {
+                            hljs.highlightElement(code);
+                        });
 
                         // Wrap images in placeholder containers for progressive loading
                         // Same mechanism as archive cards: complete → immediate; else → listeners

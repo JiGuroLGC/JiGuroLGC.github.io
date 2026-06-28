@@ -36,6 +36,12 @@ document.ready(
         var isDark = currentTheme === 'dark';
         var pagebody = document.getElementsByTagName('body')[0];
 
+        // Strip mobile overlay from DOM on non-mobile screens
+        if (window.innerWidth > 479) {
+            var ov = document.getElementById('mobile-overlay');
+            if (ov && ov.parentNode) ov.parentNode.removeChild(ov);
+        }
+
         if (isDark) {
             pagebody.classList.add('dark-theme');
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -63,6 +69,13 @@ document.ready(
                     document.documentElement.setAttribute('data-theme', 'light');
                     document.getElementById("switch_default").checked = false;
                     document.getElementById("mobile-toggle-theme").innerText = "· 重阳";
+                }
+                // Toggle highlight.js theme if present
+                var hljsTheme = document.getElementById('hljs-theme');
+                if (hljsTheme) {
+                    hljsTheme.href = dark
+                        ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
+                        : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
                 }
                 window.localStorage && window.localStorage.setItem('theme', dark ? 'dark' : 'light');
             }
@@ -108,6 +121,7 @@ document.ready(function () {
     var blockGray = loadingScreen.querySelector('.block-gray');
     var blockTheme = loadingScreen.querySelector('.block-theme');
     var elements = document.querySelectorAll('.fade-in-element');
+    var loadingFailsafe;
 
     if (window.sessionStorage && sessionStorage.getItem('_home_skip')) {
         sessionStorage.removeItem('_home_skip');
@@ -215,6 +229,7 @@ document.ready(function () {
         }, 200);
 
         setTimeout(function () {
+            clearTimeout(loadingFailsafe);
             loadingScreen.style.display = 'none';
             if (window.sessionStorage) {
                 sessionStorage.setItem('_visited', '1');
@@ -246,6 +261,19 @@ document.ready(function () {
             checkReady();
         }, remaining);
     }
+
+    // Failsafe: force-show after 8s even if fonts/external resources hang
+    loadingFailsafe = setTimeout(function () {
+        if (!loadingScreen._started) {
+            loadingScreen.style.display = 'none';
+            if (window.sessionStorage) {
+                sessionStorage.setItem('_visited', '1');
+            }
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].classList.add('visible');
+            }
+        }
+    }, 8000);
 
     waitForResources().then(function () {
         resourcesReady = true;
