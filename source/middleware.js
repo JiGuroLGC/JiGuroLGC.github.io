@@ -43,5 +43,7 @@ export var config = {
     '/posts/:path*',
     '/links/:path*',
     '/about/:path*',
+    '/poetry/:path*',
+    '/songs/:path*',
   ],
 };

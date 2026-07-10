@@ -41,7 +41,9 @@
                         <a class="menu-item" href="/archives">归档</a>
                         <a class="menu-item" href="/category">分类</a>
                         <a class="menu-item" href="/tag">标签</a>
-                        <a class="menu-item" href="/message">留言</a>
+						<a class="menu-item" href="/poetry">诗文</a>
+						<a class="menu-item" href="/songs">心曲</a>
+						<a class="menu-item" href="/message">留言</a>
                         <a class="menu-item" href="/links">友链</a>
                         <a class="menu-item" href="/about">关于</a>
                         <input id="switch_default" type="checkbox" class="switch_default">
@@ -74,6 +76,12 @@
                         <a class="mobile-menu-item" href="/tag">
                             <span class="mobile-menu-label">标签</span>
                         </a>
+						<a class="mobile-menu-item" href="/poetry">
+							<span class="mobile-menu-label">诗文</span>
+						</a>
+						<a class="mobile-menu-item" href="/songs">
+							<span class="mobile-menu-label">心曲</span>
+						</a>
                         <a class="mobile-menu-item" href="/message">
                             <span class="mobile-menu-label">留言</span>
                         </a>
@@ -149,19 +157,28 @@
             (function() {
                 var page = document.querySelector('.post-page');
                 var content = document.getElementById('message-content');
-                if (page) page.classList.add('is-loaded');
                 var footer = document.getElementById('footer');
-                if (footer) footer.classList.add('is-loaded');
-                if (content) {
-                    var children = content.children;
-                    for (var i = 0; i < children.length; i++) {
-                        (function(el, idx) {
-                            setTimeout(function() {
-                                el.classList.add('is-revealed');
-                            }, idx * 100);
-                        })(children[i], i);
+
+                // Reveal title with staggered cascade (match links page)
+                function revealHeader() {
+                    if (content) {
+                        var children = content.children;
+                        for (var i = 0; i < children.length; i++) {
+                            (function(el, idx) {
+                                setTimeout(function() {
+                                    el.classList.add('is-revealed');
+                                }, idx * 100);
+                            })(children[i], i);
+                        }
                     }
                 }
+
+                // Slight delay before starting animation for smoother paint
+                setTimeout(function() {
+                    if (page) page.classList.add('is-loaded');
+                    if (footer) footer.classList.add('is-loaded');
+                    revealHeader();
+                }, 80);
             })();
         </script>
 

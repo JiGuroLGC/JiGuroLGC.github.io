@@ -46,7 +46,9 @@
                         <a class="menu-item" href="/archives">归档</a>
                         <a class="menu-item" href="/category">分类</a>
                         <a class="menu-item" href="/tag">标签</a>
-                        <a class="menu-item" href="/message">留言</a>
+						<a class="menu-item" href="/poetry">诗文</a>
+						<a class="menu-item" href="/songs">心曲</a>
+						<a class="menu-item" href="/message">留言</a>
                         <a class="menu-item" href="/links">友链</a>
                         <a class="menu-item" href="/about">关于</a>
                         <input id="switch_default" type="checkbox" class="switch_default">
@@ -80,6 +82,12 @@
                         <a class="mobile-menu-item" href="/tag">
                             <span class="mobile-menu-label">标签</span>
                         </a>
+						<a class="mobile-menu-item" href="/poetry">
+							<span class="mobile-menu-label">诗文</span>
+						</a>
+						<a class="mobile-menu-item" href="/songs">
+							<span class="mobile-menu-label">心曲</span>
+						</a>
                         <a class="mobile-menu-item" href="/message">
                             <span class="mobile-menu-label">留言</span>
                         </a>
@@ -188,7 +196,7 @@
                     </button>
                 </div>
                 <div class="post-back-wrap">
-                    <a class="post-back-link" href="/archives">← 返回归档</a>
+                    <a class="post-back-link" id="post-back-link" href="/archives">← 返回归档</a>
                 </div>
 
                 <!-- 评论区 -->
@@ -265,7 +273,19 @@
                     return;
                 }
 
-                fetch('/posts/index.json')
+                var postType = params.get('type') || 'post';
+                var indexUrl = postType === 'poetry' ? '/poetry/index.json' : '/posts/index.json';
+
+                // 根据类型更新返回按钮
+                var backLink = document.getElementById('post-back-link');
+                if (backLink) {
+                    if (postType === 'poetry') {
+                        backLink.href = '/poetry';
+                        backLink.innerHTML = '← 返回诗文';
+                    }
+                }
+
+                fetch(indexUrl)
                     .then(function(r) {
                         return r.json();
                     })
@@ -335,7 +355,7 @@
 
                         if (prevArticle) {
                             var prevLink = document.getElementById('post-nav-prev');
-                            prevLink.href = '?id=' + encodeURIComponent(prevArticle.id);
+                            prevLink.href = '?id=' + encodeURIComponent(prevArticle.id) + (postType === 'poetry' ? '&type=poetry' : '');
                             document.getElementById('post-nav-prev-title').textContent = prevArticle.title;
                         } else {
                             document.getElementById('post-nav-prev').style.visibility = 'hidden';
@@ -343,7 +363,7 @@
 
                         if (nextArticle) {
                             var nextLink = document.getElementById('post-nav-next');
-                            nextLink.href = '?id=' + encodeURIComponent(nextArticle.id);
+                            nextLink.href = '?id=' + encodeURIComponent(nextArticle.id) + (postType === 'poetry' ? '&type=poetry' : '');
                             document.getElementById('post-nav-next-title').textContent = nextArticle.title;
                         } else {
                             document.getElementById('post-nav-next').style.visibility = 'hidden';
@@ -356,8 +376,78 @@
                         return r.text();
                     })
                     .then(function(md) {
+                        // Detect poetry genre from first-line HTML comment (handle BOM)
+                        var genre = '';
+                        var cleanMd = md.replace(/^\uFEFF/, '');
+                        var genreMatch = cleanMd.match(/^\s*<!--\s*(.+?)\s*-->/);
+                        if (genreMatch) {
+                            genre = genreMatch[1];
+                            cleanMd = cleanMd.replace(/^\s*<!--\s*.+?\s*-->\s*\n?/, '');
+                        }
+
                         // Use marked default renderer
-                        document.getElementById('post-content').innerHTML = marked.parse(md);
+                        document.getElementById('post-content').innerHTML = marked.parse(cleanMd);
+
+                        // Apply poetry layout class if genre is detected
+                        if (genre) {
+                            var layoutMap = {
+                                '现代诗': 'poetry-layout-xds',
+                                '仿古诗': 'poetry-layout-fgs',
+                                '仿古词': 'poetry-layout-fgc',
+                                '散文': 'poetry-layout-sw'
+                            };
+                            var cls = layoutMap[genre];
+                            if (cls) document.getElementById('post-content').classList.add(cls);
+
+                            // 仿古词后处理：长句顶格，短句阶梯缩进
+                            if (genre === '仿古词') {
+                                var postContent = document.getElementById('post-content');
+                                var paragraphs = postContent.querySelectorAll('p');
+                                
+                                // Step 1: collect all lines and find max segment length
+                                var lineData = [];  // { paraIndex, lineIndex, maxSegLen }
+                                var overallMax = 0;
+                                
+                                for (var i = 0; i < paragraphs.length; i++) {
+                                    var html = paragraphs[i].innerHTML;
+                                    var lines = html.split(/<br\s*\/?\s*>/i);
+                                    for (var j = 0; j < lines.length; j++) {
+                                        var text = lines[j].replace(/<[^>]+>/g, '');
+                                        var segments = text.split(/[，\uFF0C]/);
+                                        var segMax = 0;
+                                        for (var k = 0; k < segments.length; k++) {
+                                            var seg = segments[k].replace(/[。！？、；：""''（）《》【】\.,;:!?\s\u3000]/g, '');
+                                            if (seg.length > segMax) segMax = seg.length;
+                                        }
+                                        lineData.push({ p: i, idx: j, maxSeg: segMax, html: lines[j] });
+                                        if (segMax > overallMax) overallMax = segMax;
+                                    }
+                                }
+                                
+                                // Step 2: determine short threshold
+                                var shortThreshold = Math.ceil(overallMax / 2);
+                                
+                                // Step 3: rebuild paragraphs with short-line spans
+                                for (var i = 0; i < lineData.length; i++) {
+                                    if (lineData[i].maxSeg < shortThreshold) {
+                                        lineData[i].html = '<span class="ci-short">' + lineData[i].html + '</span>';
+                                    }
+                                }
+                                
+                                // Step 4: group by paragraph and write back
+                                var paraLines = {};
+                                for (var i = 0; i < lineData.length; i++) {
+                                    var pi = lineData[i].p;
+                                    if (!paraLines[pi]) paraLines[pi] = [];
+                                    paraLines[pi].push(lineData[i].html);
+                                }
+                                for (var pi in paraLines) {
+                                    if (paraLines.hasOwnProperty(pi)) {
+                                        paragraphs[pi].innerHTML = paraLines[pi].join('<br>');
+                                    }
+                                }
+                            }
+                        }
 
                         // Enhance code blocks
                         var pres = document.querySelectorAll('.post-page-content pre');

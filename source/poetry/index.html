@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="author" content="Liu Guancheng">
+	<title>诗文 | JiGuro的个人博客</title>
+	<link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.4/favicon.ico">
+	<link rel="stylesheet" href="/css/style.css">
+	<script src="/js/script.js"></script>
+	<meta name="generator" content="Hexo 7.3.0">
+</head>
+<body>
+	<script>
+		(() => {
+		    const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+		    const isDark = currentTheme === 'dark';
+		    const pagebody = document.getElementsByTagName('body')[0]
+		    if (isDark) {
+		        pagebody.classList.add('dark-theme');
+		        document.documentElement.setAttribute('data-theme', 'dark');
+		        document.getElementById("mobile-toggle-theme").innerText = "· 九阴"
+		    } else {
+		        pagebody.classList.remove('dark-theme');
+		        document.documentElement.setAttribute('data-theme', 'light');
+		        document.getElementById("mobile-toggle-theme").innerText = "· 重阳"
+		    }
+		})();
+	</script>
+	<div class="wrapper">
+		<header>
+			<nav class="navbar">
+				<div class="container">
+					<div class="navbar-header header-logo"><a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog&nbsp;</a></div>
+					<div class="menu navbar-right">
+						<a class="menu-item" href="/archives">归档</a>
+						<a class="menu-item" href="/category">分类</a>
+						<a class="menu-item" href="/tag">标签</a>
+						<a class="menu-item" href="/poetry">诗文</a>
+						<a class="menu-item" href="/songs">心曲</a>
+						<a class="menu-item" href="/message">留言</a>
+						<a class="menu-item" href="/links">友链</a>
+						<a class="menu-item" href="/about">关于</a>
+						<input id="switch_default" type="checkbox" class="switch_default">
+						<label for="switch_default" class="toggleBtn"></label>
+					</div>
+				</div>
+			</nav>
+			<nav class="navbar-mobile" id="nav-mobile">
+				<div class="container">
+					<div class="navbar-header">
+						<div>
+							<a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog&nbsp;</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
+						</div>
+						<div class="menu-toggle" onclick="mobileBtn()">&#9776; 诗文</div>
+					</div>
+				</div>
+			</nav>
+		</header>
+		<div class="mobile-overlay" id="mobile-overlay">
+			<div class="mobile-menu-panel">
+				<div class="mobile-menu-grid">
+					<a class="mobile-menu-item" href="/archives"><span class="mobile-menu-label">归档</span></a>
+					<a class="mobile-menu-item" href="/category"><span class="mobile-menu-label">分类</span></a>
+					<a class="mobile-menu-item" href="/tag"><span class="mobile-menu-label">标签</span></a>
+					<a class="mobile-menu-item" href="/poetry"><span class="mobile-menu-label">诗文</span></a>
+					<a class="mobile-menu-item" href="/songs"><span class="mobile-menu-label">心曲</span></a>
+					<a class="mobile-menu-item" href="/message"><span class="mobile-menu-label">留言</span></a>
+					<a class="mobile-menu-item" href="/links"><span class="mobile-menu-label">友链</span></a>
+					<a class="mobile-menu-item" href="/about"><span class="mobile-menu-label">关于</span></a>
+				</div>
+			</div>
+		</div>
+		<script>
+			var mobileBtn = function f() {
+			    var toggleMenu = document.querySelector('.menu-toggle');
+			    var overlay = document.getElementById('mobile-overlay');
+			    var body = document.body;
+			    if (toggleMenu.classList.contains('active')) {
+			        toggleMenu.classList.remove('active');
+			        overlay.classList.remove('active');
+			        body.classList.remove('menu-open');
+			    } else {
+			        toggleMenu.classList.add('active');
+			        overlay.classList.add('active');
+			        body.classList.add('menu-open');
+			    }
+			};
+			document.getElementById('mobile-overlay').addEventListener('click', function(e) {
+			    if (e.target === this) {
+			        document.querySelector('.menu-toggle').classList.remove('active');
+			        this.classList.remove('active');
+			        document.body.classList.remove('menu-open');
+			    }
+			});
+			document.querySelectorAll('.mobile-menu-item').forEach(function(item) {
+			    item.addEventListener('click', function(e) {
+			        e.preventDefault();
+			        var href = this.getAttribute('href');
+			        var toggle = document.querySelector('.menu-toggle');
+			        var overlay = document.getElementById('mobile-overlay');
+			        toggle.classList.remove('active');
+			        overlay.classList.remove('active');
+			        document.body.classList.remove('menu-open');
+			        setTimeout(function() { window.location.href = href; }, 280);
+			    });
+			});
+		</script>
+		<div class="main">
+			<div id="poetry-list" class="container" style="max-width:1000px;margin:0 auto;padding-top:1rem;width:100%;box-sizing:border-box;">
+				<div class="search-wrap">
+					<input type="text" class="search-input" id="search-input" placeholder="搜索诗文...">
+				</div>
+				<div id="poetry-cards-container">
+					<p style="text-align:center;opacity:0.5;">加载中...</p>
+				</div>
+			</div>
+		</div>
+		<footer id="footer" class="footer">
+			<div class="copyright">
+				<span>© 2026 Liu Guancheng | Powered by JiGuro</span>
+			</div>
+			<a href="https://icp.gov.moe/?keyword=20261961" target="_blank">萌ICP备20261961号</a>
+		</footer>
+	</div>
+	<script>
+		(function() {
+		    var container = document.getElementById('poetry-cards-container');
+		    var searchInput = document.getElementById('search-input');
+		    var allPoems = [];
+		    var skipAnimation = !!(window.sessionStorage && sessionStorage.getItem('_poetry_visited'));
+		    var restoreScroll = window.sessionStorage && sessionStorage.getItem('_poetry_scrollY');
+
+		    container.addEventListener('click', function(e) {
+		        var link = e.target.closest('.poetry-card-link');
+		        if (link && window.sessionStorage) {
+		            sessionStorage.setItem('_poetry_scrollY', window.scrollY);
+		        }
+		    });
+
+		    function renderCards() {
+		        if (!allPoems.length) {
+		            container.innerHTML = '<p style="text-align:center;opacity:0.5;">没有匹配的诗文。</p>';
+		            return;
+		        }
+
+		        var months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+		        var html = '<div class="poetry-cards">';
+
+		        for (var i = 0; i < allPoems.length; i++) {
+		            var p = allPoems[i];
+		            var date = new Date(p.date);
+		            var monthStr = months[date.getMonth()];
+		            var dayStr = date.getDate();
+		            var year = date.getFullYear();
+		            var preview = p.preview || '';
+
+		            html += '<article class="poetry-card">';
+		            html += '<a class="poetry-card-link" href="/post.html?id=' + p.id + '&type=poetry">';
+		            html += '<div class="poetry-card-body">';
+		            html += '<h3 class="poetry-card-title">' + escHtml(p.title) + '</h3>';
+		            html += '<p class="poetry-card-meta">';
+		            html += '<span>' + escHtml(p.author || 'JiGuro') + '</span>';
+		            html += '<span>' + monthStr + ' ' + dayStr + ', ' + year + '</span>';
+		            html += '</p>';
+		            if (preview) {
+		                html += '<p class="poetry-card-preview">' + preview + '</p>';
+		                html += '<span class="poetry-card-ellipsis">...</span>';
+		            }
+		            html += '</div></a></article>';
+		        }
+		        html += '</div>';
+		        container.innerHTML = html;
+
+		        var cards = container.querySelectorAll('.poetry-card');
+
+		        if (skipAnimation || !('IntersectionObserver' in window)) {
+		            for (var c = 0; c < cards.length; c++) {
+		                cards[c].classList.add('visible');
+		            }
+		            return;
+		        }
+
+		        var cardObserver = new IntersectionObserver(function(entries) {
+		            for (var e = 0; e < entries.length; e++) {
+		                if (entries[e].isIntersecting) {
+		                    entries[e].target.classList.add('visible');
+		                    cardObserver.unobserve(entries[e].target);
+		                }
+		            }
+		        }, { threshold: 0.1 });
+
+		        for (var c = 0; c < cards.length; c++) {
+		            cardObserver.observe(cards[c]);
+		        }
+		    }
+
+		    function filterPoems() {
+		        if (window.sessionStorage) {
+		            sessionStorage.removeItem('_poetry_scrollY');
+		        }
+		        var query = searchInput.value.trim().toLowerCase();
+		        if (!query) {
+		            renderCards();
+		            return;
+		        }
+		        var filtered = [];
+		        for (var i = 0; i < allPoems.length; i++) {
+		            var p = allPoems[i];
+		            var text = (p.title + ' ' + (p.preview || '')).toLowerCase();
+		            if (text.indexOf(query) !== -1) {
+		                filtered.push(p);
+		            }
+		        }
+		        allPoems = filtered;
+		        renderCards();
+		        fetch('/poetry/index.json')
+		            .then(function(r) { return r.json(); })
+		            .then(function(full) { allPoems = full; });
+		    }
+
+		    function escHtml(s) {
+		        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+		    }
+
+		    // Load index and render
+		    fetch('/poetry/index.json')
+		        .then(function(r) {
+		            if (!r.ok) throw new Error('Index not found');
+		            return r.json();
+		        })
+		        .then(function(poems) {
+		            allPoems = poems;
+		            allPoems.sort(function(a, b) {
+		                return new Date(b.date) - new Date(a.date);
+		            });
+
+		            renderCards();
+
+		            if (window.sessionStorage) {
+		                sessionStorage.setItem('_poetry_visited', '1');
+		            }
+
+		            if (restoreScroll) {
+		                var targetY = parseInt(restoreScroll, 10);
+		                requestAnimationFrame(function() {
+		                    window.scrollTo({ top: targetY, behavior: 'instant' });
+		                });
+		            }
+
+		            searchInput.addEventListener('input', filterPoems);
+		        })
+		        .catch(function() {
+		            container.innerHTML = '<p style="text-align:center;opacity:0.5;">加载诗文列表失败。</p>';
+		        });
+		})();
+	</script>
+</body>
+</html>

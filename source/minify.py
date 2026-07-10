@@ -137,10 +137,20 @@ def minify_html(filepath):
     return False
 
 
+def strip_doc_entries(data):
+    """删除 JSON 数组中包含 _doc 键的条目（剔除注释性模板数据）"""
+    if isinstance(data, list):
+        return [strip_doc_entries(item) for item in data if not (isinstance(item, dict) and "_doc" in item)]
+    elif isinstance(data, dict):
+        return {k: strip_doc_entries(v) for k, v in data.items()}
+    return data
+
+
 def minify_json(filepath):
     try:
         with open(filepath, "r", encoding="utf-8") as f:
             data = json.load(f)
+        data = strip_doc_entries(data)
         with open(filepath, "w", encoding="utf-8", newline="") as f:
             json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
         return True

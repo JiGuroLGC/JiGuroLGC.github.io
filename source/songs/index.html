@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="author" content="Liu Guancheng">
+	<title>心曲 | JiGuro的个人博客</title>
+	<link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.4/favicon.ico">
+	<link rel="stylesheet" href="/css/style.css">
+	<script src="/js/script.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+	<meta name="generator" content="Hexo 7.3.0">
+</head>
+<body>
+	<script>
+		(() => {
+		    const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+		    const isDark = currentTheme === 'dark';
+		    const pagebody = document.getElementsByTagName('body')[0]
+		    if (isDark) {
+		        pagebody.classList.add('dark-theme');
+		        document.documentElement.setAttribute('data-theme', 'dark');
+		        document.getElementById("mobile-toggle-theme").innerText = "· 九阴"
+		    } else {
+		        pagebody.classList.remove('dark-theme');
+		        document.documentElement.setAttribute('data-theme', 'light');
+		        document.getElementById("mobile-toggle-theme").innerText = "· 重阳"
+		    }
+		})();
+	</script>
+	<div class="wrapper">
+		<header>
+			<nav class="navbar">
+				<div class="container">
+					<div class="navbar-header header-logo"><a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog&nbsp;</a></div>
+					<div class="menu navbar-right">
+						<a class="menu-item" href="/archives">归档</a>
+						<a class="menu-item" href="/category">分类</a>
+						<a class="menu-item" href="/tag">标签</a>
+						<a class="menu-item" href="/poetry">诗文</a>
+						<a class="menu-item" href="/songs">心曲</a>
+						<a class="menu-item" href="/message">留言</a>
+						<a class="menu-item" href="/links">友链</a>
+						<a class="menu-item" href="/about">关于</a>
+						<input id="switch_default" type="checkbox" class="switch_default">
+						<label for="switch_default" class="toggleBtn"></label>
+					</div>
+				</div>
+			</nav>
+			<nav class="navbar-mobile" id="nav-mobile">
+				<div class="container">
+					<div class="navbar-header">
+						<div>
+							<a href="/" onclick="sessionStorage&amp;&amp;sessionStorage.setItem('_home_skip','1')">JiGuro&#39;s Blog&nbsp;</a><a id="mobile-toggle-theme">·&nbsp;重阳</a>
+						</div>
+						<div class="menu-toggle" onclick="mobileBtn()">&#9776; 心曲</div>
+					</div>
+				</div>
+			</nav>
+		</header>
+		<div class="mobile-overlay" id="mobile-overlay">
+			<div class="mobile-menu-panel">
+				<div class="mobile-menu-grid">
+					<a class="mobile-menu-item" href="/archives"><span class="mobile-menu-label">归档</span></a>
+					<a class="mobile-menu-item" href="/category"><span class="mobile-menu-label">分类</span></a>
+					<a class="mobile-menu-item" href="/tag"><span class="mobile-menu-label">标签</span></a>
+					<a class="mobile-menu-item" href="/poetry"><span class="mobile-menu-label">诗文</span></a>
+					<a class="mobile-menu-item" href="/songs"><span class="mobile-menu-label">心曲</span></a>
+					<a class="mobile-menu-item" href="/message"><span class="mobile-menu-label">留言</span></a>
+					<a class="mobile-menu-item" href="/links"><span class="mobile-menu-label">友链</span></a>
+					<a class="mobile-menu-item" href="/about"><span class="mobile-menu-label">关于</span></a>
+				</div>
+			</div>
+		</div>
+		<script>
+			var mobileBtn = function f() {
+			    var toggleMenu = document.querySelector('.menu-toggle');
+			    var overlay = document.getElementById('mobile-overlay');
+			    var body = document.body;
+			    if (toggleMenu.classList.contains('active')) {
+			        toggleMenu.classList.remove('active');
+			        overlay.classList.remove('active');
+			        body.classList.remove('menu-open');
+			    } else {
+			        toggleMenu.classList.add('active');
+			        overlay.classList.add('active');
+			        body.classList.add('menu-open');
+			    }
+			};
+			document.getElementById('mobile-overlay').addEventListener('click', function(e) {
+			    if (e.target === this) {
+			        document.querySelector('.menu-toggle').classList.remove('active');
+			        this.classList.remove('active');
+			        document.body.classList.remove('menu-open');
+			    }
+			});
+			document.querySelectorAll('.mobile-menu-item').forEach(function(item) {
+			    item.addEventListener('click', function(e) {
+			        e.preventDefault();
+			        var href = this.getAttribute('href');
+			        var toggle = document.querySelector('.menu-toggle');
+			        var overlay = document.getElementById('mobile-overlay');
+			        toggle.classList.remove('active');
+			        overlay.classList.remove('active');
+			        document.body.classList.remove('menu-open');
+			        setTimeout(function() { window.location.href = href; }, 280);
+			    });
+			});
+		</script>
+		<div class="main">
+			<div id="songs-intro" class="songs-page-intro">
+				<div class="post-page-content" id="songs-title-content">
+					<h1>人生单曲</h1>
+					<p>人生海海，幸好有歌可栖。</p>
+				</div>
+				<div class="post-page-content" id="songs-intro-content">
+					<p style="text-align:center;opacity:0.5;">加载中...</p>
+				</div>
+			</div>
+
+			<h2 class="songs-section-title">♫ 单曲列表</h2>
+
+			<div id="song-cards-container" class="container" style="max-width:1100px;margin:0 auto;width:100%;box-sizing:border-box;">
+				<p style="text-align:center;opacity:0.5;">加载中...</p>
+			</div>
+		</div>
+		<footer id="footer" class="footer">
+			<div class="copyright">
+				<span>© 2026 Liu Guancheng | Powered by JiGuro</span>
+			</div>
+			<a href="https://icp.gov.moe/?keyword=20261961" target="_blank">萌ICP备20261961号</a>
+		</footer>
+	</div>
+
+	<button id="back-to-top" title="回到顶部">
+		<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+			<polyline points="18 15 12 9 6 15" />
+		</svg>
+	</button>
+
+	<script>
+		(function() {
+			// Reveal title elements with staggered cascade (match links page)
+			function revealHeader() {
+				var titleContent = document.getElementById('songs-title-content');
+				if (titleContent) {
+					var children = titleContent.children;
+					for (var i = 0; i < children.length; i++) {
+						(function(el, idx) {
+							setTimeout(function() {
+								el.classList.add('is-revealed');
+							}, idx * 100);
+						})(children[i], i);
+					}
+				}
+				// Reveal section title after header cascade
+				setTimeout(function() {
+					var sectionTitle = document.querySelector('.songs-section-title');
+					if (sectionTitle) sectionTitle.classList.add('is-revealed');
+				}, 250);
+			}
+
+			function revealContent(container) {
+				// Force layout so opacity:0 is painted before transitions start
+				container.offsetHeight;
+				var children = container.children;
+				for (var i = 0; i < children.length; i++) {
+					(function(el, idx) {
+						setTimeout(function() {
+							el.classList.add('is-revealed');
+						}, idx * 80);
+					})(children[i], i);
+				}
+			}
+
+			// Reveal title after a short delay, independent of dynamic content loading
+			setTimeout(function() {
+				revealHeader();
+			}, 80);
+
+			// ===== Render intro markdown =====
+			fetch('/songs/index.md')
+				.then(function(r) {
+					if (!r.ok) throw new Error('Intro not found');
+					return r.text();
+				})
+				.then(function(md) {
+					var container = document.getElementById('songs-intro-content');
+					container.innerHTML = marked.parse(md);
+					var intro = document.getElementById('songs-intro');
+					if (intro) intro.classList.add('is-loaded');
+
+					// Reveal dynamic content with forced layout
+					revealContent(container);
+				})
+				.catch(function() {
+					var container = document.getElementById('songs-intro-content');
+					container.innerHTML = '';
+					var intro = document.getElementById('songs-intro');
+					if (intro) intro.classList.add('is-loaded');
+				});
+
+			// ===== Global audio state =====
+			var currentAudio = null;
+			var currentSongId = null;
+		var lyricTimers = {};
+		var lyricAutoScrolling = {};
+		var lyricUserScroll = {};
+		var lyricScrollTimers = {};
+		var lyricSmoothTimers = {};
+		var lyricPrevActiveIdx = {};
+
+			// ===== Parse LRC =====
+			function parseLRC(lrcText) {
+				var lines = [];
+				if (!lrcText) return lines;
+				var raw = lrcText.split('\n');
+				for (var i = 0; i < raw.length; i++) {
+					var line = raw[i].trim();
+					if (!line) continue;
+					var matches = line.match(/\[(\d{1,2}):(\d{2})(?:\.(\d{1,3}))?\]/g);
+					if (!matches) continue;
+					var text = line.replace(/\[[\d:.]+\]/g, '').trim();
+					if (!text) continue;
+					for (var m = 0; m < matches.length; m++) {
+						var parts = matches[m].match(/\[(\d{1,2}):(\d{2})(?:\.(\d{1,3}))?\]/);
+						if (!parts) continue;
+						var mins = parseInt(parts[1], 10);
+						var secs = parseInt(parts[2], 10);
+						var ms = parts[3] ? parseInt(parts[3], 10) / Math.pow(10, parts[3].length) : 0;
+						lines.push({ time: mins * 60 + secs + ms, text: text });
+					}
+				}
+				lines.sort(function(a, b) { return a.time - b.time; });
+				return lines;
+			}
+
+			function formatTime(sec) {
+				var s = Math.floor(sec || 0);
+				var m = Math.floor(s / 60);
+				s = s % 60;
+				return m + ':' + (s < 10 ? '0' : '') + s;
+			}
+
+			function escHtml(s) {
+				return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+			}
+
+			// ===== Stop other audio =====
+			function stopOtherAudio(exceptId) {
+				if (currentAudio && currentSongId !== exceptId) {
+					currentAudio.pause();
+					currentAudio.src = '';
+					currentAudio = null;
+					updatePlayButton(currentSongId, false);
+					clearInterval(lyricTimers[currentSongId]);
+					clearTimeout(lyricScrollTimers[currentSongId]);
+					delete lyricTimers[currentSongId];
+					delete lyricUserScroll[currentSongId];
+			delete lyricScrollTimers[currentSongId];
+				delete lyricAutoScrolling[currentSongId];
+				delete lyricSmoothTimers[currentSongId];
+				delete lyricPrevActiveIdx[currentSongId];
+				}
+			}
+
+			function updatePlayButton(songId, playing) {
+				var btn = document.querySelector('.song-card-btn.play-btn[data-id="' + songId + '"]');
+				if (!btn) return;
+				if (playing) {
+					btn.classList.add('playing');
+					btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> 暂停';
+				} else {
+					btn.classList.remove('playing');
+					btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 20,12 8,19"/></svg> 播放';
+				}
+			}
+
+			window.toggleLyric = function(songId) {
+				var section = document.getElementById('song-lyrics-' + songId);
+				var btn = document.querySelector('.song-card-btn.lyric-btn[data-id="' + songId + '"]');
+				if (!section) return;
+				var expanded = section.classList.toggle('expanded');
+				if (btn) {
+					btn.innerHTML = expanded
+						? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg> 收起歌词'
+						: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,15 12,9 18,15"/></svg> 展开歌词';
+				}
+			}
+
+			// ===== Build song entry HTML (a single song within a group card) =====
+			function buildSongEntryHTML(song, index) {
+				var credits = [];
+				if (song.composer) credits.push('作曲: ' + escHtml(song.composer));
+				if (song.lyricist) credits.push('作词: ' + escHtml(song.lyricist));
+				var creditsHtml = credits.length ? '<p class="song-card-credits">' + credits.join('  <span>|</span>  ') + '</p>' : '';
+
+				var hasLyrics = song.lyric || song.meting;
+				var staggerDelay = (index || 0) * 0.12;
+
+				var html = '<div class="song-entry" style="transition-delay:' + staggerDelay + 's">';
+
+				// Header: cover + info
+				html += '<div class="song-entry-header">';
+				html += '<div class="song-card-cover-wrap">';
+				if (song.cover) {
+					html += '<img class="song-card-cover" src="' + escHtml(song.cover) + '" alt="' + escHtml(song.title) + '" loading="lazy" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\'" onload="this.style.display=\'\'; this.nextElementSibling.style.display=\'none\'; this.classList.add(\'loaded\')">';
+					html += '<div class="song-card-cover-fallback" style="display:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>';
+				} else {
+					html += '<div class="song-card-cover-fallback"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>';
+					html += '<img class="song-card-cover" style="display:none" onerror="this.style.display=\'none\'; this.previousElementSibling.style.display=\'flex\'" onload="this.style.display=\'\'; this.previousElementSibling.style.display=\'none\'; this.classList.add(\'loaded\')">';
+				}
+				html += '</div>';
+				html += '<div class="song-card-info">';
+				html += '<h3 class="song-card-title">' + escHtml(song.title) + '</h3>';
+				html += '<p class="song-card-artist">' + escHtml(song.artist) + '</p>';
+				html += creditsHtml;
+				html += '</div>';
+				html += '</div>';
+
+				// Actions
+				html += '<div class="song-card-actions">';
+				html += '<button class="song-card-btn play-btn" data-id="' + song.id + '" onclick="window._songPlay(\'' + song.id + '\')">';
+				html += '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 20,12 8,19"/></svg> 播放</button>';
+				if (hasLyrics) {
+					html += '<button class="song-card-btn lyric-btn" data-id="' + song.id + '" onclick="toggleLyric(\'' + song.id + '\')">';
+					html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,15 12,9 18,15"/></svg> 展开歌词</button>';
+				}
+				html += '</div>';
+
+				// Progress bar
+				html += '<div class="song-card-progress" onclick="window._songSeek(\'' + song.id + '\', event)">';
+				html += '<div class="song-card-progress-bar" data-id="' + song.id + '"></div>';
+				html += '</div>';
+
+				// Time display + volume
+				html += '<div class="song-card-progress-info">';
+				html += '<span class="song-card-time" data-id="' + song.id + '">0:00</span>';
+				html += '<input type="range" class="song-card-volume" data-id="' + song.id + '" min="0" max="100" value="70" title="音量" oninput="window._songChangeVolume(\'' + song.id + '\', this.value)">';
+				html += '</div>';
+
+				// Lyrics section
+				html += '<div class="song-card-lyrics" id="song-lyrics-' + song.id + '" onscroll="window._lyricScroll(\'' + song.id + '\')">';
+				if (song.lyric) {
+					html += '<div class="song-card-lyrics-inner" id="song-lyrics-inner-' + song.id + '">';
+					var lrcParsed = parseLRC(song.lyric);
+					for (var li = 0; li < lrcParsed.length; li++) {
+						html += '<div class="song-card-lyric-line" data-time="' + lrcParsed[li].time + '">' + escHtml(lrcParsed[li].text) + '</div>';
+					}
+					html += '</div>';
+				} else if (song.meting) {
+					html += '<div class="song-card-lyrics-inner" id="song-lyrics-inner-' + song.id + '">';
+					html += '<div class="song-card-loading">加载歌词中...</div>';
+					html += '</div>';
+				}
+				if (hasLyrics) {
+					html += '<div class="song-card-divider"></div>';
+				}
+				html += '</div>';
+
+				html += '</div>'; // end .song-entry
+				return html;
+			}
+
+			// ===== Build group card HTML =====
+			function buildGroupCardHTML(groupSongs, majorId) {
+				var padded = majorId.length < 2 ? '0' + majorId : majorId;
+				var html = '<div class="song-card-wrapper">';
+				html += '<div class="song-card-number">' + padded + '</div>';
+				html += '<div class="song-card">';
+
+				for (var i = 0; i < groupSongs.length; i++) {
+					html += buildSongEntryHTML(groupSongs[i], i);
+				}
+
+				html += '</div>'; // close .song-card
+
+				// Shared reflection outside the card, in the background
+				var desc = groupSongs[0].description;
+				if (desc && desc.trim()) {
+					html += '<div class="song-card-desc">';
+					html += marked.parse(desc);
+					html += '</div>';
+				}
+
+				html += '</div>'; // close .song-card-wrapper
+				return html;
+			}
+
+			// ===== Update cover image from meting fetch =====
+			function updateCoverInCard(card, songId, picUrl) {
+				var entries = card.querySelectorAll('.song-entry');
+				for (var i = 0; i < entries.length; i++) {
+					var btn = entries[i].querySelector('.play-btn[data-id="' + songId + '"]');
+					if (!btn) continue;
+					var coverImg = entries[i].querySelector('.song-card-cover');
+					var fallback = entries[i].querySelector('.song-card-cover-fallback');
+					if (coverImg && picUrl) {
+						coverImg.src = picUrl;
+						coverImg.style.display = '';
+						if (fallback) fallback.style.display = 'none';
+					}
+					break;
+				}
+			}
+
+			function updateLyricsInCard(card, song) {
+				var lyricsInner = document.getElementById('song-lyrics-inner-' + song.id);
+				if (!lyricsInner) return;
+				var lrcParsed = parseLRC(song.lyric || '');
+				if (!lrcParsed.length) {
+					lyricsInner.innerHTML = '<div class="song-card-loading">暂无歌词</div>';
+					return;
+				}
+				var html = '';
+				for (var li = 0; li < lrcParsed.length; li++) {
+					html += '<div class="song-card-lyric-line" data-time="' + lrcParsed[li].time + '">' + escHtml(lrcParsed[li].text) + '</div>';
+				}
+				lyricsInner.innerHTML = html;
+			}
+
+			// ===== Play a song =====
+			window._songPlay = function(songId) {
+				var song = window._songConfigs[songId];
+				if (!song) return;
+
+				// If same song is playing, toggle pause
+				if (currentSongId === songId && currentAudio) {
+					if (currentAudio.paused) {
+						currentAudio.play();
+						updatePlayButton(songId, true);
+						startLyricSync(songId);
+					} else {
+						currentAudio.pause();
+						updatePlayButton(songId, false);
+					}
+					return;
+				}
+
+				// Stop previous
+				stopOtherAudio(songId);
+
+				var playAudio = function(url) {
+					if (!url) {
+						var btn = document.querySelector('.song-card-btn.play-btn[data-id="' + songId + '"]');
+						if (btn) btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 20,12 8,19"/></svg> 无音频';
+						return;
+					}
+
+					currentAudio = new Audio(url);
+					currentAudio.volume = 0.7;
+					currentSongId = songId;
+
+					currentAudio.addEventListener('play', function() {
+						updatePlayButton(songId, true);
+						startLyricSync(songId);
+					});
+
+					currentAudio.addEventListener('pause', function() {
+						updatePlayButton(songId, false);
+					});
+
+					currentAudio.addEventListener('ended', function() {
+						updatePlayButton(songId, false);
+						var timeEl = document.querySelector('.song-card-time[data-id="' + songId + '"]');
+						if (timeEl) timeEl.textContent = '0:00';
+						currentAudio = null;
+						currentSongId = null;
+					});
+
+					currentAudio.addEventListener('timeupdate', function() {
+						if (!currentAudio) return;
+						updateLyricHighlight(songId, currentAudio.currentTime);
+						var pct = currentAudio.duration ? (currentAudio.currentTime / currentAudio.duration) * 100 : 0;
+						var bar = document.querySelector('.song-card-progress-bar[data-id="' + songId + '"]');
+						if (bar) bar.style.width = pct + '%';
+						// Update time display
+						var timeEl = document.querySelector('.song-card-time[data-id="' + songId + '"]');
+						if (timeEl && currentAudio.duration) {
+							timeEl.textContent = formatTime(currentAudio.currentTime) + ' / ' + formatTime(currentAudio.duration);
+						}
+					});
+
+					currentAudio.play().catch(function() {
+						updatePlayButton(songId, false);
+					});
+				};
+
+				if (song._audioUrl) {
+					playAudio(song._audioUrl);
+				} else if (song.audio) {
+					playAudio(song.audio);
+				} else if (song.meting) {
+					// If meting data hasn't loaded yet, try fetching now
+					var meting = song.meting;
+					var url = 'https://meting.jinghuashang.cn/?server=' + (meting.server || 'netease') +
+						'&type=' + (meting.type || 'song') + '&id=' + meting.id;
+					fetch(url)
+						.then(function(r) { return r.json(); })
+						.then(function(data) {
+							if (!data || !data.length) throw new Error('No data');
+							var toHttps = function(u) { return u ? u.replace(/^http:\/\//i, 'https://') : ''; };
+							song._audioUrl = toHttps(data[0].url);
+							playAudio(song._audioUrl);
+						})
+						.catch(function() {
+							updatePlayButton(songId, false);
+						});
+				}
+			};
+
+			// ===== Progress bar seek =====
+			window._songSeek = function(songId, event) {
+				if (currentSongId !== songId || !currentAudio || !currentAudio.duration) return;
+				var bar = event.currentTarget;
+				var rect = bar.getBoundingClientRect();
+				var x = event.clientX - rect.left;
+				var pct = Math.max(0, Math.min(1, x / rect.width));
+				currentAudio.currentTime = pct * currentAudio.duration;
+			};
+
+			// ===== Volume control =====
+			window._songChangeVolume = function(songId, val) {
+				var volume = parseInt(val) / 100;
+				if (currentSongId === songId && currentAudio) {
+					currentAudio.volume = volume;
+				}
+				// Sync all volume sliders for this song
+				var sliders = document.querySelectorAll('.song-card-volume[data-id="' + songId + '"]');
+				for (var i = 0; i < sliders.length; i++) {
+					sliders[i].value = val;
+				}
+			};
+
+			// ===== Lyric sync =====
+			function startLyricSync(songId) {
+				clearInterval(lyricTimers[songId]);
+				lyricUserScroll[songId] = false;
+				lyricTimers[songId] = setInterval(function() {
+					if (currentSongId !== songId || !currentAudio) {
+						clearInterval(lyricTimers[songId]);
+						return;
+					}
+					updateLyricHighlight(songId, currentAudio.currentTime);
+				}, 200);
+			}
+
+		// User manually scrolled lyrics — pause auto-scroll for 5s
+		window._lyricScroll = function(songId) {
+			// Ignore scroll events caused by auto-scroll animation.
+			// The flag is cleared by the scrollend listener (or timeout fallback).
+			if (lyricAutoScrolling[songId]) return;
+				lyricUserScroll[songId] = true;
+				clearTimeout(lyricScrollTimers[songId]);
+				lyricScrollTimers[songId] = setTimeout(function() {
+					lyricUserScroll[songId] = false;
+				}, 5000);
+			};
+
+			function updateLyricHighlight(songId, currentTime) {
+				var container = document.getElementById('song-lyrics-inner-' + songId);
+				if (!container) return;
+				var lyricsSection = document.getElementById('song-lyrics-' + songId);
+				var lines = container.querySelectorAll('.song-card-lyric-line');
+				if (!lines.length) return;
+				var activeIdx = -1;
+				for (var i = 0; i < lines.length; i++) {
+					var t = parseFloat(lines[i].getAttribute('data-time') || '0');
+					if (currentTime >= t) {
+						activeIdx = i;
+					} else {
+						break;
+					}
+				}
+				for (var j = 0; j < lines.length; j++) {
+					if (j === activeIdx) {
+						lines[j].classList.add('active');
+						// Only auto-scroll if user is not manually browsing
+						if (lyricsSection && !lyricUserScroll[songId]) {
+							// Only scroll when the active line actually changes
+							if (lyricPrevActiveIdx[songId] !== activeIdx) {
+								lyricPrevActiveIdx[songId] = activeIdx;
+								lyricAutoScrolling[songId] = true;
+								var lineRect = lines[j].getBoundingClientRect();
+								var sectionRect = lyricsSection.getBoundingClientRect();
+								lyricsSection.scrollTop += Math.round(lineRect.top - sectionRect.top - sectionRect.height / 3);
+								// Clear flag when smooth scroll finishes (Chrome 114+, FF 109+, Safari 15.4+)
+								lyricsSection.addEventListener('scrollend', function end() {
+									lyricAutoScrolling[songId] = false;
+									lyricsSection.removeEventListener('scrollend', end);
+								});
+								// Fallback: if scrollend is unsupported, clear after ~2 animation durations
+								clearTimeout(lyricSmoothTimers[songId]);
+								lyricSmoothTimers[songId] = setTimeout(function() {
+									if (lyricAutoScrolling[songId]) {
+										lyricAutoScrolling[songId] = false;
+									}
+								}, 800);
+							}
+						}
+					} else {
+						lines[j].classList.remove('active');
+					}
+				}
+			}
+
+			// ===== Render all song cards =====
+			function renderSongCards(songs) {
+				window._songConfigs = {};
+
+				// Group songs by major ID (integer part before dot)
+				var groups = {};
+				var groupOrder = [];
+				for (var i = 0; i < songs.length; i++) {
+					var song = songs[i];
+					if ('_doc' in song) continue;
+					var majorId = song.id.split('.')[0];
+					if (!groups[majorId]) {
+						groups[majorId] = [];
+						groupOrder.push(majorId);
+					}
+					groups[majorId].push(song);
+					window._songConfigs[song.id] = song;
+				}
+
+				var container = document.getElementById('song-cards-container');
+				container.innerHTML = '<div class="song-cards" id="song-cards-grid"></div>';
+				var grid = document.getElementById('song-cards-grid');
+
+				for (var g = 0; g < groupOrder.length; g++) {
+					var majorId = groupOrder[g];
+					var groupSongs = groups[majorId];
+
+					var placeholder = document.createElement('div');
+					placeholder.innerHTML = buildGroupCardHTML(groupSongs, majorId);
+					var card = placeholder.firstChild;
+					grid.appendChild(card);
+
+					// Fetch meting data for each song in the group
+					for (var s = 0; s < groupSongs.length; s++) {
+						(function(song, cardEl) {
+							if (!song.meting) return;
+
+							// 自定义源优先：配置中已有的字段直接使用，不请求 API
+							var hasCover = !!song.cover;
+							var hasAudio = !!song.audio;
+							var hasLyric = !!song.lyric;
+
+							if (hasCover && hasAudio && hasLyric) {
+								// 全部自定义，跳过 API 请求
+								song._audioUrl = song.audio;
+								updateLyricsInCard(cardEl, song);
+								return;
+							}
+
+							// 自定义源已存在时预填，API 仅补充缺失字段
+							if (hasAudio) song._audioUrl = song.audio;
+							if (hasLyric) updateLyricsInCard(cardEl, song);
+
+							var meting = song.meting;
+							var url = 'https://meting.jinghuashang.cn/?server=' + (meting.server || 'netease') +
+								'&type=' + (meting.type || 'song') + '&id=' + meting.id;
+
+							fetch(url)
+								.then(function(r) { return r.json(); })
+								.then(function(data) {
+									if (!data || !data.length) throw new Error('No data');
+									var songData = data[0];
+									var toHttps = function(u) { return u ? u.replace(/^http:\/\//i, 'https://') : ''; };
+
+									if (!hasCover && songData.pic) {
+										updateCoverInCard(cardEl, song.id, toHttps(songData.pic));
+									}
+
+									if (!hasAudio) {
+										song._audioUrl = toHttps(songData.url);
+									}
+
+									if (!hasLyric) {
+										var lrcRaw = songData.lrc || '';
+										if (lrcRaw && /^https?:\/\//i.test(lrcRaw)) {
+											return fetch(toHttps(lrcRaw))
+												.then(function(lr) { return lr.text(); })
+												.then(function(lrcText) {
+													song.lyric = lrcText;
+													updateLyricsInCard(cardEl, song);
+													return song;
+												})
+												.catch(function() { return song; });
+										} else if (lrcRaw) {
+											song.lyric = lrcRaw;
+											updateLyricsInCard(cardEl, song);
+										}
+									}
+									return song;
+								})
+								.catch(function() {
+									var lyricsInner = document.getElementById('song-lyrics-inner-' + song.id);
+									if (lyricsInner && !song.lyric) {
+										lyricsInner.innerHTML = '<div class="song-card-error">无法获取歌曲信息</div>';
+									}
+								});
+						})(groupSongs[s], card);
+					}
+				}
+
+				// Apply scroll-reveal animation
+				var cards = grid.querySelectorAll('.song-card-wrapper');
+				if (!('IntersectionObserver' in window)) {
+					for (var c = 0; c < cards.length; c++) {
+						cards[c].classList.add('visible');
+					}
+					return;
+				}
+
+				var observer = new IntersectionObserver(function(entries) {
+					for (var e = 0; e < entries.length; e++) {
+						if (entries[e].isIntersecting) {
+							entries[e].target.classList.add('visible');
+							observer.unobserve(entries[e].target);
+						}
+					}
+				}, { threshold: 0.1 });
+
+				for (var c = 0; c < cards.length; c++) {
+					observer.observe(cards[c]);
+				}
+			}
+
+			// ===== Load config and render =====
+			fetch('/songs/config.json')
+				.then(function(r) {
+					if (!r.ok) throw new Error('Config not found');
+					return r.json();
+				})
+				.then(function(songs) {
+					renderSongCards(songs);
+				})
+				.catch(function() {
+					document.getElementById('song-cards-container').innerHTML = '<p style="text-align:center;opacity:0.5;">加载歌曲列表失败。</p>';
+				});
+
+			// ===== Back to top =====
+			(function() {
+				var btn = document.getElementById('back-to-top');
+				if (!btn) return;
+				var lastY = 0;
+				var ticking = false;
+				btn.addEventListener('click', function() {
+					btn.classList.remove('visible');
+					window.scrollTo({ top: 0, behavior: 'smooth' });
+				});
+				window.addEventListener('scroll', function() {
+					if (!ticking) {
+						requestAnimationFrame(function() {
+							var y = window.scrollY;
+							var maxY = document.documentElement.scrollHeight - window.innerHeight - 20;
+							if (y <= 100 || y >= maxY) {
+								btn.classList.remove('visible');
+							} else if (y > lastY + 20) {
+								btn.classList.add('visible');
+							} else if (y < lastY - 20) {
+								btn.classList.remove('visible');
+							}
+							lastY = y;
+							ticking = false;
+						});
+						ticking = true;
+					}
+				}, { passive: true });
+			})();
+		})();
+	</script>
+</body>
+</html>

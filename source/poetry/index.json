@@ -1,0 +1,58 @@
+[
+    {
+        "id": "yeren",
+        "title": "野人",
+        "author": "JiGuro",
+        "date": "2025-10-12",
+        "path": "/poetry/yeren.md",
+        "preview": "我来自山谷，<br>不识人间烟火。<br>若你执意邀我入尘网，"
+    },
+    {
+        "id": "chuye",
+        "title": "初夜感怀",
+        "author": "JiGuro",
+        "date": "2025-08-03",
+        "path": "/poetry/chuye.md",
+        "preview": "今夜万籁俱寂，<br>只剩窗外的虫鸣和我。<br>月光很薄，"
+    },
+    {
+        "id": "muyu",
+        "title": "暮雨",
+        "author": "JiGuro",
+        "date": "2025-05-18",
+        "path": "/poetry/muyu.md",
+        "preview": "雨打在芭蕉上，<br>一颗，两颗，三颗。<br>天空低得像要塌下来。"
+    },
+    {
+        "id": "he",
+        "title": "河",
+        "author": "JiGuro",
+        "date": "2025-01-20",
+        "path": "/poetry/he.md",
+        "preview": "我见过一条河，<br>在很久以前。<br>那时候我还很小，"
+    },
+    {
+        "id": "denglin",
+        "title": "登临",
+        "author": "JiGuro",
+        "date": "2024-11-08",
+        "path": "/poetry/denglin.md",
+        "preview": "云山万里望中收，<br>孤雁一声天地秋。<br>古木萧萧风自起，"
+    },
+    {
+        "id": "yedu",
+        "title": "江城子·夜读",
+        "author": "JiGuro",
+        "date": "2024-09-15",
+        "path": "/poetry/yedu.md",
+        "preview": "更深人静小窗幽，<br>烛光浮，影如钩。<br>半卷残书，字字入心头。"
+    },
+    {
+        "id": "wuhou",
+        "title": "午后",
+        "author": "JiGuro",
+        "date": "2024-07-03",
+        "path": "/poetry/wuhou.md",
+        "preview": "午后的光从百叶窗的缝隙里筛进来，<br>在桌上投下一道一道的细影。<br>恍惚中我以为那是琴键，"
+    }
+]
