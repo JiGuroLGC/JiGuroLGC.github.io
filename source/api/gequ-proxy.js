@@ -1,45 +1,63 @@
+var https = require('https');
+var http = require('http');
+
 /**
- * Vercel Edge Function — 歌曲宝 API 代理
+ * Vercel Node.js Serverless Function — 歌曲宝 API 代理
  * GET /api/gequ-proxy?id=203725451
  */
-export const config = { runtime: 'edge' };
+module.exports = async function handler(req, res) {
+  var id = req.query.id;
 
-export default async function handler(request) {
-  var url = new URL(request.url);
-  var gequId = url.searchParams.get('id');
-
-  if (!gequId) {
-    return new Response(JSON.stringify({ code: 0, msg: '缺少 id 参数' }), {
-      status: 400,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+  if (!id) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    return res.status(400).json({ code: 0, msg: '缺少 id 参数' });
   }
 
   try {
-    var resp = await fetch('https://www.gequbao.net/api/play-url', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: gequId }),
-    });
-    var data = await resp.json();
-
-    return new Response(JSON.stringify(data), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    var result = await gequRequest(id);
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    return res.status(200).json(result);
   } catch (e) {
-    return new Response(JSON.stringify({ code: 0, msg: '代理请求失败' }), {
-      status: 502,
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    return res.status(502).json({ code: 0, msg: '代理请求失败: ' + (e.message || '') });
+  }
+};
+
+function gequRequest(id) {
+  return new Promise(function(resolve, reject) {
+    var body = JSON.stringify({ id: id });
+    var url = new URL('https://www.gequbao.net/api/play-url');
+    var mod = url.protocol === 'https:' ? https : http;
+
+    var opts = {
+      hostname: url.hostname,
+      port: url.port || 443,
+      path: url.pathname,
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        'Content-Length': Buffer.byteLength(body),
+        'User-Agent': 'Mozilla/5.0 (compatible; VercelProxy/1.0)',
       },
+      timeout: 10000,
+    };
+
+    var req = mod.request(opts, function(resp) {
+      var chunks = [];
+      resp.on('data', function(c) { chunks.push(c); });
+      resp.on('end', function() {
+        try {
+          var data = JSON.parse(Buffer.concat(chunks).toString());
+          resolve(data);
+        } catch (e) {
+          reject(new Error('JSON 解析失败'));
+        }
+      });
     });
-  }
+
+    req.on('error', function(e) { reject(e); });
+    req.on('timeout', function() { req.destroy(); reject(new Error('请求超时')); });
+    req.write(body);
+    req.end();
+  });
 }

@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/gequ-proxy.js": {
+      "maxDuration": 15
+    }
+  }
+}
