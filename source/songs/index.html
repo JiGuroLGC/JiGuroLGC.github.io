@@ -538,26 +538,35 @@
 						playAudio(song._audioUrl);
 					})
 					.catch(function() {
-						updatePlayButton(songId, false);
+						// Vercel proxy 失败，尝试 meting 源作为回退
+						if (song.meting) {
+							playViaMeting(song, songId);
+						} else {
+							updatePlayButton(songId, false);
+						}
 					});
 				} else if (song.meting) {
-					// If meting data hasn't loaded yet, try fetching now
-					var meting = song.meting;
-					var url = 'https://api.qijieya.cn/meting/?server=' + (meting.server || 'netease') +
-						'&type=' + (meting.type || 'song') + '&id=' + meting.id;
-					fetch(url)
-						.then(function(r) { return r.json(); })
-						.then(function(data) {
-							if (!data || !data.length) throw new Error('No data');
-							var toHttps = function(u) { return u ? u.replace(/^http:\/\//i, 'https://') : ''; };
-							song._audioUrl = toHttps(data[0].url);
-							playAudio(song._audioUrl);
-						})
-						.catch(function() {
-							updatePlayButton(songId, false);
-						});
+					playViaMeting(song, songId);
 				}
 			};
+
+			// ===== Helper: play via meting API (used by both gequ fallback and meting primary) =====
+			function playViaMeting(song, songId) {
+				var meting = song.meting;
+				var url = 'https://api.qijieya.cn/meting/?server=' + (meting.server || 'netease') +
+					'&type=' + (meting.type || 'song') + '&id=' + meting.id;
+				fetch(url)
+					.then(function(r) { return r.json(); })
+					.then(function(data) {
+						if (!data || !data.length) throw new Error('No data');
+						var toHttps = function(u) { return u ? u.replace(/^http:\/\//i, 'https://') : ''; };
+						song._audioUrl = toHttps(data[0].url);
+						playAudio(song._audioUrl);
+					})
+					.catch(function() {
+						updatePlayButton(songId, false);
+					});
+			}
 
 			// ===== Progress bar seek =====
 			window._songSeek = function(songId, event) {
