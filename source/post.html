@@ -7,10 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="author" content="Liu Guancheng">
     <title>文章 | JiGuro的个人博客</title>
-    <link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.4/favicon.ico">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/favicon.ico">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.4/css/music-player.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.4/css/twikoo.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/css/music-player.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/css/twikoo.css">
     <script src="/js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" id="hljs-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
@@ -334,7 +334,7 @@
                             var tagsHtml = '';
                             for (var t = 0; t < article.tags.length; t++) {
                                 var tag = (article.tags[t] || '').trim();
-                                if (tag) tagsHtml += '<a href="/tag">' + tag + '</a>';
+                                if (tag) tagsHtml += '<a href="/tag?tag=' + encodeURIComponent(tag) + '">' + tag + '</a>';
                             }
                         document.getElementById('post-page-tags').innerHTML = tagsHtml;
                     }
@@ -720,10 +720,10 @@
             })();
         </script>
 
-        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.4/js/music-player.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/js/music-player.js"></script>
 
         <!-- Twikoo JS -->
-        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.4/js/twikoo.nocss.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/js/twikoo.nocss.js"></script>
         <script>
             twikoo.init({
                 envId: 'https://twikoolgc.netlify.app/.netlify/functions/twikoo',

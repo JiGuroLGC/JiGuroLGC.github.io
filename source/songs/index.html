@@ -6,7 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<meta name="author" content="Liu Guancheng">
 	<title>心曲 | JiGuro的个人博客</title>
-	<link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.4/favicon.ico">
+	<link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/favicon.ico">
 	<link rel="stylesheet" href="/css/style.css">
 	<script src="/js/script.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -265,6 +265,39 @@
 				}
 			}
 
+			// ===== Collapse other lyrics =====
+			function collapseOtherLyrics(exceptId) {
+				var allLyrics = document.querySelectorAll('.song-card-lyrics');
+				for (var i = 0; i < allLyrics.length; i++) {
+					var lyrics = allLyrics[i];
+					var id = lyrics.id.replace('song-lyrics-', '');
+					if (id !== exceptId) {
+						lyrics.classList.remove('expanded');
+						var btn = document.querySelector('.song-card-btn.lyric-btn[data-id="' + id + '"]');
+						if (btn) {
+							btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,15 12,9 18,15"/></svg> 展开歌词';
+						}
+					}
+				}
+			}
+
+			// ===== Reset all other songs' progress =====
+			function resetAllOtherSongs(exceptId) {
+				var allBars = document.querySelectorAll('.song-card-progress-bar');
+				for (var i = 0; i < allBars.length; i++) {
+					if (allBars[i].getAttribute('data-id') !== exceptId) {
+						allBars[i].style.width = '0%';
+					}
+				}
+				var allTimes = document.querySelectorAll('.song-card-time');
+				for (var i = 0; i < allTimes.length; i++) {
+					if (allTimes[i].getAttribute('data-id') !== exceptId) {
+						allTimes[i].textContent = '0:00';
+					}
+				}
+				collapseOtherLyrics(exceptId);
+			}
+
 			function updatePlayButton(songId, playing) {
 				var btn = document.querySelector('.song-card-btn.play-btn[data-id="' + songId + '"]');
 				if (!btn) return;
@@ -281,7 +314,11 @@
 				var section = document.getElementById('song-lyrics-' + songId);
 				var btn = document.querySelector('.song-card-btn.lyric-btn[data-id="' + songId + '"]');
 				if (!section) return;
+				var wasExpanded = section.classList.contains('expanded');
 				var expanded = section.classList.toggle('expanded');
+				if (expanded) {
+					collapseOtherLyrics(songId);
+				}
 				if (btn) {
 					btn.innerHTML = expanded
 						? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg> 收起歌词'
@@ -440,6 +477,7 @@
 
 				// Stop previous
 				stopOtherAudio(songId);
+				resetAllOtherSongs(songId);
 
 				var playAudio = function(url) {
 					if (!url) {
@@ -491,10 +529,21 @@
 					playAudio(song._audioUrl);
 				} else if (song.audio) {
 					playAudio(song.audio);
+				} else if (song.gequ) {
+					fetch('/api/gequ-proxy?id=' + encodeURIComponent(song.gequ.id))
+					.then(function(r) { return r.json(); })
+					.then(function(data) {
+						if (!data || !data.data || !data.data.url) throw new Error('No data');
+						song._audioUrl = data.data.url;
+						playAudio(song._audioUrl);
+					})
+					.catch(function() {
+						updatePlayButton(songId, false);
+					});
 				} else if (song.meting) {
 					// If meting data hasn't loaded yet, try fetching now
 					var meting = song.meting;
-					var url = 'https://meting.jinghuashang.cn/?server=' + (meting.server || 'netease') +
+					var url = 'https://api.qijieya.cn/meting/?server=' + (meting.server || 'netease') +
 						'&type=' + (meting.type || 'song') + '&id=' + meting.id;
 					fetch(url)
 						.then(function(r) { return r.json(); })
@@ -659,7 +708,7 @@
 							if (hasLyric) updateLyricsInCard(cardEl, song);
 
 							var meting = song.meting;
-							var url = 'https://meting.jinghuashang.cn/?server=' + (meting.server || 'netease') +
+							var url = 'https://api.qijieya.cn/meting/?server=' + (meting.server || 'netease') +
 								'&type=' + (meting.type || 'song') + '&id=' + meting.id;
 
 							fetch(url)
@@ -673,7 +722,7 @@
 										updateCoverInCard(cardEl, song.id, toHttps(songData.pic));
 									}
 
-									if (!hasAudio) {
+									if (!hasAudio && !song.gequ) {
 										song._audioUrl = toHttps(songData.url);
 									}
 

@@ -6,12 +6,12 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<meta name="author" content="Liu Guancheng">
 	<title>归档 | JiGuro的个人博客</title>
-	<link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.4/favicon.ico">
+	<link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/favicon.ico">
 	<!-- stylesheets list from _config.yml -->
 	<link rel="stylesheet" href="/css/style.css">
 	<!-- scripts list from _config.yml -->
 	<script src="/js/script.js"></script>
-	<script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.4/js/tocbot.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/js/tocbot.min.js"></script>
 	<meta name="generator" content="Hexo 7.3.0">
 </head>
 <body>
@@ -199,24 +199,31 @@
 		            html += '<span>' + (a.author || 'Liu Guancheng') + '</span>';
 		            html += '<span>' + monthStr + ' ' + dayStr + ', ' + year + '</span>';
 		            html += '</p>';
+		            html += '</div></a>';
+            var hasTags = false, hasDesc = !!a.description;
             if (a.tags && a.tags.length) {
                 var tagList = [];
                 for (var t = 0; t < a.tags.length; t++) {
                     var tag = (a.tags[t] || '').trim();
                     if (tag) tagList.push(tag);
                 }
-                if (tagList.length) {
+                hasTags = tagList.length > 0;
+            }
+            if (hasTags || hasDesc) {
+                html += '<div class="archive-card-after">';
+                if (hasTags) {
                     html += '<p class="archive-card-tags">';
                     for (var u = 0; u < tagList.length; u++) {
-                        html += '<span>' + tagList[u] + '</span>';
+                        html += '<a href="/tag?tag=' + encodeURIComponent(tagList[u]) + '">' + tagList[u] + '</a>';
                     }
                     html += '</p>';
                 }
+                if (hasDesc) {
+                    html += '<p class="archive-card-desc">' + a.description + '</p>';
+                }
+                html += '</div>';
             }
-		            if (a.description) {
-		                html += '<p class="archive-card-desc">' + a.description + '</p>';
-		            }
-		            html += '</div></a></article>';
+		            html += '</article>';
 		        }
 		        html += '</div>';
 		        container.innerHTML = html;

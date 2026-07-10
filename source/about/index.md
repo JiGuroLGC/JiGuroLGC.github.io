@@ -55,7 +55,7 @@
 | **CDN 加速** | [jsDelivr](https://www.jsdelivr.com/) —— 静态资源（marked.js 等）通过 CDN 加载 |
 | **评论** | [Twikoo](https://twikoo.js.org/) —— 简洁的评论系统，后端部署于 [Netlify](https://www.netlify.com/) |
 | **数据库** | [MongoDB](https://www.mongodb.com/) —— NoSQL 文档数据库，为评论系统提供数据存储 |
-| **音乐** | [Meting API](https://github.com/injahow/meting-api) + 自定义播放器 —— 支持网易云等多平台音乐解析 |
+| **音乐** | [Meting API](https://api.qijieya.cn) + 自定义播放器 —— 支持网易云等多平台音乐解析 |
 | **备案** | [萌ICP备20261961号](https://icp.gov.moe/?keyword=20261961) —— 仅供娱乐 |
 
 ## 版权信息
@@ -103,6 +103,10 @@
 - [归档](/archives) — 按时间浏览所有文章
 - [分类](/category) — 按类别浏览文章
 - [标签](/tag) — 按标签浏览文章
+- [诗文](/poetry) — 原创诗歌作品
+- [心曲](/songs) — 个人音乐收藏
+- [留言](/message) — 留言板
+- [友链](/links) — 友情链接
 - [关于](/about) — 本页面
 
 ## 联系方式

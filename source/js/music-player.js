@@ -73,7 +73,7 @@
     var metaServer = meting.server || 'netease';
     var metaType = meting.type || 'song';
     var metaId = meting.id;
-    var url = 'https://meting.jinghuashang.cn/?server=' + metaServer +
+    var url = 'https://api.qijieya.cn/meting/?server=' + metaServer +
       '&type=' + metaType + '&id=' + metaId;
 
     fetch(url)

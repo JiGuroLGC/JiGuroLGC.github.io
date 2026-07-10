@@ -1715,10 +1715,14 @@ header.fade-in-element {
 .archive-card-meta span {
   margin-right: 0.8rem;
 }
+.archive-card-after {
+  padding: 0 1.4rem 1.4rem;
+}
 .archive-card-tags {
   margin: 0 0 0.8rem;
 }
-.archive-card-tags span {
+.archive-card-tags span,
+.archive-card-tags a {
   display: inline-block;
   font-size: 0.72rem;
   padding: 0.15em 0.6em;
@@ -1727,9 +1731,12 @@ header.fade-in-element {
   border-radius: 3px;
   color: inherit;
   opacity: 0.6;
+  text-decoration: none;
+  cursor: pointer;
   transition: opacity 0.2s;
 }
-.archive-card-tags span:hover {
+.archive-card-tags span:hover,
+.archive-card-tags a:hover {
   opacity: 1;
 }
 .archive-card-desc {
@@ -2729,6 +2736,13 @@ pre.code-block {
 .sec-group.open .sec-body {
   max-height: 1200px;
 }
+.sec-group.target-flash .sec-header {
+  animation: tagFlashBg 1.8s ease;
+}
+@keyframes tagFlashBg {
+  0% { background: var(--tag-flash, rgba(100,150,255,0.12)); }
+  100% { background: transparent; }
+}
 .sec-card {
   display: flex;
   flex-wrap: wrap;
@@ -3456,7 +3470,6 @@ pre.code-block {
   background: rgba(0,0,0,0.06);
   margin: 0 1.4rem 0.8rem;
   border-radius: 2px;
-  overflow: hidden;
   cursor: pointer;
 }
 .dark-theme .song-card-progress {
@@ -3479,8 +3492,7 @@ pre.code-block {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  background: rgba(0,0,0,0.5);
   opacity: 0;
   transition: opacity 0.2s;
 }
@@ -3540,8 +3552,7 @@ pre.code-block {
   background: rgba(255,255,255,0.55);
 }
 .dark-theme .song-card-progress-bar::after {
-  background: #2a2b2f;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  background: rgba(255,255,255,0.55);
 }
 
 @media screen and (max-width: 480px) {

@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="author" content="Liu Guancheng">
     <title>标签 | JiGuro的个人博客</title>
-    <link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.4/favicon.ico">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/favicon.ico">
     <link rel="stylesheet" href="/css/style.css">
     <script src="/js/script.js"></script>
     <meta name="generator" content="Hexo 7.3.0">
@@ -254,6 +254,33 @@
                                     titleEls[t].closest('.sec-group').classList.add('open');
                                     break;
                                 }
+                            }
+                        }
+                    }
+
+                    // Handle ?tag= URL parameter — auto-expand & scroll to target tag
+                    var urlParams = new URLSearchParams(window.location.search);
+                    var targetTag = urlParams.get('tag');
+                    if (targetTag) {
+                        var allGroups = container.querySelectorAll('.sec-group');
+                        var targetGroup = null;
+                        for (var g = 0; g < allGroups.length; g++) {
+                            var titleEl = allGroups[g].querySelector('.sec-title');
+                            if (titleEl && titleEl.textContent === targetTag) {
+                                targetGroup = allGroups[g];
+                                break;
+                            }
+                        }
+                        if (targetGroup) {
+                            targetGroup.classList.add('open');
+                            setTimeout(function() {
+                                targetGroup.classList.add('target-flash');
+                                targetGroup.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }, 150);
+                            // Clear back-button restore so ?tag= takes priority
+                            if (window.sessionStorage) {
+                                sessionStorage.removeItem('_tag_scrollY');
+                                sessionStorage.removeItem('_tag_open');
                             }
                         }
                     }
