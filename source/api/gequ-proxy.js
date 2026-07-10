@@ -1,7 +1,9 @@
 /**
- * Vercel Serverless Function — 歌曲宝 API 代理
+ * Vercel Edge Function — 歌曲宝 API 代理
  * GET /api/gequ-proxy?id=203725451
  */
+export const config = { runtime: 'edge' };
+
 export default async function handler(request) {
   var url = new URL(request.url);
   var gequId = url.searchParams.get('id');
