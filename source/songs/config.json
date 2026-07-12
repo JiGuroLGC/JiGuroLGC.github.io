@@ -252,9 +252,7 @@
         "artist": "毛不易 / 裁缝铺 / 中国潮音",
         "composer": "郭顶",
         "lyricist": "郭顶",
-        "gequ": {
-            "id": "203725451"
-        },
+        "audio": "https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io/music/想着你.mp3",
         "meting": {
             "server": "tencent",
             "type": "song",
