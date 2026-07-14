@@ -18,14 +18,17 @@
             color: #161209;
             transition: background 0.3s, color 0.3s;
         }
+
         body.dark-theme {
             background: #292a2d;
             color: #a9a9b3;
         }
+
         .notfound {
             text-align: center;
             padding: 2rem;
         }
+
         .notfound-code {
             font-size: 8rem;
             font-weight: 100;
@@ -35,14 +38,17 @@
             color: #bbb;
             transition: color 0.3s;
         }
+
         body.dark-theme .notfound-code {
             color: #555;
         }
+
         .notfound-title {
             font-size: 1.5rem;
             font-weight: 400;
             margin: 0.5rem 0 1rem;
         }
+
         .notfound-desc {
             font-size: 0.95rem;
             opacity: 0.65;
@@ -50,6 +56,7 @@
             max-width: 320px;
             line-height: 1.8;
         }
+
         .notfound-home {
             display: inline-block;
             padding: 0.6rem 2rem;
@@ -60,20 +67,29 @@
             font-size: 0.9rem;
             transition: all 0.25s;
         }
+
         .notfound-home:hover {
             background: #161209;
             color: #fff;
         }
+
         body.dark-theme .notfound-home {
             border-color: #a9a9b3;
         }
+
         body.dark-theme .notfound-home:hover {
             background: #a9a9b3;
             color: #292a2d;
         }
+
         @media screen and (max-width: 480px) {
-            .notfound-code { font-size: 5rem; }
-            .notfound-title { font-size: 1.2rem; }
+            .notfound-code {
+                font-size: 5rem;
+            }
+
+            .notfound-title {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
@@ -87,7 +103,7 @@
     </div>
 
     <script>
-        (function () {
+        (function() {
             var theme = window.localStorage && window.localStorage.getItem('theme');
             if (theme === 'dark') {
                 document.body.classList.add('dark-theme');

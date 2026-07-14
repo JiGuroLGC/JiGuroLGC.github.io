@@ -2744,7 +2744,18 @@
                 });
                 f.on(`*`, (t, n, ...r) => {
                     e && (n === `loading` && (i.state = 0), n === `loaded` && (i.state = 1), n === `error` && (i.state = 2, e?.showError(i, `{{IMAGE_ERROR}}`)), e.emit(`panzoom:${n}`, i, ...r), n === `loading` && e.emit(`contentLoading`, i), n === `ready` && e.emit(`contentReady`, i), i.index === e?.getPageIndex() && u())
-                }), i.panzoomRef = f
+                }), i.panzoomRef = f;
+                if (i.exif) {
+                    f.on(`ready`, function() {
+                        var w = a.querySelector(`.f-panzoom__wrapper`);
+                        if (w && !w.querySelector(`.fb-exif-top`)) {
+                            var h = document.createElement(`div`);
+                            h.className = `fb-exif-top`;
+                            h.textContent = i.exif;
+                            w.insertBefore(h, w.firstChild);
+                        }
+                    });
+                }
             }
 
             function c(e, t) {
@@ -5181,42 +5192,50 @@
     e.Arrows = Ee, e.Autoplay = Pe, e.Carousel = he, e.CarouselSlideContentState = le, e.CarouselState = ce, e.Fancybox = $, e.FancyboxState = Q, e.Fullscreen = Ge, e.Html = ze, e.Lazyload = q, e.PANZOOM_DEFAULT_POS = U, e.Panzoom = oe, e.PanzoomAction = H, e.PanzoomState = W, e.PanzoomZoomLevel = te, e.Sync = be, e.Thumbs = Le, e.Toolbar = Me, e.ToolbarColumn = J, e.Video = He, e.Zoomable = ve
 });;
 (function(W) {
+    var _animTimer = 0;
+    var _animEl = null;
+
     W.Fancybox.getDefaults().theme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
     W.Fancybox.bind("[data-fancybox]", {
         placeFocusBack: false,
         dragToClose: false,
         on: {
+            ready: function(instance) {
+                var thumbs = document.querySelector('.f-thumbs');
+                if (thumbs) thumbs.classList.add('is-hidden');
+            },
             reveal: function(instance, slide) {
                 var triggerEl = slide.triggerEl;
                 if (!triggerEl) return;
+                triggerEl.classList.add('caption-reset', 'no-exif');
                 var exifData = triggerEl.getAttribute('data-exif');
                 if (!exifData) return;
                 if (slide.el.querySelector('.fb-exif-top')) return;
+                var wrapper = slide.el.querySelector('.f-panzoom__wrapper');
+                if (!wrapper) return;
                 var exifEl = document.createElement('div');
                 exifEl.className = 'fb-exif-top';
                 exifEl.textContent = exifData;
-                setTimeout(function() {
-                    var img = slide.el.querySelector('img');
-                    if (img && img.parentNode) {
-                        img.parentNode.insertBefore(exifEl, img);
-                    }
-                }, 80);
+                wrapper.insertBefore(exifEl, wrapper.firstChild);
             }
         }
     });
-
-    var _animTimer = 0;
-    var _animEl = null;
 
     function checkAndDisableZoom() {
         var instance = W.Fancybox.getInstance();
         if (!instance) return;
         var slide = instance.getSlide();
+        if (!slide) return;
+
+        // Remove EXIF overlay immediately on close
+        var exifEl = slide.el && slide.el.querySelector('.fb-exif-top');
+        if (exifEl) exifEl.remove();
+
         var triggerEl = slide ? slide.triggerEl : null;
         if (!triggerEl) return;
 
         if (_animEl) {
-            _animEl.classList.remove('no-close-anim', 'caption-reset', 'no-exif');
+            _animEl.classList.remove('no-close-anim');
         }
         clearTimeout(_animTimer);
         _animEl = triggerEl;
@@ -5224,10 +5243,14 @@
         triggerEl.classList.add('no-close-anim', 'caption-reset', 'no-exif');
 
         _animTimer = setTimeout(function() {
-            if (!_animEl) return;
-            _animEl.classList.remove('no-close-anim', 'no-exif');
-            _animEl.offsetHeight;
-            _animEl.classList.remove('caption-reset');
+            if (W.Fancybox.getInstance()) return;
+            var cards = document.querySelectorAll('.ps-figure.caption-reset');
+            for (var i = 0; i < cards.length; i++) {
+                var card = cards[i];
+                card.classList.remove('no-close-anim', 'no-exif');
+                card.offsetHeight;
+                card.classList.remove('caption-reset');
+            }
             _animEl = null;
             _animTimer = 0;
         }, 500);

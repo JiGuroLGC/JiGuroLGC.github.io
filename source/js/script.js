@@ -1,18 +1,18 @@
 // declaraction of document.ready() function.
-(function () {
+(function() {
     var ie = !!(window.attachEvent && !window.opera);
     var wk = /webkit\/(\d+)/i.test(navigator.userAgent) && (RegExp.$1 < 525);
     var fn = [];
-    var run = function () {
+    var run = function() {
         for (var i = 0; i < fn.length; i++) fn[i]();
     };
     var d = document;
-    d.ready = function (f) {
+    d.ready = function(f) {
         if (!ie && !wk && d.addEventListener)
             return d.addEventListener('DOMContentLoaded', f, false);
         if (fn.push(f) > 1) return;
         if (ie)
-            (function () {
+            (function() {
                 try {
                     d.documentElement.doScroll('left');
                     run();
@@ -21,7 +21,7 @@
                 }
             })();
         else if (wk)
-            var t = setInterval(function () {
+            var t = setInterval(function() {
                 if (/^(loaded|complete)$/.test(d.readyState))
                     clearInterval(t), run();
             }, 0);
@@ -73,9 +73,9 @@ document.ready(
                 // Toggle highlight.js theme if present
                 var hljsTheme = document.getElementById('hljs-theme');
                 if (hljsTheme) {
-                    hljsTheme.href = dark
-                        ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
-                        : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
+                    hljsTheme.href = dark ?
+                        'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css' :
+                        'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
                 }
                 window.localStorage && window.localStorage.setItem('theme', dark ? 'dark' : 'light');
                 if (typeof Fancybox !== 'undefined') {
@@ -94,19 +94,20 @@ document.ready(
             // Globally disable all CSS transitions during snapshot capture
             document.documentElement.classList.add('no-transitions');
 
-            var vt = document.startViewTransition(function() { doSwitch(); });
+            var vt = document.startViewTransition(function() {
+                doSwitch();
+            });
             vt.ready.then(function() {
-                var clipStart = direction === 'down'
-                    ? 'inset(0 0 100% 0)'
-                    : 'inset(100% 0 0 0)';
-                document.documentElement.animate(
-                    { clipPath: [clipStart, 'inset(0 0 0 0)'] },
-                    {
-                        duration: 500,
-                        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-                        pseudoElement: '::view-transition-new(theme-toggle)'
-                    }
-                );
+                var clipStart = direction === 'down' ?
+                    'inset(0 0 100% 0)' :
+                    'inset(100% 0 0 0)';
+                document.documentElement.animate({
+                    clipPath: [clipStart, 'inset(0 0 0 0)']
+                }, {
+                    duration: 500,
+                    easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                    pseudoElement: '::view-transition-new(theme-toggle)'
+                });
                 vt.finished.then(function() {
                     document.documentElement.classList.remove('no-transitions');
                     document.documentElement.style.removeProperty('view-transition-name');
@@ -133,7 +134,9 @@ document.ready(
         var menuObserver = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.attributeName === 'class') {
-                    var oldClasses = (mutation.oldValue || '').split(/\s+/).filter(function(c) { return c; });
+                    var oldClasses = (mutation.oldValue || '').split(/\s+/).filter(function(c) {
+                        return c;
+                    });
                     var hadMenuOpen = oldClasses.indexOf('menu-open') !== -1;
                     var hasMenuOpen = document.body.classList.contains('menu-open');
 
@@ -155,12 +158,16 @@ document.ready(
                 }
             });
         });
-        menuObserver.observe(document.body, { attributes: true, attributeFilter: ['class'], attributeOldValue: true });
+        menuObserver.observe(document.body, {
+            attributes: true,
+            attributeFilter: ['class'],
+            attributeOldValue: true
+        });
     }
 );
 
 // Loading screen and transition animation
-document.ready(function () {
+document.ready(function() {
     var loadingScreen = document.getElementById('loading-screen');
     if (!loadingScreen) return;
 
@@ -192,7 +199,7 @@ document.ready(function () {
 
     function waitForResources() {
         var promises = [];
-        promises.push(new Promise(function (resolve) {
+        promises.push(new Promise(function(resolve) {
             if (document.readyState === 'complete') {
                 resolve();
             } else {
@@ -208,7 +215,7 @@ document.ready(function () {
     function startTransition() {
         loadingWrapper.classList.add('fade-out');
 
-        setTimeout(function () {
+        setTimeout(function() {
             blockGray.style.transition = 'none';
             blockTheme.style.transition = 'none';
             blockTheme.style.zIndex = '3';
@@ -220,14 +227,16 @@ document.ready(function () {
 
             var animStart = null;
             var bgTransparentSet = false;
-            var GRAY_END   = 250;
-            var OPP_START  = 180;
-            var OPP_END    = 330;
+            var GRAY_END = 250;
+            var OPP_START = 180;
+            var OPP_END = 330;
             var CPLX_START = 330;
-            var CPLX_DUR   = 550;
-            var totalDur   = CPLX_START + CPLX_DUR;
+            var CPLX_DUR = 550;
+            var totalDur = CPLX_START + CPLX_DUR;
 
-            function easeInOut(t) { return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2; }
+            function easeInOut(t) {
+                return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+            }
 
             function stepAll(ts) {
                 if (!animStart) animStart = ts;
@@ -255,10 +264,10 @@ document.ready(function () {
 
                 if (elapsed >= CPLX_START && elapsed < totalDur) {
                     var t = easeInOut((elapsed - CPLX_START) / CPLX_DUR);
-                    blockTheme.style.left  = (-20 + 135 * t) + 'vw';
+                    blockTheme.style.left = (-20 + 135 * t) + 'vw';
                     blockTheme.style.width = (100 - 100 * t) + 'vw';
-                    blockGray.style.left   = (0 + 115 * t) + 'vw';
-                    blockGray.style.width  = (100 - 100 * t) + 'vw';
+                    blockGray.style.left = (0 + 115 * t) + 'vw';
+                    blockGray.style.width = (100 - 100 * t) + 'vw';
                 }
 
                 if (elapsed >= totalDur) {
@@ -275,15 +284,15 @@ document.ready(function () {
             requestAnimationFrame(stepAll);
         }, 200);
 
-        setTimeout(function () {
+        setTimeout(function() {
             clearTimeout(loadingFailsafe);
             loadingScreen.style.display = 'none';
             if (window.sessionStorage) {
                 sessionStorage.setItem('_visited', '1');
             }
             for (var i = 0; i < elements.length; i++) {
-                (function (el, idx) {
-                    setTimeout(function () {
+                (function(el, idx) {
+                    setTimeout(function() {
                         el.classList.add('visible');
                     }, idx * 100);
                 })(elements[i], i);
@@ -303,14 +312,14 @@ document.ready(function () {
     if (remaining <= 0) {
         minTimeElapsed = true;
     } else {
-        setTimeout(function () {
+        setTimeout(function() {
             minTimeElapsed = true;
             checkReady();
         }, remaining);
     }
 
     // Failsafe: force-show after 8s even if fonts/external resources hang
-    loadingFailsafe = setTimeout(function () {
+    loadingFailsafe = setTimeout(function() {
         if (!loadingScreen._started) {
             loadingScreen.style.display = 'none';
             if (window.sessionStorage) {
@@ -322,14 +331,14 @@ document.ready(function () {
         }
     }, 8000);
 
-    waitForResources().then(function () {
+    waitForResources().then(function() {
         resourcesReady = true;
         checkReady();
     });
 });
 
 // Scroll-aware mobile navbar
-document.ready(function () {
+document.ready(function() {
     var navbar = document.getElementById('nav-mobile');
     if (!navbar) return;
 
@@ -350,12 +359,14 @@ document.ready(function () {
         ticking = false;
     }
 
-    window.addEventListener('scroll', function () {
+    window.addEventListener('scroll', function() {
         if (!ticking) {
             requestAnimationFrame(update);
             ticking = true;
         }
-    }, { passive: true });
+    }, {
+        passive: true
+    });
 
     navbar.style.transition = 'transform 0.3s ease';
 });

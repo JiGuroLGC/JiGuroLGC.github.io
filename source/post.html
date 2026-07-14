@@ -49,9 +49,9 @@
                         <a class="menu-item" href="/archives">归档</a>
                         <a class="menu-item" href="/category">分类</a>
                         <a class="menu-item" href="/tag">标签</a>
-						<a class="menu-item" href="/poetry">诗文</a>
-						<a class="menu-item" href="/songs">心曲</a>
-						<a class="menu-item" href="/message">留言</a>
+                        <a class="menu-item" href="/poetry">诗文</a>
+                        <a class="menu-item" href="/songs">心曲</a>
+                        <a class="menu-item" href="/message">留言</a>
                         <a class="menu-item" href="/links">友链</a>
                         <a class="menu-item" href="/about">关于</a>
                         <input id="switch_default" type="checkbox" class="switch_default">
@@ -72,41 +72,41 @@
             </nav>
 
         </header>
-            <!-- 移动端全屏亚克力菜单 -->
-            <div class="mobile-overlay" id="mobile-overlay">
-                <div class="mobile-menu-panel">
-					<div class="mobile-menu-header">
-						<a href="/" onclick="sessionStorage&&sessionStorage.setItem('_home_skip','1')">JiGuro's Blog</a>
-						<span class="mobile-menu-close" onclick="mobileBtn()">✕</span>
-					</div>
-                    <div class="mobile-menu-grid">
-                        <a class="mobile-menu-item" href="/archives">
-                            <span class="mobile-menu-label">归档</span>
-                        </a>
-                        <a class="mobile-menu-item" href="/category">
-                            <span class="mobile-menu-label">分类</span>
-                        </a>
-                        <a class="mobile-menu-item" href="/tag">
-                            <span class="mobile-menu-label">标签</span>
-                        </a>
-						<a class="mobile-menu-item" href="/poetry">
-							<span class="mobile-menu-label">诗文</span>
-						</a>
-						<a class="mobile-menu-item" href="/songs">
-							<span class="mobile-menu-label">心曲</span>
-						</a>
-                        <a class="mobile-menu-item" href="/message">
-                            <span class="mobile-menu-label">留言</span>
-                        </a>
-                        <a class="mobile-menu-item" href="/links">
-                            <span class="mobile-menu-label">友链</span>
-                        </a>
-                        <a class="mobile-menu-item" href="/about">
-                            <span class="mobile-menu-label">关于</span>
-                        </a>
-                    </div>
+        <!-- 移动端全屏亚克力菜单 -->
+        <div class="mobile-overlay" id="mobile-overlay">
+            <div class="mobile-menu-panel">
+                <div class="mobile-menu-header">
+                    <a href="/" onclick="sessionStorage&&sessionStorage.setItem('_home_skip','1')">JiGuro's Blog</a>
+                    <span class="mobile-menu-close" onclick="mobileBtn()">✕</span>
+                </div>
+                <div class="mobile-menu-grid">
+                    <a class="mobile-menu-item" href="/archives">
+                        <span class="mobile-menu-label">归档</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/category">
+                        <span class="mobile-menu-label">分类</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/tag">
+                        <span class="mobile-menu-label">标签</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/poetry">
+                        <span class="mobile-menu-label">诗文</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/songs">
+                        <span class="mobile-menu-label">心曲</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/message">
+                        <span class="mobile-menu-label">留言</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/links">
+                        <span class="mobile-menu-label">友链</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/about">
+                        <span class="mobile-menu-label">关于</span>
+                    </a>
                 </div>
             </div>
+        </div>
         <script>
             var mobileBtn = function f() {
                 var toggleMenu = document.querySelector('.menu-toggle');
@@ -190,7 +190,7 @@
                     </a>
                     <div class="post-nav-divider"></div>
                 </nav>
-                
+
                 <!-- Bottom bar: write comment + share -->
                 <div class="post-page-bottom">
                     <button class="post-share-btn" id="share-btn" onclick="copyShareLink()">
@@ -324,6 +324,7 @@
                             var coverImg = document.getElementById('post-cover-img');
                             coverImg.src = article.image;
                             coverImg.alt = article.title;
+
                             function onCoverReady() {
                                 if (coverImg.classList.contains('loaded')) return;
                                 coverImg.classList.add('loaded');
@@ -343,39 +344,42 @@
                                 var tag = (article.tags[t] || '').trim();
                                 if (tag) tagsHtml += '<a href="/tag?tag=' + encodeURIComponent(tag) + '">' + tag + '</a>';
                             }
-                        document.getElementById('post-page-tags').innerHTML = tagsHtml;
-                    }
-
-                    // Populate prev/next navigation
-                    (function() {
-                        var aIdx = -1;
-                        for (var k = 0; k < articles.length; k++) {
-                            if (articles[k].id === postId) { aIdx = k; break; }
-                        }
-                        if (aIdx === -1) return;
-                        var prevArticle = aIdx > 0 ? articles[aIdx - 1] : null;
-                        var nextArticle = aIdx < articles.length - 1 ? articles[aIdx + 1] : null;
-                        if (!prevArticle && !nextArticle) return;
-
-                        var nav = document.getElementById('post-nav');
-                        nav.style.display = '';
-
-                        if (prevArticle) {
-                            var prevLink = document.getElementById('post-nav-prev');
-                            prevLink.href = '?id=' + encodeURIComponent(prevArticle.id) + (postType === 'poetry' ? '&type=poetry' : '');
-                            document.getElementById('post-nav-prev-title').textContent = prevArticle.title;
-                        } else {
-                            document.getElementById('post-nav-prev').style.visibility = 'hidden';
+                            document.getElementById('post-page-tags').innerHTML = tagsHtml;
                         }
 
-                        if (nextArticle) {
-                            var nextLink = document.getElementById('post-nav-next');
-                            nextLink.href = '?id=' + encodeURIComponent(nextArticle.id) + (postType === 'poetry' ? '&type=poetry' : '');
-                            document.getElementById('post-nav-next-title').textContent = nextArticle.title;
-                        } else {
-                            document.getElementById('post-nav-next').style.visibility = 'hidden';
-                        }
-                    })();
+                        // Populate prev/next navigation
+                        (function() {
+                            var aIdx = -1;
+                            for (var k = 0; k < articles.length; k++) {
+                                if (articles[k].id === postId) {
+                                    aIdx = k;
+                                    break;
+                                }
+                            }
+                            if (aIdx === -1) return;
+                            var prevArticle = aIdx > 0 ? articles[aIdx - 1] : null;
+                            var nextArticle = aIdx < articles.length - 1 ? articles[aIdx + 1] : null;
+                            if (!prevArticle && !nextArticle) return;
+
+                            var nav = document.getElementById('post-nav');
+                            nav.style.display = '';
+
+                            if (prevArticle) {
+                                var prevLink = document.getElementById('post-nav-prev');
+                                prevLink.href = '?id=' + encodeURIComponent(prevArticle.id) + (postType === 'poetry' ? '&type=poetry' : '');
+                                document.getElementById('post-nav-prev-title').textContent = prevArticle.title;
+                            } else {
+                                document.getElementById('post-nav-prev').style.visibility = 'hidden';
+                            }
+
+                            if (nextArticle) {
+                                var nextLink = document.getElementById('post-nav-next');
+                                nextLink.href = '?id=' + encodeURIComponent(nextArticle.id) + (postType === 'poetry' ? '&type=poetry' : '');
+                                document.getElementById('post-nav-next-title').textContent = nextArticle.title;
+                            } else {
+                                document.getElementById('post-nav-next').style.visibility = 'hidden';
+                            }
+                        })();
 
                         return fetch(article.path);
                     })
@@ -410,11 +414,11 @@
                             if (genre === '仿古词') {
                                 var postContent = document.getElementById('post-content');
                                 var paragraphs = postContent.querySelectorAll('p');
-                                
+
                                 // Step 1: collect all lines and find max segment length
-                                var lineData = [];  // { paraIndex, lineIndex, maxSegLen }
+                                var lineData = []; // { paraIndex, lineIndex, maxSegLen }
                                 var overallMax = 0;
-                                
+
                                 for (var i = 0; i < paragraphs.length; i++) {
                                     var html = paragraphs[i].innerHTML;
                                     var lines = html.split(/<br\s*\/?\s*>/i);
@@ -426,21 +430,26 @@
                                             var seg = segments[k].replace(/[。！？、；：""''（）《》【】\.,;:!?\s\u3000]/g, '');
                                             if (seg.length > segMax) segMax = seg.length;
                                         }
-                                        lineData.push({ p: i, idx: j, maxSeg: segMax, html: lines[j] });
+                                        lineData.push({
+                                            p: i,
+                                            idx: j,
+                                            maxSeg: segMax,
+                                            html: lines[j]
+                                        });
                                         if (segMax > overallMax) overallMax = segMax;
                                     }
                                 }
-                                
+
                                 // Step 2: determine short threshold
                                 var shortThreshold = Math.ceil(overallMax / 2);
-                                
+
                                 // Step 3: rebuild paragraphs with short-line spans
                                 for (var i = 0; i < lineData.length; i++) {
                                     if (lineData[i].maxSeg < shortThreshold) {
                                         lineData[i].html = '<span class="ci-short">' + lineData[i].html + '</span>';
                                     }
                                 }
-                                
+
                                 // Step 4: group by paragraph and write back
                                 var paraLines = {};
                                 for (var i = 0; i < lineData.length; i++) {
@@ -528,7 +537,10 @@
                                         img.classList.add('loaded');
                                     }
                                     if (img.complete) onBadgeReady();
-                                    else { img.addEventListener('load', onBadgeReady); img.addEventListener('error', onBadgeReady); }
+                                    else {
+                                        img.addEventListener('load', onBadgeReady);
+                                        img.addEventListener('error', onBadgeReady);
+                                    }
                                     return;
                                 }
 
@@ -629,7 +641,9 @@
                                 }
 
                                 if (img.complete) {
-                                    requestAnimationFrame(function() { onImgReady(); });
+                                    requestAnimationFrame(function() {
+                                        onImgReady();
+                                    });
                                 } else {
                                     img.addEventListener('load', onImgReady);
                                     img.addEventListener('error', onImgReady);

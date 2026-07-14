@@ -40,9 +40,9 @@
                         <a class="menu-item" href="/archives">归档</a>
                         <a class="menu-item" href="/category">分类</a>
                         <a class="menu-item" href="/tag">标签</a>
-						<a class="menu-item" href="/poetry">诗文</a>
-						<a class="menu-item" href="/songs">心曲</a>
-						<a class="menu-item" href="/message">留言</a>
+                        <a class="menu-item" href="/poetry">诗文</a>
+                        <a class="menu-item" href="/songs">心曲</a>
+                        <a class="menu-item" href="/message">留言</a>
                         <a class="menu-item" href="/links">友链</a>
                         <a class="menu-item" href="/about">关于</a>
                         <input id="switch_default" type="checkbox" class="switch_default">
@@ -62,41 +62,41 @@
             </nav>
 
         </header>
-            <!-- 移动端全屏亚克力菜单 -->
-            <div class="mobile-overlay" id="mobile-overlay">
-                <div class="mobile-menu-panel">
-					<div class="mobile-menu-header">
-						<a href="/" onclick="sessionStorage&&sessionStorage.setItem('_home_skip','1')">JiGuro's Blog</a>
-						<span class="mobile-menu-close" onclick="mobileBtn()">✕</span>
-					</div>
-                    <div class="mobile-menu-grid">
-                        <a class="mobile-menu-item" href="/archives">
-                            <span class="mobile-menu-label">归档</span>
-                        </a>
-                        <a class="mobile-menu-item" href="/category">
-                            <span class="mobile-menu-label">分类</span>
-                        </a>
-                        <a class="mobile-menu-item" href="/tag">
-                            <span class="mobile-menu-label">标签</span>
-                        </a>
-						<a class="mobile-menu-item" href="/poetry">
-							<span class="mobile-menu-label">诗文</span>
-						</a>
-						<a class="mobile-menu-item" href="/songs">
-							<span class="mobile-menu-label">心曲</span>
-						</a>
-                        <a class="mobile-menu-item" href="/message">
-                            <span class="mobile-menu-label">留言</span>
-                        </a>
-                        <a class="mobile-menu-item" href="/links">
-                            <span class="mobile-menu-label">友链</span>
-                        </a>
-                        <a class="mobile-menu-item" href="/about">
-                            <span class="mobile-menu-label">关于</span>
-                        </a>
-                    </div>
+        <!-- 移动端全屏亚克力菜单 -->
+        <div class="mobile-overlay" id="mobile-overlay">
+            <div class="mobile-menu-panel">
+                <div class="mobile-menu-header">
+                    <a href="/" onclick="sessionStorage&&sessionStorage.setItem('_home_skip','1')">JiGuro's Blog</a>
+                    <span class="mobile-menu-close" onclick="mobileBtn()">✕</span>
+                </div>
+                <div class="mobile-menu-grid">
+                    <a class="mobile-menu-item" href="/archives">
+                        <span class="mobile-menu-label">归档</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/category">
+                        <span class="mobile-menu-label">分类</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/tag">
+                        <span class="mobile-menu-label">标签</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/poetry">
+                        <span class="mobile-menu-label">诗文</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/songs">
+                        <span class="mobile-menu-label">心曲</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/message">
+                        <span class="mobile-menu-label">留言</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/links">
+                        <span class="mobile-menu-label">友链</span>
+                    </a>
+                    <a class="mobile-menu-item" href="/about">
+                        <span class="mobile-menu-label">关于</span>
+                    </a>
                 </div>
             </div>
+        </div>
         <script>
             var mobileBtn = function f() {
                 var toggleMenu = document.querySelector('.menu-toggle');
@@ -177,7 +177,9 @@
             });
 
             fetch('/posts/index.json')
-                .then(function(r) { return r.json(); })
+                .then(function(r) {
+                    return r.json();
+                })
                 .then(function(articles) {
                     if (!articles.length) {
                         container.innerHTML = '<p style="text-align:center;opacity:0.5;">暂无文章。</p>';
@@ -192,7 +194,7 @@
                         cats[cat].push(articles[i]);
                     }
 
-                    var months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+                    var months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
                     var html = '';
 
                     var keys = Object.keys(cats).sort();
@@ -266,7 +268,10 @@
                     if (restoreScroll) {
                         var targetY = parseInt(restoreScroll, 10);
                         requestAnimationFrame(function() {
-                            window.scrollTo({ top: targetY, behavior: 'instant' });
+                            window.scrollTo({
+                                top: targetY,
+                                behavior: 'instant'
+                            });
                         });
                     }
                 })
