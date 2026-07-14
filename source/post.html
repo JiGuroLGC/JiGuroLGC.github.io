@@ -5,10 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="referrer" content="no-referrer">
     <meta name="author" content="Liu Guancheng">
     <title>文章 | JiGuro的个人博客</title>
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/favicon.ico">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/ps-figure.css">
+    <link rel="stylesheet" href="/css/fancybox.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/css/music-player.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/css/twikoo.css">
     <script src="/js/script.js"></script>
@@ -72,6 +75,10 @@
             <!-- 移动端全屏亚克力菜单 -->
             <div class="mobile-overlay" id="mobile-overlay">
                 <div class="mobile-menu-panel">
+					<div class="mobile-menu-header">
+						<a href="/" onclick="sessionStorage&&sessionStorage.setItem('_home_skip','1')">JiGuro's Blog</a>
+						<span class="mobile-menu-close" onclick="mobileBtn()">✕</span>
+					</div>
                     <div class="mobile-menu-grid">
                         <a class="mobile-menu-item" href="/archives">
                             <span class="mobile-menu-label">归档</span>
@@ -500,44 +507,129 @@
                             hljs.highlightElement(code);
                         });
 
-                        // Wrap images in placeholder containers for progressive loading
-                        // Same mechanism as archive cards: complete → immediate; else → listeners
+                        // Wrap images in ps-figure cards for lightbox + progressive loading
                         (function() {
                             var vw = window.innerWidth;
                             var contentImgs = document.querySelectorAll('.post-page-content img');
                             contentImgs.forEach(function(img) {
-                                if (img.closest('.code-block') || img.closest('.img-placeholder')) return;
+                                if (img.closest('.code-block') || img.closest('.ps-figure')) return;
 
                                 if (img.hasAttribute('width')) img.style.width = img.getAttribute('width') + 'px';
                                 if (img.hasAttribute('height')) img.style.height = img.getAttribute('height') + 'px';
 
                                 var parentA = img.parentElement;
-                                var isBadge = parentA && parentA.tagName === 'A';
+                                var isInLink = parentA && parentA.tagName === 'A';
                                 var hasExplicitSize = img.hasAttribute('width') || img.hasAttribute('height');
-                                var wrap = document.createElement('div');
-                                wrap.className = 'img-placeholder' + (isBadge || hasExplicitSize ? ' badge-img' : '');
-                                wrap.style.transition = 'background-color 0.5s ease';
-                                if (isBadge) {
-                                    wrap.style.borderRadius = '0';
-                                }
-                                parentA ? parentA.insertBefore(wrap, img) : img.parentNode.insertBefore(wrap, img);
-                                wrap.appendChild(img);
 
-                                // Overflow detection after load
-                                function onImgReady() {
-                                    if (img.classList.contains('loaded')) return;
-                                    img.classList.add('loaded');
-                                        wrap.style.backgroundColor = 'transparent';
-                                    if (!isBadge) {
-                                        var w = img.naturalWidth || img.clientWidth || 0;
-                                        if (w > vw - 40) {
-                                            img.style.maxWidth = '100%';
-                                            img.style.height = 'auto';
+                                // Badges and linked images: just add loaded for blur transition, no wrapper
+                                if (hasExplicitSize || isInLink) {
+                                    function onBadgeReady() {
+                                        if (img.classList.contains('loaded')) return;
+                                        img.classList.add('loaded');
+                                    }
+                                    if (img.complete) onBadgeReady();
+                                    else { img.addEventListener('load', onBadgeReady); img.addEventListener('error', onBadgeReady); }
+                                    return;
+                                }
+
+                                // Build lightbox card
+                                var alt = img.alt || '';
+                                var exifData = img.getAttribute('data-exif') || '';
+                                var hasTitle = !!alt;
+                                var hasExif = !!exifData;
+
+                                var a = document.createElement('a');
+                                a.className = 'ps-figure';
+                                a.href = img.src;
+                                a.setAttribute('data-fancybox', postId || 'post-images');
+                                a.setAttribute('data-caption', alt || '');
+                                if (exifData) a.setAttribute('data-exif', exifData);
+
+                                // Set aspect-ratio for stable placeholder sizing
+                                // Priority: data-ratio > width/height attrs > default 16/9
+                                a.style.width = '100%';
+                                a.style.minHeight = '120px';
+                                a.style.aspectRatio = '16 / 9';
+
+                                var dataRatio = img.getAttribute('data-ratio');
+                                if (dataRatio) {
+                                    var parts = dataRatio.split(':');
+                                    if (parts.length === 2) {
+                                        var rw = parseFloat(parts[0].trim());
+                                        var rh = parseFloat(parts[1].trim());
+                                        if (rw && rh) {
+                                            a.style.aspectRatio = rw + ' / ' + rh;
+                                            a.style.minHeight = 'unset';
                                         }
                                     }
+                                } else if (img.hasAttribute('width') && img.hasAttribute('height')) {
+                                    var w = parseInt(img.getAttribute('width'), 10);
+                                    var h = parseInt(img.getAttribute('height'), 10);
+                                    if (w && h) {
+                                        a.style.aspectRatio = w + ' / ' + h;
+                                        a.style.minHeight = 'unset';
+                                    }
                                 }
+
+                                img.parentNode.insertBefore(a, img);
+                                a.appendChild(img);
+
+                                // Top EXIF overlay
+                                if (hasExif) {
+                                    var exifTop = document.createElement('div');
+                                    exifTop.className = 'ps-exif-top';
+                                    exifTop.textContent = exifData;
+                                    a.appendChild(exifTop);
+                                }
+
+                                // Bottom caption (title only)
+                                if (hasTitle) {
+                                    var caption = document.createElement('div');
+                                    caption.className = 'ps-caption';
+                                    caption.innerHTML = '<span class="title">' + alt + '</span>';
+                                    a.appendChild(caption);
+                                }
+
+                                // Progressive loading with ratio correction
+                                function onImgReady() {
+                                    if (img.classList.contains('loaded')) return;
+
+                                    var naturalW = img.naturalWidth;
+                                    var naturalH = img.naturalHeight;
+
+                                    if (naturalW && naturalH) {
+                                        var wrapperWidth = a.offsetWidth;
+                                        if (wrapperWidth) {
+                                            var actualHeight = Math.round(wrapperWidth * naturalH / naturalW);
+                                            var currentHeight = a.offsetHeight;
+
+                                            if (Math.abs(currentHeight - actualHeight) > 6) {
+                                                // Ratio mismatch — animate correction
+                                                a.style.minHeight = 'unset';
+                                                a.style.aspectRatio = 'auto';
+                                                a.style.height = currentHeight + 'px';
+                                                a.style.transition = 'height 0.4s cubic-bezier(0.22, 0.61, 0.36, 1)';
+
+                                                requestAnimationFrame(function() {
+                                                    a.style.height = actualHeight + 'px';
+                                                });
+
+                                                setTimeout(function() {
+                                                    a.style.transition = '';
+                                                    a.style.height = 'auto';
+                                                    a.style.minHeight = '';
+                                                    img.classList.add('loaded');
+                                                }, 420);
+                                                return;
+                                            }
+                                        }
+                                    }
+
+                                    img.classList.add('loaded');
+                                }
+
                                 if (img.complete) {
-                                    onImgReady();
+                                    requestAnimationFrame(function() { onImgReady(); });
                                 } else {
                                     img.addEventListener('load', onImgReady);
                                     img.addEventListener('error', onImgReady);
@@ -732,6 +824,7 @@
             })
         </script>
         <script src="/js/twikoo-collapse.js"></script>
+        <script src="/js/fancybox.js"></script>
 
 </body>
 

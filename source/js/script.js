@@ -78,6 +78,9 @@ document.ready(
                         : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
                 }
                 window.localStorage && window.localStorage.setItem('theme', dark ? 'dark' : 'light');
+                if (typeof Fancybox !== 'undefined') {
+                    Fancybox.getDefaults().theme = dark ? 'dark' : 'light';
+                }
             }
 
             if (!supportsVT) {
@@ -85,14 +88,28 @@ document.ready(
                 return;
             }
 
+            // Set view-transition-name on html to scope the transition snapshot
+            document.documentElement.style.setProperty('view-transition-name', 'theme-toggle');
+
+            // Globally disable all CSS transitions during snapshot capture
+            document.documentElement.classList.add('no-transitions');
+
             var vt = document.startViewTransition(function() { doSwitch(); });
             vt.ready.then(function() {
-                document.documentElement.style.setProperty(
-                    '--theme-reveal-name',
-                    direction === 'down' ? 'theme-reveal-down' : 'theme-reveal-up'
+                var clipStart = direction === 'down'
+                    ? 'inset(0 0 100% 0)'
+                    : 'inset(100% 0 0 0)';
+                document.documentElement.animate(
+                    { clipPath: [clipStart, 'inset(0 0 0 0)'] },
+                    {
+                        duration: 500,
+                        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                        pseudoElement: '::view-transition-new(theme-toggle)'
+                    }
                 );
                 vt.finished.then(function() {
-                    document.documentElement.style.removeProperty('--theme-reveal-name');
+                    document.documentElement.classList.remove('no-transitions');
+                    document.documentElement.style.removeProperty('view-transition-name');
                 });
             });
         }
@@ -109,6 +126,36 @@ document.ready(
 
         _Blog.toggleTheme = function() {};
         _Blog.toggleTheme();
+
+        // Lock body scroll + slide navbar when mobile menu is open
+        var scrollY = 0;
+        var navMobile = document.getElementById('nav-mobile');
+        var menuObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'class') {
+                    var oldClasses = (mutation.oldValue || '').split(/\s+/).filter(function(c) { return c; });
+                    var hadMenuOpen = oldClasses.indexOf('menu-open') !== -1;
+                    var hasMenuOpen = document.body.classList.contains('menu-open');
+
+                    if (!hadMenuOpen && hasMenuOpen) {
+                        // Menu opened
+                        scrollY = window.scrollY;
+                        document.body.style.position = 'fixed';
+                        document.body.style.top = '-' + scrollY + 'px';
+                        document.body.style.width = '100%';
+                        if (navMobile) navMobile.style.transform = 'translateY(-100%)';
+                    } else if (hadMenuOpen && !hasMenuOpen) {
+                        // Menu closed
+                        document.body.style.position = '';
+                        document.body.style.top = '';
+                        document.body.style.width = '';
+                        window.scrollTo(0, scrollY);
+                        if (navMobile) navMobile.style.transform = '';
+                    }
+                }
+            });
+        });
+        menuObserver.observe(document.body, { attributes: true, attributeFilter: ['class'], attributeOldValue: true });
     }
 );
 
@@ -291,6 +338,7 @@ document.ready(function () {
     var THRESHOLD = 10;
 
     function update() {
+        if (document.body.classList.contains('menu-open')) return;
         if (window.scrollY <= 0) {
             navbar.style.transform = 'translateY(0)';
         } else if (window.scrollY < lastY - THRESHOLD) {

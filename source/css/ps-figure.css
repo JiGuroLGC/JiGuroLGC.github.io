@@ -1,0 +1,121 @@
+/* ==================== 图片卡片 ps-figure ==================== */
+.ps-figure {
+  position: relative;
+  display: block;
+  margin: 2em 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #e8e8e8;
+  cursor: zoom-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  text-decoration: none;
+  color: inherit;
+}
+.ps-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  -webkit-touch-callout: none;
+  user-select: none;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+              filter 0.5s ease;
+}
+.ps-figure:hover img {
+  transform: scale(1.03);
+}
+
+/* 暗色模式下 ps-figure 的边缘亮线，区分卡片边界 */
+body.dark-theme .ps-figure,
+[data-theme="dark"] .ps-figure {
+  background: #1e1f22;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Inline badge variant */
+.ps-figure.badge-img {
+  display: inline-block;
+  width: auto;
+  margin: 0 0.3em;
+  vertical-align: middle;
+  border-radius: 0;
+  background: transparent;
+  cursor: default;
+}
+.ps-figure.badge-img img {
+  width: auto;
+  max-width: 100%;
+}
+.ps-figure.badge-img:hover img {
+  transform: none;
+}
+
+/* ==================== Caption 底部标题条 ==================== */
+.ps-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+  padding: 36px 16px 14px;
+  color: rgba(255,255,255,0.92);
+  font-size: 13px;
+  line-height: 1.5;
+  pointer-events: none;
+}
+.ps-caption .title {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
+
+/* ==================== EXIF 顶部信息条 ==================== */
+.ps-exif-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+  padding: 14px 16px 36px;
+  color: rgba(255,255,255,0.75);
+  font-size: 11px;
+  font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+.ps-figure:not(.badge-img):hover .ps-exif-top,
+.ps-figure:not(.badge-img):focus-within .ps-exif-top {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==================== 关闭过渡协调 ==================== */
+/* 灯箱打开/关闭时抑制 EXIF hover，防止光标误触发 */
+.ps-figure.no-exif .ps-exif-top {
+  opacity: 0 !important;
+  transform: translateY(-8px) !important;
+  transition: none !important;
+}
+/* 灯箱关闭后，卡片自身的过渡动画会与关闭动画不同步 */
+/* no-close-anim：仅冻结图片 transform，防止关闭后 hover 缩放造成"回弹" */
+/* caption-reset：将注释条瞬间置为透明，移除时利用自身过渡渐显 */
+.ps-figure.no-close-anim img {
+  transition: none !important;
+}
+.ps-figure.caption-reset .ps-caption {
+  opacity: 0;
+  transition: none !important;
+}

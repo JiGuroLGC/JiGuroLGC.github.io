@@ -67,6 +67,10 @@
             <!-- 移动端全屏亚克力菜单 -->
             <div class="mobile-overlay" id="mobile-overlay">
                 <div class="mobile-menu-panel">
+					<div class="mobile-menu-header">
+						<a href="/" onclick="sessionStorage&&sessionStorage.setItem('_home_skip','1')">JiGuro's Blog</a>
+						<span class="mobile-menu-close" onclick="mobileBtn()">✕</span>
+					</div>
                     <div class="mobile-menu-grid">
                         <a class="mobile-menu-item" href="/archives">
                             <span class="mobile-menu-label">归档</span>
@@ -234,43 +238,94 @@
                                 wrap.style.transition = 'background-color 0.5s ease';
                                 if (isBadge) wrap.style.borderRadius = '0';
 
-                                // 优化占位色块
+                                // Aspect-ratio priority: data-ratio > width/height attrs > default 16/9
                                 if (!isBadge) {
-                                    // 如果有明确的宽高属性，用它们精确控制占位比例
-                                    if (img.hasAttribute('width') && img.hasAttribute('height')) {
+                                    var ratioSet = false;
+
+                                    var dataRatio = img.getAttribute('data-ratio');
+                                    if (dataRatio) {
+                                        var parts = dataRatio.split(':');
+                                        if (parts.length === 2) {
+                                            var rw = parseFloat(parts[0].trim());
+                                            var rh = parseFloat(parts[1].trim());
+                                            if (rw && rh) {
+                                                wrap.style.aspectRatio = rw + ' / ' + rh;
+                                                wrap.style.minHeight = 'unset';
+                                                wrap.style.width = '100%';
+                                                ratioSet = true;
+                                            }
+                                        }
+                                    }
+
+                                    if (!ratioSet && img.hasAttribute('width') && img.hasAttribute('height')) {
                                         var w = parseInt(img.getAttribute('width'), 10);
                                         var h = parseInt(img.getAttribute('height'), 10);
                                         if (w && h) {
                                             wrap.style.aspectRatio = w + '/' + h;
-                                            wrap.style.minHeight = 'unset'; // 取消CSS默认的min-height
+                                            wrap.style.minHeight = 'unset';
                                             wrap.style.width = '100%';
+                                            ratioSet = true;
                                         }
-                                    } else {
-                                        // 没有宽高属性时，采用默认宽屏比例（16:9）作为占位，并设一个最小高度
+                                    }
+
+                                    if (!ratioSet) {
                                         wrap.style.aspectRatio = '16 / 9';
-                                        wrap.style.minHeight = '120px'; // 保证至少有一定高度
+                                        wrap.style.minHeight = '120px';
                                         wrap.style.width = '100%';
                                     }
                                 }
-                                // =================================
 
                                 parentA ? parentA.insertBefore(wrap, img) : img.parentNode.insertBefore(wrap, img);
                                 wrap.appendChild(img);
 
+                                // Progressive loading with ratio correction
                                 function onImgReady() {
                                     if (img.classList.contains('loaded')) return;
-                                    img.classList.add('loaded');
+
                                     wrap.style.backgroundColor = 'transparent';
+
                                     if (!isBadge) {
                                         var naturalW = img.naturalWidth || img.clientWidth || 0;
                                         if (naturalW > vw - 40) {
                                             img.style.maxWidth = '100%';
                                             img.style.height = 'auto';
                                         }
+
+                                        var naturalH = img.naturalHeight;
+                                        if (naturalW && naturalH) {
+                                            var wrapWidth = wrap.offsetWidth;
+                                            if (wrapWidth) {
+                                                var actualHeight = Math.round(wrapWidth * naturalH / naturalW);
+                                                var currentHeight = wrap.offsetHeight;
+
+                                                if (Math.abs(currentHeight - actualHeight) > 6) {
+                                                    // Ratio mismatch — animate correction
+                                                    wrap.style.minHeight = 'unset';
+                                                    wrap.style.aspectRatio = 'auto';
+                                                    wrap.style.height = currentHeight + 'px';
+                                                    wrap.style.transition = 'height 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), background-color 0.5s ease';
+
+                                                    requestAnimationFrame(function() {
+                                                        wrap.style.height = actualHeight + 'px';
+                                                    });
+
+                                                    setTimeout(function() {
+                                                        wrap.style.transition = 'background-color 0.5s ease';
+                                                        wrap.style.height = 'auto';
+                                                        wrap.style.minHeight = '';
+                                                        img.classList.add('loaded');
+                                                    }, 420);
+                                                    return;
+                                                }
+                                            }
+                                        }
                                     }
+
+                                    img.classList.add('loaded');
                                 }
+
                                 if (img.complete) {
-                                    onImgReady();
+                                    requestAnimationFrame(function() { onImgReady(); });
                                 } else {
                                     img.addEventListener('load', onImgReady);
                                     img.addEventListener('error', onImgReady);

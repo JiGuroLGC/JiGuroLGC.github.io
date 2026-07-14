@@ -1160,14 +1160,6 @@ header label {
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
   }
-  /* When overlay is open, make navbar transparent — overlay acrylic shows through */
-  body.menu-open .navbar-mobile .container {
-    background: transparent;
-    /* keep blur to avoid visual flash from changing blur amount */
-  }
-  body.menu-open.dark-theme .navbar-mobile .container {
-    background: transparent !important;
-  }
   .navbar-mobile .container .navbar-header {
     display: flex;
     justify-content: space-between;
@@ -1193,17 +1185,17 @@ header label {
   body.menu-open {
     overflow: hidden;
   }
-  /* Fullscreen acrylic overlay */
+  /* Fullscreen acrylic overlay — covers everything including navbar */
   .mobile-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 9999;
-    background: rgba(255, 255, 255, 0.68);
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    z-index: 10001;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1212,7 +1204,7 @@ header label {
     transition: opacity 0.25s ease;
   }
   .dark-theme .mobile-overlay {
-    background: rgba(24, 25, 28, 0.78);
+    background: rgba(41, 42, 45, 0.72);
   }
   .mobile-overlay.active {
     opacity: 1;
@@ -1289,6 +1281,46 @@ header label {
   }
   .mobile-menu-label {
     line-height: 1.3;
+  }
+  /* Menu header: site title + close button, sits above menu items */
+  .mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0.4rem 0.8rem 0.4rem;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+  .dark-theme .mobile-menu-header {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+  }
+  .mobile-menu-header a {
+    color: #2c2c2c;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+  .dark-theme .mobile-menu-header a {
+    color: #c9d1d9;
+  }
+  .mobile-menu-close {
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #999;
+    padding: 0.2rem 0.5rem;
+    line-height: 1;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.2s ease;
+  }
+  .dark-theme .mobile-menu-close {
+    color: #888;
+  }
+  .mobile-menu-close:hover {
+    color: #333;
+  }
+  .dark-theme .mobile-menu-close:hover {
+    color: #fff;
   }
   /* Staggered entrance animation */
   .mobile-overlay.active .mobile-menu-item {
@@ -1518,40 +1550,27 @@ header label {
 }
 
 /* ===== View Transition theme animations ===== */
-@keyframes theme-reveal-down {
-  from { clip-path: inset(0 0 100% 0); }
-  to   { clip-path: inset(0 0 0 0); }
-}
-@keyframes theme-reveal-up {
-  from { clip-path: inset(100% 0 0 0); }
-  to   { clip-path: inset(0 0 0 0); }
+.no-transitions,
+.no-transitions *,
+.no-transitions *::before,
+.no-transitions *::after {
+  transition: none !important;
 }
 
-::view-transition-old(root) {
+::view-transition-old(theme-toggle) {
   z-index: 1;
   animation: none;
 }
-::view-transition-new(root) {
+::view-transition-new(theme-toggle) {
   z-index: 2;
-  animation-name: var(--theme-reveal-name, theme-reveal-down);
-  animation-duration: 0.45s;
-  animation-timing-function: ease-in-out;
+  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
+  ::view-transition-old(theme-toggle) {
     animation: none !important;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none !important;
-  }
-}
-
 /* Transition blocks */
 .transition-block {
   position: absolute;
@@ -1675,23 +1694,16 @@ header.fade-in-element {
   width: 100%;
   overflow: hidden;
   background: #e8e8e8;
+  aspect-ratio: 3 / 2;
 }
 .dark-theme .archive-card-img-wrap {
   background: #1e1f22;
 }
 .archive-card-img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   display: block;
-  opacity: 0;
-  filter: blur(20px);
-  transform: scale(1.05);
-  transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
-}
-.archive-card-img.loaded {
-  opacity: 1;
-  filter: blur(0);
-  transform: scale(1);
 }
 .archive-card-body {
   padding: 1.2rem 1.4rem 1.4rem;
@@ -1783,22 +1795,18 @@ header.fade-in-element {
   margin: 0 auto 2rem;
   border-radius: 10px;
   overflow: hidden;
-  max-height: 380px;
   max-width: 100%;
+  aspect-ratio: 3 / 2;
+  background: #e8e8e8;
+}
+.dark-theme .post-cover {
+  background: #1e1f22;
 }
 .post-cover img {
   width: 100%;
-  height: auto;
-  max-height: 380px;
+  height: 100%;
   object-fit: cover;
   display: block;
-  filter: blur(20px);
-  transform: scale(1.05);
-  transition: filter 0.5s ease, transform 0.5s ease;
-}
-.post-cover img.loaded {
-  filter: blur(0);
-  transform: scale(1);
 }
 .post-page-header {
   text-align: center;
@@ -1838,7 +1846,12 @@ header.fade-in-element {
 }
 
 /* Header reveal animation */
-.post-cover,
+.post-cover {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
 .post-page-title,
 .post-page-meta,
 .post-page-tags {
@@ -1850,7 +1863,10 @@ header.fade-in-element {
               transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
               filter 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-.post-cover.is-revealed,
+.post-cover.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
 .post-page-title.is-revealed,
 .post-page-meta.is-revealed,
 .post-page-tags.is-revealed {
@@ -1958,6 +1974,23 @@ header.fade-in-element {
   }
 }
 /* ===== Progressive image loading ===== */
+/* Unified blur-to-clear transition for all image contexts */
+.post-cover img,
+.archive-card-img,
+.ps-figure img,
+.img-placeholder img {
+  filter: blur(20px);
+  transform: scale(1.05);
+  transition: filter 0.5s ease, transform 0.5s ease;
+}
+.post-cover img.loaded,
+.archive-card-img.loaded,
+.ps-figure img.loaded,
+.img-placeholder img.loaded {
+  filter: blur(0);
+  transform: scale(1);
+}
+
 .img-placeholder {
   display: block;
   position: relative;
@@ -1976,13 +2009,6 @@ header.fade-in-element {
   width: 100%;
   height: auto;
   max-width: 100%;
-  filter: blur(20px);
-  transform: scale(1.05);
-  transition: filter 0.5s ease, transform 0.5s ease;
-}
-.img-placeholder img.loaded {
-  filter: blur(0);
-  transform: scale(1);
 }
 /* Inline badge images — still has background + rounded corners */
 .img-placeholder.badge-img {
