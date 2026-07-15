@@ -396,8 +396,113 @@
                             cleanMd = cleanMd.replace(/^\s*<!--\s*.+?\s*-->\s*\n?/, '');
                         }
 
+                        // Extract 尾注 section
+                        var endnote = '';
+                        var endnoteMatch = cleanMd.match(/<!-- 尾注 -->\s*([\s\S]*?)\s*<!-- \/尾注 -->/);
+                        if (endnoteMatch) {
+                            endnote = endnoteMatch[1].trim();
+                            cleanMd = cleanMd.replace(/<!-- 尾注 -->[\s\S]*?<!-- \/尾注 -->\s*/g, '');
+                        }
+
+                        // Extract 注释 section
+                        var annotations = [];
+                        var titleAnnotations = [];
+                        var annotMatch = cleanMd.match(/<!-- 注释 -->\s*([\s\S]*?)\s*<!-- \/注释 -->/);
+                        if (annotMatch) {
+                            var annotText = annotMatch[1].trim();
+                            var annotLines = annotText.split('\n');
+                            for (var al = 0; al < annotLines.length; al++) {
+                                var line = annotLines[al];
+                                var isTitle = false;
+                                // Check for [N_T] title annotation format first
+                                var tm = line.match(/\[(\d+)_T\]\s*(.*)/);
+                                if (tm) {
+                                    isTitle = true;
+                                    annotations.push({ num: parseInt(tm[1], 10), text: tm[2].trim() });
+                                    titleAnnotations.push(parseInt(tm[1], 10));
+                                } else {
+                                    // Regular [N] annotation
+                                    var m = line.match(/\[(\d+)\]\s*(.*)/);
+                                    if (m) {
+                                        annotations.push({ num: parseInt(m[1], 10), text: m[2].trim() });
+                                    }
+                                }
+                            }
+                            cleanMd = cleanMd.replace(/<!-- 注释 -->[\s\S]*?<!-- \/注释 -->\s*/g, '');
+                        }
+
+                        // Extract 心语 section
+                        var xinyu = '';
+                        var xinyuMatch = cleanMd.match(/<!-- 心语 -->\s*([\s\S]*?)\s*<!-- \/心语 -->/);
+                        if (xinyuMatch) {
+                            xinyu = xinyuMatch[1].trim();
+                            cleanMd = cleanMd.replace(/<!-- 心语 -->[\s\S]*?<!-- \/心语 -->\s*/g, '');
+                        }
+
+                        // Build set of defined annotation numbers
+                        var definedNums = {};
+                        for (var d = 0; d < annotations.length; d++) {
+                            definedNums[annotations[d].num] = true;
+                        }
+
+                        // Replace annotation references in body text (only defined numbers)
+                        cleanMd = cleanMd.replace(/\[(\d+)\]/g, function(match, num) {
+                            if (definedNums[parseInt(num, 10)]) {
+                                return '<sup class="annotation-ref" id="annot-ref-' + num + '"><a href="#annot-' + num + '">[' + num + ']</a></sup>';
+                            }
+                            return match;
+                        });
+
                         // Use marked default renderer
-                        document.getElementById('post-content').innerHTML = marked.parse(cleanMd);
+                        var postHtml = marked.parse(cleanMd);
+
+                        // Append 尾注
+                        if (endnote) {
+                            var lines = endnote.split('\n');
+                            var endnoteHtml = '<div class="poetry-endnote">';
+                            for (var el = 0; el < lines.length; el++) {
+                                var line = lines[el].trim();
+                                if (line) endnoteHtml += '<p>' + escHtml(line) + '</p>';
+                            }
+                            endnoteHtml += '</div>';
+                            postHtml += endnoteHtml;
+                        }
+
+                        // Append 注释
+                        if (annotations.length > 0) {
+                            var annotHtml = '<div class="poetry-annotations"><h4 class="poetry-section-title">注释</h4><ol class="poetry-annotations-list">';
+                            for (var an = 0; an < annotations.length; an++) {
+                                var a = annotations[an];
+                                var rendered = marked.parse(a.text);
+                                // Strip wrapping <p> tags so it renders inline
+                                rendered = rendered.replace(/^<p>/, '').replace(/<\/p>\s*$/, '');
+                                annotHtml += '<li id="annot-' + a.num + '" value="' + a.num + '"><span class="annot-marker">[' + a.num + ']</span> ' + rendered + ' <a class="annot-back-link" href="#annot-ref-' + a.num + '" title="回到文中">&uarr;</a></li>';
+                            }
+                            annotHtml += '</ol></div>';
+                            postHtml += annotHtml;
+                        }
+
+                        // Append 心语 (render through marked for markdown support)
+                        if (xinyu) {
+                            var xinyuContent = marked.parse(xinyu);
+                            var xinyuHtml = '<div class="poetry-xinyu"><h4 class="poetry-section-title">心语</h4><div class="poetry-xinyu-content">' + xinyuContent + '</div></div>';
+                            postHtml += xinyuHtml;
+                        }
+
+                        document.getElementById('post-content').innerHTML = postHtml;
+
+                        // Append title annotation superscripts to page title
+                        if (titleAnnotations.length > 0) {
+                            var titleEl = document.getElementById('post-title');
+                            if (titleEl) {
+                                var titleSupHtml = '';
+                                for (var tn = 0; tn < titleAnnotations.length; tn++) {
+                                    var tnum = titleAnnotations[tn];
+                                    titleSupHtml += '<sup class="annotation-ref" id="annot-ref-' + tnum + '"><a href="#annot-' + tnum + '">[' + tnum + ']</a></sup>';
+                                }
+                                titleEl.innerHTML = titleEl.textContent + titleSupHtml;
+                            }
+                        }
 
                         // Apply poetry layout class if genre is detected
                         if (genre) {
@@ -462,6 +567,23 @@
                                         paragraphs[pi].innerHTML = paraLines[pi].join('<br>');
                                     }
                                 }
+
+                                // Move annotation sections out of fit-content container
+                                // so they don't affect the poem's intrinsic width
+                                var fgcContent = document.getElementById('post-content');
+                                var fgcSections = fgcContent.querySelectorAll('.poetry-endnote, .poetry-annotations, .poetry-xinyu');
+                                var fgcParent = fgcContent.parentNode;
+                                var nextEl = fgcContent.nextSibling;
+                                for (var fsi = 0; fsi < fgcSections.length; fsi++) {
+                                    fgcParent.insertBefore(fgcSections[fsi], nextEl);
+                                }
+                                // Manually reveal moved sections since they left #post-content
+                                setTimeout(function() {
+                                    var moved = document.querySelectorAll('#post-content ~ .poetry-endnote, #post-content ~ .poetry-annotations, #post-content ~ .poetry-xinyu');
+                                    for (var mi = 0; mi < moved.length; mi++) {
+                                        moved[mi].classList.add('is-revealed');
+                                    }
+                                }, 500);
                             }
                         }
 
@@ -728,6 +850,41 @@
                                     observer.observe(children[c]);
                                 }
                             }, 400);
+                        })();
+
+                        // Annotation jump highlighting with center-scroll
+                        (function() {
+                            var container = document.querySelector('.post-page');
+                            if (!container) return;
+
+                            function flashTarget(id) {
+                                var el = document.getElementById(id);
+                                if (!el) return;
+
+                                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                                el.classList.add('annot-flash');
+                                setTimeout(function() {
+                                    el.classList.remove('annot-flash');
+                                }, 1900);
+                            }
+
+                            container.addEventListener('click', function(e) {
+                                var link = e.target.closest('a');
+                                if (!link) return;
+
+                                var href = link.getAttribute('href') || '';
+
+                                if (href && /^#annot-\d+$/.test(href)) {
+                                    e.preventDefault();
+                                    flashTarget(href.slice(1));
+                                }
+
+                                if (href && /^#annot-ref-\d+$/.test(href)) {
+                                    e.preventDefault();
+                                    flashTarget(href.slice(1));
+                                }
+                            });
                         })();
                     })
                     .then(function() {

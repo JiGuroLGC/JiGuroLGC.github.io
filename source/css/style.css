@@ -2406,6 +2406,11 @@ header.fade-in-element {
     filter: blur(0);
 }
 
+/* Endnote keeps its 0.55 opacity after reveal */
+.post-page-content>.poetry-endnote.is-revealed {
+    opacity: 0.55;
+}
+
 /* Variant timing per element type */
 .post-page-content>h1,
 .post-page-content>h2 {
@@ -2444,6 +2449,21 @@ header.fade-in-element {
 .post-page-content>img {
     transition-delay: 0s;
     transition-duration: 0.5s;
+}
+
+.post-page-content>.poetry-endnote {
+    transition: opacity 0.65s 0.04s cubic-bezier(0.22, 0.61, 0.36, 1),
+        transform 0.65s 0.04s cubic-bezier(0.22, 0.61, 0.36, 1),
+        filter 0.65s 0.04s cubic-bezier(0.22, 0.61, 0.36, 1),
+        border-color 0.35s;
+}
+
+.post-page-content>.poetry-annotations,
+.post-page-content>.poetry-xinyu {
+    transition: opacity 0.7s 0.08s cubic-bezier(0.22, 0.61, 0.36, 1),
+        transform 0.7s 0.08s cubic-bezier(0.22, 0.61, 0.36, 1),
+        filter 0.7s 0.08s cubic-bezier(0.22, 0.61, 0.36, 1),
+        background 0.35s, border-color 0.35s;
 }
 
 .post-page-content>table {
@@ -3813,14 +3833,260 @@ pre.code-block {
 /* 散文 — default layout, no extra style */
 #post-content.poetry-layout-sw {}
 
+/* Cancel parent's left padding so sections span full width with balanced spacing.
+   Parent padding-left: 15% of containing-block → 15% / 0.85 ≈ 17.65% of content-area */
+#post-content.poetry-layout-xds>.poetry-endnote,
+#post-content.poetry-layout-xds>.poetry-annotations,
+#post-content.poetry-layout-xds>.poetry-xinyu {
+    margin-left: -17.65%;
+    margin-right: 0;
+    width: calc(100% + 17.65%);
+    box-sizing: border-box;
+}
+
+/* 仿古诗 — reset section alignment, don't inherit parent's text-align:center */
+#post-content.poetry-layout-fgs>.poetry-annotations,
+#post-content.poetry-layout-fgs>.poetry-xinyu {
+    text-align: left;
+}
+
+/* 仿古词 — prevent sections from expanding the fit-content container */
+#post-content.poetry-layout-fgc>.poetry-endnote,
+#post-content.poetry-layout-fgc>.poetry-annotations,
+#post-content.poetry-layout-fgc>.poetry-xinyu {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 仿古词 — sections moved out of #post-content are direct children of .post-page.
+   Need their own reveal animation since .post-page-content > * no longer matches. */
+.post-page>.poetry-endnote,
+.post-page>.poetry-annotations,
+.post-page>.poetry-xinyu {
+    will-change: transform, opacity, filter;
+    transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+        transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+        filter 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.post-page>.poetry-endnote:not(.is-revealed),
+.post-page>.poetry-annotations:not(.is-revealed),
+.post-page>.poetry-xinyu:not(.is-revealed) {
+    opacity: 0;
+    transform: translateY(30px);
+    filter: blur(10px);
+}
+.post-page>.poetry-endnote.is-revealed {
+    opacity: 0.55;
+    transform: translateY(0);
+    filter: blur(0);
+}
+.post-page>.poetry-annotations.is-revealed,
+.post-page>.poetry-xinyu.is-revealed {
+    transform: translateY(0);
+    filter: blur(0);
+}
+
 @media screen and (max-width: 480px) {
     .poetry-layout-xds {
         padding-left: 10%;
     }
 
+    #post-content.poetry-layout-xds>.poetry-endnote,
+    #post-content.poetry-layout-xds>.poetry-annotations,
+    #post-content.poetry-layout-xds>.poetry-xinyu {
+        margin-left: -11.11%;
+        width: calc(100% + 11.11%);
+    }
+
     .poetry-layout-fgc {
         max-width: 100%;
     }
+}
+
+/* ==========================================
+   Poetry Endnote (尾注)
+   ========================================== */
+.poetry-endnote {
+    text-align: right;
+    margin-top: 2.5rem;
+    padding-top: 1.2rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 0.82rem;
+    color: inherit;
+    opacity: 0.55;
+    line-height: 1.9;
+}
+
+.poetry-endnote p {
+    margin: 0.15rem 0;
+}
+
+.dark-theme .poetry-endnote {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ==========================================
+   Annotation Reference in Text (注释标号)
+   ========================================== */
+.annotation-ref {
+    font-size: 0.7rem;
+    vertical-align: super;
+    line-height: 0;
+}
+
+.annotation-ref a {
+    text-decoration: none;
+    color: #2d96bd;
+    font-weight: 500;
+    padding: 0 1px;
+    transition: color 0.2s, background 0.2s;
+    border-radius: 2px;
+}
+
+.annotation-ref a:hover {
+    color: #1a7a9e;
+    background: rgba(45, 150, 189, 0.1);
+}
+
+.dark-theme .annotation-ref a {
+    color: #5cb8d4;
+}
+
+.dark-theme .annotation-ref a:hover {
+    color: #7dcde3;
+    background: rgba(92, 184, 212, 0.15);
+}
+
+/* ==========================================
+   Poetry Annotations Section (注释)
+   ========================================== */
+.poetry-annotations {
+    margin-top: 2.5rem;
+    padding: 1.4rem 1.6rem;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dark-theme .poetry-annotations {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.poetry-annotations-list {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.annot-marker {
+    font-weight: 600;
+    color: #2d96bd;
+    margin-right: 0.3em;
+}
+
+.dark-theme .annot-marker {
+    color: #5cb8d4;
+}
+
+.poetry-annotations-list li {
+    font-size: 0.88rem;
+    line-height: 1.85;
+    color: inherit;
+    opacity: 0.75;
+    margin-bottom: 0.35rem;
+    transition: opacity 0.35s;
+}
+
+.annot-back-link {
+    display: inline-block;
+    text-decoration: none;
+    color: #2d96bd;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-left: 0.3rem;
+    opacity: 0;
+    transition: opacity 0.2s, color 0.2s;
+}
+
+.poetry-annotations-list li:hover .annot-back-link {
+    opacity: 1;
+}
+
+.annot-back-link:hover {
+    color: #1a7a9e;
+}
+
+.dark-theme .annot-back-link {
+    color: #5cb8d4;
+}
+
+.dark-theme .annot-back-link:hover {
+    color: #7dcde3;
+}
+
+/* Annotation jump highlight flash */
+.annotation-ref.annot-flash a,
+.poetry-annotations-list li.annot-flash {
+    animation: annotFlashBg 1.8s ease;
+}
+
+@keyframes annotFlashBg {
+    0% {
+        background: var(--annot-flash, rgba(100, 150, 255, 0.18));
+        border-radius: 3px;
+    }
+    100% {
+        background: transparent;
+    }
+}
+
+.dark-theme .annotation-ref.annot-flash a,
+.dark-theme .poetry-annotations-list li.annot-flash {
+    --annot-flash: rgba(130, 170, 255, 0.25);
+}
+
+/* ==========================================
+   Poetry 心语 Section (Author's Note)
+   ========================================== */
+.poetry-xinyu {
+    margin-top: 2.5rem;
+    padding: 1.4rem 1.6rem;
+    border-radius: 8px;
+    border-left: 3px solid #2d96bd;
+    background: rgba(45, 150, 189, 0.04);
+}
+
+.dark-theme .poetry-xinyu {
+    border-color: #5cb8d4;
+    background: rgba(92, 184, 212, 0.06);
+}
+
+.poetry-xinyu-content {
+    font-size: 0.92rem;
+    line-height: 1.9;
+    color: inherit;
+    opacity: 0.8;
+    text-align: left;
+}
+
+.poetry-xinyu-content p {
+    margin: 0.4rem 0;
+}
+
+/* ==========================================
+   Shared Section Title (注释 / 心语)
+   ========================================== */
+.poetry-section-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: inherit;
+    opacity: 0.45;
+    margin: 0 0 0.8rem;
+    text-transform: none;
 }
 
 /* ==========================================
