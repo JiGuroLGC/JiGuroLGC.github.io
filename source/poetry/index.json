@@ -1,5 +1,13 @@
 [
     {
+        "id": "waterfall",
+        "title": "瀑布",
+        "author": "JiGuro",
+        "date": "2019-10-23",
+        "path": "/poetry/waterfall.md",
+        "preview": "还没看见瀑布，<br>先听见瀑布的声音。<br>哗啦哗啦哗啦，"
+    },
+    {
         "id": "childhood",
         "title": "童年",
         "author": "JiGuro",
@@ -38,14 +46,6 @@
         "date": "2020-02-11",
         "path": "/poetry/lay_spring.md",
         "preview": "仰卧在春天里，<br>用心倾听春天的声音，<br>尽情享受春日的阳光。"
-    },
-    {
-        "id": "waterfall",
-        "title": "瀑布",
-        "author": "JiGuro",
-        "date": "2020-03-23",
-        "path": "/poetry/waterfall.md",
-        "preview": "还没看见瀑布，<br>先听见瀑布的声音。<br>哗啦哗啦哗啦，"
     },
     {
         "id": "through_arbor",
@@ -150,5 +150,45 @@
         "date": "2024-07-26",
         "path": "/poetry/autumn_feelings.md",
         "preview": "紧闭朱门锁，<br>叶落更情伤。<br>千里心潮万浪，"
+    },
+    {
+        "id": "childhood2",
+        "title": "童年 （二）",
+        "author": "JiGuro",
+        "date": "2025-03-04",
+        "path": "/poetry/childhood2.md",
+        "preview": "当斜阳倦倦唤起月亮，<br>水面仍漾着圈圈金光。<br>当野鸭衔着食物归巢，"
+    },
+    {
+        "id": "myself",
+        "title": "自己",
+        "author": "JiGuro",
+        "date": "2025-09-15",
+        "path": "/poetry/myself.md",
+        "preview": "白的灯，<br>疲倦地笼在头顶。<br>转的扇，"
+    },
+    {
+        "id": "if_I_die",
+        "title": "倘若我死了",
+        "author": "JiGuro",
+        "date": "2025-12-30",
+        "path": "/poetry/if_I_die.md",
+        "preview": "一阵阵哭声在耳边响起，<br>硝烟裹挟着爆竹屑炸得心惊。<br>棺木排着长龙来回穿行，"
+    },
+    {
+        "id": "linchuan",
+        "title": "忆秦娥·临川",
+        "author": "JiGuro",
+        "date": "2026-04-24",
+        "path": "/poetry/linchuan.md",
+        "preview": "春水涨，<br>莺声软语江南巷。<br>江南巷，"
+    },
+    {
+        "id": "songbie",
+        "title": "送别",
+        "author": "JiGuro",
+        "date": "2026-06-27",
+        "path": "/poetry/songbie.md",
+        "preview": "春归夏至祝挚友，<br>杨柳折枝送故人。<br>熊心壮志夺硕果，"
     }
 ]
