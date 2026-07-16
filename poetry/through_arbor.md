@@ -52,7 +52,7 @@
 <!-- /尾注 -->
 
 <!-- 注释 -->
-[1_T] 诗名来自于 Kevin Kern 所创作的纯音乐 《Through the Arbor》中译名
+[1_T] 诗名来自于 Kevin Kern 所创作的纯音乐 《Through the Arbor》中译名。
 <!-- /注释 -->
 
 <!-- 心语 -->

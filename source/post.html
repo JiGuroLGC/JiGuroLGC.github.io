@@ -8,12 +8,12 @@
     <meta name="referrer" content="no-referrer">
     <meta name="author" content="Liu Guancheng">
     <title>文章 | JiGuro的个人博客</title>
-    <link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/favicon.ico">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/favicon.ico">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/ps-figure.css">
     <link rel="stylesheet" href="/css/fancybox.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/css/music-player.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/css/twikoo.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/css/music-player.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/css/twikoo.css">
     <script src="/js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" id="hljs-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
@@ -577,11 +577,29 @@
                                 for (var fsi = 0; fsi < fgcSections.length; fsi++) {
                                     fgcParent.insertBefore(fgcSections[fsi], nextEl);
                                 }
-                                // Manually reveal moved sections since they left #post-content
+                                // Scroll-reveal moved sections via IntersectionObserver
                                 setTimeout(function() {
                                     var moved = document.querySelectorAll('#post-content ~ .poetry-endnote, #post-content ~ .poetry-annotations, #post-content ~ .poetry-xinyu');
+                                    if (!moved.length) return;
+
+                                    if (!('IntersectionObserver' in window)) {
+                                        for (var mi = 0; mi < moved.length; mi++) {
+                                            moved[mi].classList.add('is-revealed');
+                                        }
+                                        return;
+                                    }
+
+                                    var sectionObserver = new IntersectionObserver(function(entries) {
+                                        for (var e = 0; e < entries.length; e++) {
+                                            if (entries[e].isIntersecting) {
+                                                entries[e].target.classList.add('is-revealed');
+                                                sectionObserver.unobserve(entries[e].target);
+                                            }
+                                        }
+                                    }, { threshold: 0.15 });
+
                                     for (var mi = 0; mi < moved.length; mi++) {
-                                        moved[mi].classList.add('is-revealed');
+                                        sectionObserver.observe(moved[mi]);
                                     }
                                 }, 500);
                             }
@@ -983,10 +1001,10 @@
             })();
         </script>
 
-        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/js/music-player.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/js/music-player.js"></script>
 
         <!-- Twikoo JS -->
-        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.5/js/twikoo.nocss.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/js/twikoo.nocss.js"></script>
         <script>
             twikoo.init({
                 envId: 'https://twikoolgc.netlify.app/.netlify/functions/twikoo',
