@@ -23,15 +23,15 @@
         "path": "https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/posts/2026-06-16.md"
     },
     {
-        "id": "2026-06-17",
-        "title": "【多栈实战】某软件全链路逆向实录",
-        "description": "长文测试",
+        "id": "2025-07-15",
+        "title": "Via浏览器去除白名单限制",
+        "description": "【逆向思路】",
         "author": "JiGuro",
-        "date": "2026-06-17",
+        "date": "2025-07-15",
         "time": "17:15:23",
         "image": "https://files.seeusercontent.com/2026/06/17/m3uV/1000094670.jpg",
-        "tags": ["逆向", "Web", "流媒体", "网络安全", "JWT"],
+        "tags": ["逆向", "Via", "白名单", "思路", "Smali"],
         "category": "逆向",
-        "path": "posts/2026-06-17.md"
+        "path": "posts/2025-07-15.md"
     }
 ]

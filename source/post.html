@@ -11,7 +11,7 @@
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/favicon.ico">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/ps-figure.css">
-    <link rel="stylesheet" href="/css/fancybox.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/css/fancybox.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/css/music-player.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/css/twikoo.css">
     <script src="/js/script.js"></script>
@@ -867,6 +867,11 @@
                                 for (var c = 0; c < children.length; c++) {
                                     observer.observe(children[c]);
                                 }
+                                // Also observe ps-figure image cards (may be nested in <p>)
+                                var figures = container.querySelectorAll('.ps-figure');
+                                for (var f = 0; f < figures.length; f++) {
+                                    observer.observe(figures[f]);
+                                }
                             }, 400);
                         })();
 
@@ -1013,7 +1018,7 @@
             })
         </script>
         <script src="/js/twikoo-collapse.js"></script>
-        <script src="/js/fancybox.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/js/fancybox.js"></script>
 
 </body>
 

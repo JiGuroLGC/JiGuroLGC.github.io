@@ -2451,6 +2451,21 @@ header.fade-in-element {
     transition-duration: 0.5s;
 }
 
+/* Ps-figure cards (may be nested in <p>) — opacity+transform only,
+   blur is provided by the wrapping <p> which is also observed */
+.post-page-content .ps-figure {
+    opacity: 0;
+    transform: translateY(20px);
+    will-change: transform, opacity;
+    transition: opacity 0.65s 0.04s cubic-bezier(0.22, 0.61, 0.36, 1),
+                transform 0.65s 0.04s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.post-page-content .ps-figure.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .post-page-content>.poetry-endnote {
     transition: opacity 0.65s 0.04s cubic-bezier(0.22, 0.61, 0.36, 1),
         transform 0.65s 0.04s cubic-bezier(0.22, 0.61, 0.36, 1),
