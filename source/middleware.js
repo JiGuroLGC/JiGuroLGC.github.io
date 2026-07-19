@@ -10,8 +10,8 @@ export default async function middleware(request) {
 
     /* /source/ 目录：阻止所有直接访问 */
     var isSource = path.startsWith('/source/') || path === '/source';
-    /* 其他路径：仅拦截 .md 和 .json */
-    var isRawFile = /\.(md|json)$/i.test(path);
+    /* 其他路径：仅拦截 .md .json .txt */
+    var isRawFile = /\.(md|json|txt)$/i.test(path);
 
     if (!isSource && !isRawFile) return;
 

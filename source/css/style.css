@@ -65,12 +65,8 @@ strong {
 code,
 kbd,
 samp {
-    font-family: monospace, monospace
-        /* 1 */
-    ;
-    font-size: 1em
-        /* 2 */
-    ;
+    font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", "SF Mono", Consolas, monospace;
+    font-size: 1em;
 }
 
 small {
@@ -2107,13 +2103,17 @@ header.fade-in-element {
 }
 
 .archive-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
     gap: 1.8rem;
     padding: 1rem 0 2rem;
 }
 
 .archive-card {
+    flex: 1 1 300px;
+    min-width: 280px;
+    max-width: 100%;
     border-radius: 10px;
     overflow: hidden;
     background: #fff;
@@ -2207,6 +2207,7 @@ header.fade-in-element {
     font-size: 0.72rem;
     padding: 0.15em 0.6em;
     margin-right: 0.4em;
+    margin-bottom: 0.4em;
     border: 1px solid;
     border-radius: 3px;
     color: inherit;
@@ -2239,8 +2240,11 @@ header.fade-in-element {
 
 @media screen and (min-width: 1200px) {
     .archive-cards {
-        grid-template-columns: repeat(3, 1fr);
         gap: 2rem;
+    }
+
+    .archive-card {
+        flex: 0 0 calc((100% - 4rem) / 3);
     }
 
     .post-page {
@@ -2316,7 +2320,7 @@ header.fade-in-element {
     display: inline-block;
     font-size: 0.75rem;
     padding: 0.15em 0.7em;
-    margin: 0 0.3em;
+    margin: 0 0.3em 0.4em;
     border: 1px solid;
     border-radius: 3px;
     text-decoration: none;
@@ -2339,7 +2343,8 @@ header.fade-in-element {
 
 .post-page-title,
 .post-page-meta,
-.post-page-tags {
+.post-page-tags,
+.article-toc {
     opacity: 0;
     transform: translateY(20px);
     filter: blur(6px);
@@ -2356,7 +2361,8 @@ header.fade-in-element {
 
 .post-page-title.is-revealed,
 .post-page-meta.is-revealed,
-.post-page-tags.is-revealed {
+.post-page-tags.is-revealed,
+.article-toc.is-revealed {
     opacity: 1;
     transform: translateY(0);
     filter: blur(0);
@@ -2389,6 +2395,118 @@ header.fade-in-element {
     margin-top: 0;
 }
 
+/* TOC scroll offset — prevent headings from hiding behind fixed navbar */
+.post-page-content h2,
+.post-page-content h3,
+.post-page-content h4 {
+    scroll-margin-top: 80px;
+}
+
+@media screen and (max-width: 479px) {
+    .post-page-content h2,
+    .post-page-content h3,
+    .post-page-content h4 {
+        scroll-margin-top: 90px;
+    }
+}
+
+/* ===== Article Table of Contents ===== */
+.article-toc {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0 auto 1.5rem;
+    padding: 1rem 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.02);
+    font-size: 0.9rem;
+}
+
+.dark-theme .article-toc {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.article-toc summary {
+    cursor: pointer;
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+    user-select: none;
+    color: inherit;
+}
+
+.article-toc summary:hover {
+    opacity: 0.7;
+}
+
+.toc-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    line-height: 1.8;
+}
+
+.toc-list ul {
+    list-style: none;
+    padding-left: 1.4em;
+    margin: 0;
+}
+
+.toc-list li {
+    margin: 0;
+}
+
+.toc-list a {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    display: inline-block;
+}
+
+.toc-list a:hover {
+    opacity: 1;
+}
+
+.toc-h3 a {
+    font-size: 0.92em;
+}
+
+.toc-h4 a {
+    font-size: 0.88em;
+    opacity: 0.5;
+}
+
+@media screen and (max-width: 479px) {
+    .article-toc {
+        margin: -0.5rem auto 1.5rem;
+        padding: 0.7rem 1rem;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+    .article-toc summary {
+        margin-bottom: 0.4rem;
+    }
+    .toc-list {
+        line-height: 1.7;
+    }
+}
+
+/* Heading flash animation after TOC click */
+.toc-flash {
+    animation: tocFlashBg 1.8s ease;
+}
+
+@keyframes tocFlashBg {
+    0%   { background: var(--toc-flash, rgba(100, 150, 255, 0.12)); }
+    50%  { background: var(--toc-flash, rgba(100, 150, 255, 0.18)); }
+    100% { background: transparent; }
+}
+
+.dark-theme .toc-flash {
+    --toc-flash: rgba(130, 170, 255, 0.2);
+}
+
 /* ===== Scroll-reveal animation ===== */
 .post-page-content>* {
     opacity: 0;
@@ -2404,6 +2522,25 @@ header.fade-in-element {
     opacity: 1;
     transform: translateY(0);
     filter: blur(0);
+}
+
+/* <p> elements that contain only a ps-figure — lift the scroll-reveal
+   opacity so the blur-to-clear progressive loading is always visible */
+.post-page-content > p:has(> .ps-figure:only-child),
+.post-page-content > p.ps-lifted {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+}
+
+/* Individual ps-figure cards that have been JS-unwrapped to be direct
+   children of .post-page-content — same treatment as .ps-figure-row */
+.post-page-content > .ps-figure {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
 }
 
 /* Endnote keeps its 0.55 opacity after reveal */
@@ -2451,19 +2588,50 @@ header.fade-in-element {
     transition-duration: 0.5s;
 }
 
-/* Ps-figure cards (may be nested in <p>) — opacity+transform only,
-   blur is provided by the wrapping <p> which is also observed */
+/* Ps-figure cards — always visible so the blur-to-clear progressive
+   loading is visible to the user. Scroll-reveal adds only the slide-up
+   (translateY), not the opacity fade-in, because the blur transition
+   itself serves as the reveal cue. */
 .post-page-content .ps-figure {
-    opacity: 0;
+    opacity: 1;
     transform: translateY(20px);
-    will-change: transform, opacity;
-    transition: opacity 0.65s 0.04s cubic-bezier(0.22, 0.61, 0.36, 1),
-                transform 0.65s 0.04s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: transform;
+    transition: transform 0.65s 0.04s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .post-page-content .ps-figure.is-revealed {
-    opacity: 1;
     transform: translateY(0);
+}
+
+/* ===== Desktop: ps-figure sizing ===== */
+@media screen and (min-width: 1024px) {
+    #post-content .ps-figure {
+        max-height: 80vh;
+    }
+    #post-content .ps-figure img {
+        max-height: 80vh;
+    }
+}
+
+/* ===== Desktop: side-by-side gallery rows ===== */
+@media screen and (min-width: 1024px) {
+    .ps-figure-row {
+        display: flex;
+        gap: 12px;
+        margin: 2em 0;
+    }
+    .post-page-content > .ps-figure-row,
+    .post-page-content > .ps-figure-row.is-revealed {
+        opacity: 1;
+        transform: none;
+        filter: none;
+        transition: none;
+    }
+    .ps-figure-row > .ps-figure {
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+    }
 }
 
 .post-page-content>.poetry-endnote {
@@ -2497,7 +2665,8 @@ header.fade-in-element {
     .post-cover,
     .post-page-title,
     .post-page-meta,
-    .post-page-tags {
+    .post-page-tags,
+    .article-toc {
         opacity: 1;
         transform: none;
         filter: none;
@@ -2506,7 +2675,9 @@ header.fade-in-element {
 }
 
 /* ===== Progressive image loading ===== */
-/* Unified blur-to-clear transition for all image contexts */
+/* Unified blur-to-clear transition — covers both ps-figure cards and
+   bare images (badges, linked images with explicit sizes, etc.) */
+.post-page-content img,
 .post-cover img,
 .archive-card-img,
 .ps-figure img,
@@ -2516,6 +2687,7 @@ header.fade-in-element {
     transition: filter 0.5s ease, transform 0.5s ease;
 }
 
+.post-page-content img.loaded,
 .post-cover img.loaded,
 .archive-card-img.loaded,
 .ps-figure img.loaded,
@@ -2525,14 +2697,14 @@ header.fade-in-element {
 }
 
 .img-placeholder {
-    display: block;
+    display: inline-block;
     position: relative;
     overflow: hidden;
     background: #e8e8e8;
     border-radius: 8px;
     margin: 1.5rem 0;
     max-width: 100%;
-    min-height: 60px;
+    vertical-align: top;
 }
 
 .dark-theme .img-placeholder {
@@ -2541,9 +2713,14 @@ header.fade-in-element {
 
 .img-placeholder img {
     display: block;
-    width: 100%;
+    width: auto;
     height: auto;
     max-width: 100%;
+}
+
+/* Inside links: remove margin so it doesn't double with the parent's spacing */
+a > .img-placeholder {
+    margin: 0;
 }
 
 /* Inline badge images — still has background + rounded corners */
@@ -2757,7 +2934,8 @@ pre.code-block {
     text-align: right;
     user-select: none;
     opacity: 0.35;
-    font-size: 0.78rem;
+    font-size: 0.82rem;
+    font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
     line-height: 1.55;
     border-right: 1px solid #ccc;
     min-width: 2.5em;
@@ -2783,7 +2961,7 @@ pre.code-block {
     flex: 1;
     min-width: 0;
     line-height: 1.55;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     background: #f2f2f2;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -3299,8 +3477,12 @@ pre.code-block {
 
 @media screen and (max-width: 768px) {
     .archive-cards {
-        grid-template-columns: 1fr;
         gap: 1.2rem;
+    }
+
+    .archive-card {
+        flex: 0 0 100%;
+        min-width: 0;
     }
 
     .post-page {

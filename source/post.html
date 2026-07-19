@@ -8,16 +8,45 @@
     <meta name="referrer" content="no-referrer">
     <meta name="author" content="Liu Guancheng">
     <title>文章 | JiGuro的个人博客</title>
-    <link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/favicon.ico">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.7/favicon.ico">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/ps-figure.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/css/fancybox.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/css/music-player.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/css/twikoo.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.7/css/fancybox.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.7/css/music-player.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.7/css/twikoo.css">
     <script src="/js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" id="hljs-theme" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <script>
+        // Write correct hljs theme before the browser fetches the stylesheet
+        (function() {
+            var dark = (window.localStorage && localStorage.getItem('theme')) === 'dark';
+            var href = dark
+                ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
+                : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
+            document.write('<link rel="stylesheet" id="hljs-theme" href="' + href + '">');
+        })();
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        // Smali language definition for highlight.js
+        if (typeof hljs !== 'undefined') {
+            hljs.registerLanguage('smali', function(e) {
+            return {
+                c: [
+                    { cN: 'comment', b: '#', e: /$/ },
+                    { cN: 'string',  b: /"/, e: /"/, c: [e.BACKSLASH_ESCAPE] },
+                    { cN: 'meta',    b: /\\.(class|super|implements|method|end|field|source|annotation|subannotation|prologue|locals|registers|param|line|restart|local|array|enum|catch|catchall|packed-switch|sparse-switch|array-data|epilogue|synthetic|override|runtime|signature|system|enclosing|inner)/, r: 10 },
+                    { cN: 'keyword', b: /\b(public|private|protected|static|final|abstract|synthetic|constructor|native|strictfp|synchronized|transient|volatile|bridge|varargs|enum|declared-synchronized)\b/ },
+                    { cN: 'title.function_', b: /\b(move|return|const|monitor|check-cast|instance-of|new-instance|throw|goto|packed-switch|sparse-switch|if|aget|aput|iget|iput|sget|sput|invoke|cmp|neg|not|int-to|long-to|float-to|double-to|byte-to|char-to|short-to|add|sub|mul|div|rem|and|or|xor|shl|shr|ushr|rsub|fill-array-data|filled-new-array|move-result|move-exception|return-void|nop|array-length|fill-array|execute-inline)(-[a-zA-Z_]+)?(\/[a-zA-Z_]+)?\b/ },
+                    { cN: 'type',    b: /L[a-zA-Z0-9/$_.\-]+;|[VZBSCIJFD](?![\w])/ },
+                    { cN: 'built_in', b: /[vp]\d+/, r: 0 },
+                    { cN: 'symbol',  b: /^:\w[a-zA-Z0-9_]*/, r: 5 },
+                    { cN: 'number',  b: /0x[a-fA-F0-9]+|-?\d+(\.\d+)?[fd]?\b/ }
+                ]
+            };
+        });
+        }
+    </script>
     <meta name="generator" content="Hexo 7.3.0">
 </head>
 
@@ -31,7 +60,6 @@
                 pagebody.classList.add('dark-theme');
                 document.documentElement.setAttribute('data-theme', 'dark');
                 document.getElementById("mobile-toggle-theme").innerText = "· 九阴";
-                document.getElementById('hljs-theme').href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
             } else {
                 pagebody.classList.remove('dark-theme');
                 document.documentElement.setAttribute('data-theme', 'light');
@@ -292,12 +320,13 @@
                     }
                 }
 
+                var article;
                 fetch(indexUrl)
                     .then(function(r) {
                         return r.json();
                     })
                     .then(function(articles) {
-                        var article = null;
+                        article = null;
                         for (var i = 0; i < articles.length; i++) {
                             if (articles[i].id === postId) {
                                 article = articles[i];
@@ -651,9 +680,17 @@
                             pre.parentNode.replaceChild(temp.firstChild, pre);
                         }
 
-                        // Apply syntax highlighting
+                        // Apply syntax highlighting (each block individually protected)
                         document.querySelectorAll('.post-page-content .code-content code').forEach(function(code) {
-                            hljs.highlightElement(code);
+                            try {
+                                var langMatch = (code.className || '').match(/language-(\w+)/);
+                                if (langMatch && typeof hljs !== 'undefined') {
+                                    var result = hljs.highlight(code.textContent, { language: langMatch[1], ignoreIllegals: true });
+                                    code.innerHTML = result.value;
+                                } else if (typeof hljs !== 'undefined') {
+                                    hljs.highlightElement(code);
+                                }
+                            } catch(e) { /* continue to next block */ }
                         });
 
                         // Wrap images in ps-figure cards for lightbox + progressive loading
@@ -667,21 +704,54 @@
                                 if (img.hasAttribute('height')) img.style.height = img.getAttribute('height') + 'px';
 
                                 var parentA = img.parentElement;
-                                var isInLink = parentA && parentA.tagName === 'A';
                                 var hasExplicitSize = img.hasAttribute('width') || img.hasAttribute('height');
+                                var isBadge = img.hasAttribute('data-badge');
 
-                                // Badges and linked images: just add loaded for blur transition, no wrapper
-                                if (hasExplicitSize || isInLink) {
+                                // Images marked with data-badge are badges/icons/shields —
+                                // wrap in .img-placeholder (gray bg, rounded corners, aspect ratio)
+                                // instead of <a class="ps-figure"> to avoid invalid nested <a>
+                                // and to preserve their small fixed size.
+                                if (isBadge) {
+                                    var placeholder = document.createElement('span');
+                                    placeholder.className = 'img-placeholder';
+
+                                    if (hasExplicitSize) {
+                                        var pw = img.getAttribute('width');
+                                        var ph = img.getAttribute('height');
+                                        if (pw) placeholder.style.width = pw + 'px';
+                                        if (pw && ph) {
+                                            placeholder.style.aspectRatio = pw + ' / ' + ph;
+                                        }
+                                        placeholder.style.maxWidth = '100%';
+                                    }
+
+                                    img.parentNode.insertBefore(placeholder, img);
+                                    placeholder.appendChild(img);
+
+                                    // Delay .loaded so the browser paints the blur state first
                                     function onBadgeReady() {
                                         if (img.classList.contains('loaded')) return;
+                                        placeholder.style.background = 'transparent';
+                                        placeholder.style.borderRadius = '0';
                                         img.classList.add('loaded');
                                     }
-                                    if (img.complete) onBadgeReady();
-                                    else {
+                                    if (img.complete) {
+                                        requestAnimationFrame(function() {
+                                            requestAnimationFrame(onBadgeReady);
+                                        });
+                                    } else {
                                         img.addEventListener('load', onBadgeReady);
                                         img.addEventListener('error', onBadgeReady);
                                     }
                                     return;
+                                }
+
+                                // Non-badge image inside an existing <a> — cannot wrap in
+                                // another <a class="ps-figure"> (invalid nested <a>).
+                                // Move the img out of the parent <a> first.
+                                if (parentA && parentA.tagName === 'A') {
+                                    parentA.parentNode.insertBefore(img, parentA);
+                                    if (!parentA.hasChildNodes()) parentA.remove();
                                 }
 
                                 // Build lightbox card
@@ -750,26 +820,70 @@
                                     var naturalH = img.naturalHeight;
 
                                     if (naturalW && naturalH) {
-                                        var wrapperWidth = a.offsetWidth;
-                                        if (wrapperWidth) {
-                                            var actualHeight = Math.round(wrapperWidth * naturalH / naturalW);
-                                            var currentHeight = a.offsetHeight;
+                                        var containerWidth = a.parentElement.clientWidth;
+                                        if (containerWidth) {
+                                            // Height if image fills the full container width
+                                            var naturalHeight = Math.round(containerWidth * naturalH / naturalW);
 
-                                            if (Math.abs(currentHeight - actualHeight) > 6) {
-                                                // Ratio mismatch — animate correction
+                                            // Desktop: constrain to 80vh so portrait images don't exceed viewport
+                                            var maxHeight = window.innerWidth >= 1024
+                                                ? Math.round(window.innerHeight * 0.8)
+                                                : Infinity;
+
+                                            var targetHeight, targetWidth;
+                                            if (naturalHeight > maxHeight) {
+                                                // Portrait image on desktop — constrain both dimensions
+                                                targetHeight = maxHeight;
+                                                targetWidth = Math.round(maxHeight * naturalW / naturalH);
+                                            } else {
+                                                targetHeight = naturalHeight;
+                                                targetWidth = containerWidth;
+                                            }
+
+                                            var currentHeight = a.offsetHeight;
+                                            var currentWidth = a.offsetWidth;
+                                            var needHeightFix = Math.abs(currentHeight - targetHeight) > 6;
+                                            var needWidthFix = Math.abs(currentWidth - targetWidth) > 6;
+
+                                            if (needHeightFix || needWidthFix) {
                                                 a.style.minHeight = 'unset';
                                                 a.style.aspectRatio = 'auto';
                                                 a.style.height = currentHeight + 'px';
-                                                a.style.transition = 'height 0.4s cubic-bezier(0.22, 0.61, 0.36, 1)';
+                                                a.style.width = currentWidth + 'px';
+                                                a.style.transition =
+                                                    'height 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), '
+                                                    + 'width 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), '
+                                                    + 'margin 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), '
+                                                    + 'background 0.4s cubic-bezier(0.22, 0.61, 0.36, 1)';
+
+                                                if (targetWidth < containerWidth) {
+                                                    a.style.marginLeft = 'auto';
+                                                    a.style.marginRight = 'auto';
+                                                }
 
                                                 requestAnimationFrame(function() {
-                                                    a.style.height = actualHeight + 'px';
+                                                    a.style.height = targetHeight + 'px';
+                                                    a.style.width = targetWidth + 'px';
+                                                    a.style.background = 'transparent';
+                                                    a.style.borderRadius = '0';
+                                                    a.style.boxShadow = 'none';
                                                 });
 
                                                 setTimeout(function() {
                                                     a.style.transition = '';
-                                                    a.style.height = 'auto';
                                                     a.style.minHeight = '';
+                                                    if (targetWidth < containerWidth) {
+                                                        // Portrait: keep constrained size, center card
+                                                        a.style.height = 'auto';
+                                                        a.style.width = targetWidth + 'px';
+                                                        a.style.maxWidth = '100%';
+                                                        a.style.marginLeft = 'auto';
+                                                        a.style.marginRight = 'auto';
+                                                    } else {
+                                                        a.style.height = 'auto';
+                                                        a.style.width = '';
+                                                        a.style.maxWidth = '100%';
+                                                    }
                                                     img.classList.add('loaded');
                                                 }, 420);
                                                 return;
@@ -777,16 +891,30 @@
                                         }
                                     }
 
+                                    a.style.background = 'transparent';
+                                    a.style.borderRadius = '0';
+                                    a.style.boxShadow = 'none';
                                     img.classList.add('loaded');
                                 }
 
                                 if (img.complete) {
                                     requestAnimationFrame(function() {
-                                        onImgReady();
+                                        requestAnimationFrame(onImgReady);
                                     });
                                 } else {
                                     img.addEventListener('load', onImgReady);
-                                    img.addEventListener('error', onImgReady);
+                                    img.addEventListener('error', function onImgError() {
+                                        if (img.classList.contains('loaded')) return;
+                                        img.style.display = 'none';
+
+                                        var errDiv = document.createElement('div');
+                                        errDiv.className = 'ps-error';
+                                        errDiv.innerHTML = '<span class="ps-error-icon">!</span><span>图片加载失败</span>';
+                                        a.appendChild(errDiv);
+                                        a.style.borderRadius = '0';
+                                        a.style.boxShadow = 'none';
+                                        img.classList.add('loaded');
+                                    });
                                 }
                             });
                         })();
@@ -804,6 +932,28 @@
                                 var type = m2[1].toLowerCase();
                                 var title = m2[2] || type.charAt(0).toUpperCase() + type.slice(1);
 
+                                // Extract body content: skip [!TYPE] prefix and title text
+                                // Map textContent offset to innerHTML offset to handle HTML tags in title
+                                var prefixLen = m2[0].length; // Length of "[!TYPE] title" in plain text
+                                var html = firstP.innerHTML;
+                                var ti = 0, hi = 0;
+                                while (ti < prefixLen && hi < html.length) {
+                                    var ch = html[hi];
+                                    if (ch === '<') {
+                                        var gt = html.indexOf('>', hi);
+                                        hi = gt === -1 ? hi + 1 : gt + 1;
+                                    } else if (ch === '&') {
+                                        var sc = html.indexOf(';', hi);
+                                        hi = sc === -1 ? hi + 1 : sc + 1;
+                                        ti++;
+                                    } else {
+                                        ti++;
+                                        hi++;
+                                    }
+                                }
+                                while (hi < html.length && /\s/.test(html[hi])) hi++;
+                                var bodyHTML = html.slice(hi);
+
                                 // Build Obsidian callout HTML structure
                                 bq.setAttribute('data-callout', type);
                                 bq.classList.add('callout');
@@ -812,19 +962,180 @@
                                     '<div class="callout-icon"></div>' +
                                     '<div class="callout-title-inner">' + title + '</div>' +
                                     '</div>' +
-                                    '<div class="callout-content">' + (firstP.innerHTML.replace(/^\[!\w+\]\s*/, '') || '') +
+                                    '<div class="callout-content">' + bodyHTML +
                                     Array.prototype.slice.call(bq.querySelectorAll('p'), 1).map(function(p) {
                                         return p.outerHTML;
                                     }).join('') + '</div>';
                             }
                         })();
 
+                        // --- Unified image post-processing ---
+                        // Step A: Unwrap <p> wrappers that contain only ps-figure elements.
+                        // A <p> may hold 1-3 ps-figure cards (raw-HTML images within the
+                        // same paragraph). Unwrap them to be direct children so the parent's
+                        // scroll-reveal opacity does not hide the cards.
+                        (function() {
+                            var content = document.getElementById('post-content');
+                            if (!content) return;
+                            var ps = content.querySelectorAll('p');
+                            for (var pi = 0; pi < ps.length; pi++) {
+                                var p = ps[pi];
+                                var ch = p.children;
+                                if (ch.length === 0) continue;
+                                // All element children must be .ps-figure
+                                var allFig = true;
+                                for (var ci = 0; ci < ch.length; ci++) {
+                                    if (!ch[ci].classList.contains('ps-figure')) { allFig = false; break; }
+                                }
+                                if (!allFig) continue;
+                                // No non-whitespace text nodes directly in the <p>
+                                var hasText = false;
+                                for (var ni = 0; ni < p.childNodes.length; ni++) {
+                                    var node = p.childNodes[ni];
+                                    if (node.nodeType === 3 && node.textContent.trim() !== '') {
+                                        hasText = true; break;
+                                    }
+                                }
+                                if (hasText) continue;
+                                // Unwrap
+                                while (p.firstChild) {
+                                    p.parentNode.insertBefore(p.firstChild, p);
+                                }
+                                p.parentNode.removeChild(p);
+                            }
+                        })();
+
+                        // Step B: Group 2-3 consecutive ps-figure cards into gallery rows.
+                        (function() {
+                            var content = document.getElementById('post-content');
+                            if (!content) return;
+                            var children = content.children;
+                            var i = 0;
+                            var groups = [];
+                            while (i < children.length) {
+                                var count = 0;
+                                var start = i;
+                                while (i < children.length &&
+                                       children[i].classList &&
+                                       children[i].classList.contains('ps-figure')) {
+                                    count++;
+                                    i++;
+                                }
+                                if (count >= 2 && count <= 3) {
+                                    groups.push({ start: start, count: count });
+                                }
+                                if (count === 0) i++;
+                            }
+                            // Process from end to start to keep indices stable
+                            for (var g = groups.length - 1; g >= 0; g--) {
+                                var grp = groups[g];
+                                var row = document.createElement('div');
+                                row.className = 'ps-figure-row';
+                                for (var j = 0; j < grp.count; j++) {
+                                    row.appendChild(children[grp.start]);
+                                }
+                                content.insertBefore(row, children[grp.start]);
+                            }
+                        })();
+
+                        // Generate table of contents if article.toc is true
+                        if (article && article.toc) {
+                            (function() {
+                                var content = document.getElementById('post-content');
+                                if (!content) return;
+
+                                var headings = content.querySelectorAll('h2, h3, h4');
+                                if (headings.length < 2) return;
+
+                                // Assign IDs to headings that don't have them
+                                for (var h = 0; h < headings.length; h++) {
+                                    var heading = headings[h];
+                                    if (!heading.id) {
+                                        var slug = heading.textContent.trim()
+                                            .toLowerCase()
+                                            .replace(/<[^>]+>/g, '') // strip HTML
+                                            .replace(/[^\w\u4e00-\u9fff]+/g, '-')
+                                            .replace(/^-+|-+$/g, '') || 'heading-' + h;
+                                        heading.id = slug;
+                                    }
+                                }
+
+                                // Build TOC HTML
+                                var tocHtml = '<nav class="article-toc"><details open><summary>目录</summary><ul class="toc-list">';
+                                var prevLevel = 2;
+                                var minLevel = 2;
+
+                                for (var h = 0; h < headings.length; h++) {
+                                    var heading = headings[h];
+                                    var level = parseInt(heading.tagName.charAt(1), 10);
+
+                                    // Calculate nesting level
+                                    var depth = level - minLevel;
+
+                                    // Close/open nested lists
+                                    while (prevLevel < level) {
+                                        tocHtml += '<ul>';
+                                        prevLevel++;
+                                    }
+                                    while (prevLevel > level) {
+                                        tocHtml += '</ul></li>';
+                                        prevLevel--;
+                                    }
+
+                                    tocHtml += '<li class="toc-h' + level + '"><a href="#' + heading.id + '">' + heading.textContent.trim().replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</a>';
+
+                                    // Don't close li yet — it may get child <ul>s
+                                    var nextLevel = (h + 1 < headings.length) ? parseInt(headings[h + 1].tagName.charAt(1), 10) : minLevel;
+                                    if (nextLevel <= level) {
+                                        tocHtml += '</li>';
+                                    }
+                                }
+
+                                // Close any remaining open lists
+                                while (prevLevel > minLevel) {
+                                    tocHtml += '</ul></li>';
+                                    prevLevel--;
+                                }
+                                tocHtml += '</ul></details></nav>';
+
+                                // Insert after .post-page-header (right below the tags)
+                                var header = document.querySelector('.post-page-header');
+                                var contentDiv = document.getElementById('post-content');
+                                if (header && contentDiv && contentDiv.parentNode) {
+                                    var tmp = document.createElement('div');
+                                    tmp.innerHTML = tocHtml;
+                                    var tocEl = tmp.firstElementChild;
+                                    if (tocEl) {
+                                        contentDiv.parentNode.insertBefore(tocEl, contentDiv);
+                                    }
+                                }
+
+                                // Click handlers for smooth scroll + flash animation
+                                var tocLinks = document.querySelectorAll('.article-toc a');
+                                for (var t = 0; t < tocLinks.length; t++) {
+                                    tocLinks[t].addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        var targetId = this.getAttribute('href').slice(1);
+                                        var target = document.getElementById(targetId);
+                                        if (target) {
+                                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                            target.classList.add('toc-flash');
+                                            setTimeout(function() {
+                                                target.classList.remove('toc-flash');
+                                            }, 1900);
+                                        }
+                                    });
+                                }
+                            })();
+                        }
+
                         // Scroll-reveal animation for header elements
                         var headerEls = [
                             document.getElementById('post-cover'),
                             document.getElementById('post-title'),
                             document.querySelector('.post-page-meta'),
-                            document.getElementById('post-page-tags')
+                            document.getElementById('post-page-tags'),
+                            document.querySelector('.article-toc')
                         ];
                         for (var h = 0; h < headerEls.length; h++) {
                             if (headerEls[h]) {
@@ -1006,10 +1317,10 @@
             })();
         </script>
 
-        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/js/music-player.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.7/js/music-player.js"></script>
 
         <!-- Twikoo JS -->
-        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/js/twikoo.nocss.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.7/js/twikoo.nocss.js"></script>
         <script>
             twikoo.init({
                 envId: 'https://twikoolgc.netlify.app/.netlify/functions/twikoo',
@@ -1018,7 +1329,7 @@
             })
         </script>
         <script src="/js/twikoo-collapse.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.6/js/fancybox.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/JiGuroLGC/JiGuroLGC.github.io@1.0.7/js/fancybox.js"></script>
 
 </body>
 

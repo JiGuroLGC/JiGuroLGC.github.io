@@ -17,7 +17,8 @@
 .ps-figure img {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: contain;
     -webkit-touch-callout: none;
     user-select: none;
     transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1),
@@ -28,7 +29,7 @@
     transform: scale(1.03);
 }
 
-/* 暗色模式下 ps-figure 的边缘亮线，区分卡片边界 */
+/* Dark mode card — solid bg for placeholder, removed on load */
 body.dark-theme .ps-figure,
 [data-theme="dark"] .ps-figure {
     background: #1e1f22;
@@ -127,4 +128,40 @@ body.dark-theme .ps-figure,
 .ps-figure.caption-reset .ps-caption {
     opacity: 0;
     transition: none !important;
+}
+
+/* ==================== Error state ==================== */
+.ps-error {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #aaa;
+    font-size: 13px;
+    pointer-events: none;
+}
+
+.dark-theme .ps-error {
+    color: #777;
+}
+
+.ps-error-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+}
+
+.dark-theme .ps-error-icon {
+    border-color: #666;
 }
